@@ -1,4 +1,5 @@
 library(readr)
+
 histWeather <- read_csv("~/Desktop/TimeSpaceExpo/histWeather.csv")
 
 locations <- read_csv("~/Desktop/TimeSpaceExpo/locations.csv")
