@@ -5,7 +5,6 @@ histWeather <- read_csv("~/Desktop/TimeSpaceExpo/histWeather.csv")
 locations <- read_csv("~/Desktop/TimeSpaceExpo/locations.csv")
 
 forecast.df <- read.delim("forecast.dat", sep = "") 
-str(forecast.df)
 extra.obs <- c(1, "2014-07-09", "63", "MinTemp", "2014-07-09")
 full.forecast <- rbind(forecast.df, extra.obs)
 write.csv(full.forecast, "forecastdf.csv")
@@ -13,7 +12,7 @@ write.csv(full.forecast, "forecastdf.csv")
 forecastdf <- read_csv("~/Desktop/TimeSpaceExpo/forecastdf.csv")
 str(forecastdf)
 
-forecastdfcolnames <- c("Obsnum", "Something", "DatePredicted", "Value",
+forecastdfcolnames <- c("Obsnum", "Citynum", "DatePredicted", "Value",
   "Weatherval", "DateofForecast")
 
 colnames(forecastdf) <- forecastdfcolnames
@@ -73,5 +72,33 @@ str(merged.df$Date)
 summary(merged.df$Date)
 
 
-str(forecast.df)
-str(as.numeric(forecast.df$X2014.07.09))
+str(forecastdf)
+summary(forecastdf$Citynum)
+
+## try to merge with locatiions data set
+locations$citynum <- as.numeric(rownames(locations))
+str(as.numeric(locations$citynum))
+str(forecastdf$Citynum)
+foreloc.df <- merge(forecastdf, locations, by.x = "Citynum", by.y = "citynum")
+str(foreloc.df)
+
+nrow(foreloc.df)
+
+## July 9th forecast data for July 10th for Eugene
+## IGNORE this line for now
+July9fore.df <- subset(foreloc.df, DateofForecast == "2014-07-09" &
+    DatePredicted == "2014-07-10" & AirPtCd == "KEUG")
+July9fore.df
+## there are 4 observations per city (a morning precip, evening precip,
+## min temp, and max temp)
+
+## let's look at max temp
+July9fore.df <- subset(foreloc.df, DateofForecast == "2014-07-09" &
+    DatePredicted == "2014-07-10" & Weatherval == "MaxTemp")
+str(July9fore.df)
+
+## need to merge with historical data to get the true values...next time
+USAMap +
+  geom_point(data = July1.only, aes(x = longitude, y = latitude,
+    colour = CloudCover)) +
+  scale_colour_continuous(low = "cadetblue3", high = "grey")
