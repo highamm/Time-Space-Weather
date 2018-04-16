@@ -5,6 +5,20 @@ histWeather <- read_csv("~/Desktop/TimeSpaceExpo/histWeather.csv")
 locations <- read_csv("~/Desktop/TimeSpaceExpo/locations.csv")
 
 forecast.df <- read.delim("forecast.dat", sep = "") 
+str(forecast.df)
+extra.obs <- c(1, "2014-07-09", "63", "MinTemp", "2014-07-09")
+full.forecast <- rbind(forecast.df, extra.obs)
+write.csv(full.forecast, "forecastdf.csv")
+
+forecastdf <- read_csv("~/Desktop/TimeSpaceExpo/forecastdf.csv")
+str(forecastdf)
+
+forecastdfcolnames <- c("Obsnum", "Something", "DatePredicted", "Value",
+  "Weatherval", "DateofForecast")
+
+colnames(forecastdf) <- forecastdfcolnames
+head(forecastdf)
+
 str(data)
 str(locations)
 str(histWeather)
@@ -34,8 +48,8 @@ USAMap
 ## trying to draw a heatmap, but it doesn't make sense for now so ignore.
 
 USAMap +
-  geom_density2d(data = merged.df, aes(x = longitude, y = latitude), size = 0.3) + 
-  stat_density2d(data = merged.df,
+  geom_density2d(data = July1.only, aes(x = longitude, y = latitude), size = 0.3) + 
+  stat_density2d(data = July1.only,
     aes(x = longitude, y = latitude, fill = ..level.., alpha = ..level..),
     size = 0.01, bins = 16, geom = "polygon")
 ##+
@@ -43,13 +57,21 @@ USAMap +
 ##  scale_alpha(range = c(0, 0.3), guide = FALSE)
 
 USAMap +
-  geom_point(data = merged.df, aes(x = longitude, y = latitude,
-    colour = CloudCover), 
-    alpha = 0.4) ## + 
+  geom_point(data = July1.only, aes(x = longitude, y = latitude,
+    colour = CloudCover)) +
+  scale_colour_continuous(low = "cadetblue3", high = "grey")
+  ## + 
     ##scale_size_continuous(range = range(merged.df$CloudCover))
 
 ## 1 cloud cover data point is negative....typo?
 summary(merged.df$CloudCover)
 sum(merged.df$CloudCover < 0, na.rm = TRUE)
 
-ß
+
+
+str(merged.df$Date)
+summary(merged.df$Date)
+
+
+str(forecast.df)
+str(as.numeric(forecast.df$X2014.07.09))
