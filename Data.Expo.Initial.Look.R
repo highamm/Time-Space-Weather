@@ -112,3 +112,9 @@ USAMap +
   geom_point(data = July1.only, aes(x = longitude, y = latitude,
     colour = CloudCover)) +
   scale_colour_continuous(low = "cadetblue3", high = "grey")
+
+## each date has more than 1 prediction
+str(foreloc.df)
+July9fore.df <- subset(foreloc.df,
+    DatePredicted == "2014-07-12" & Weatherval == "MaxTemp" & AirPtCd == "KBHB")
+July9fore.df
