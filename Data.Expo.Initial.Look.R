@@ -2,17 +2,22 @@ library(readr)
 
 histWeather <- read_csv("~/Desktop/TimeSpaceExpo/histWeather.csv")
 
+locations <- read_csv("~/Desktop/TimeSpaceExpo/locations.csv")
+
+forecast.df <- read.delim("forecast.dat", sep = "") 
+
 # Erin read data 
 # histWeather <- read.csv("~/Desktop/DataExpo2018/histWeather.csv")
 # locations <- read.csv("~/Desktop/DataExpo2018/locations.csv")
 # forecast.df <- read.delim("~/Desktop/DataExpo2018/forecast.dat", sep="")
 
-locations <- read_csv("~/Desktop/TimeSpaceExpo/locations.csv")
 
-forecast.df <- read.delim("forecast.dat", sep = "") 
+
 extra.obs <- c(1, "2014-07-09", "63", "MinTemp", "2014-07-09")
 full.forecast <- rbind(forecast.df, extra.obs)
 write.csv(full.forecast, "forecastdf.csv")
+
+#write.csv(full.forecast, "~/Desktop/DataExpo2018/forecastdf.csv")
 
 forecastdf <- read_csv("~/Desktop/TimeSpaceExpo/forecastdf.csv")
 str(forecastdf)
