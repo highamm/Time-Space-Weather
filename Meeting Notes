@@ -4,6 +4,10 @@ histWeather.csv - historical weather data starting 7/1/14-Sept 2017
 locations.csv - cities, state, long, lat, airport code
 
 
-Plan: Matt meeting with Lisa - learn github
-      Play
-      Spatiotemporal viz 
+Plan: -Merge forecast/locations with Historical Weather
+      -Work on visualizations of just historical data (maps/variograms eventually
+      with different points through time)
+      -Visualization on standardized difference between actual and predicted 
+      temperature
+      -Visualization that explores the differences for different forecast lengths
+      
