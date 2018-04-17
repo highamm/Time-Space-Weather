@@ -1,8 +1,11 @@
 library(readr)
 
-#hello
-
 histWeather <- read_csv("~/Desktop/TimeSpaceExpo/histWeather.csv")
+
+# Erin read data 
+# histWeather <- read.csv("~/Desktop/DataExpo2018/histWeather.csv")
+# locations <- read.csv("~/Desktop/DataExpo2018/locations.csv")
+#forecast.df <- read.delim("~/Desktop/DataExpo2018/forecast.dat", sep="")
 
 locations <- read_csv("~/Desktop/TimeSpaceExpo/locations.csv")
 
