@@ -101,7 +101,7 @@ July9fore.df
 July9fore.df <- subset(foreloc.df, DateofForecast == "2014-07-09" &
     DatePredicted == "2014-07-10" & Weatherval == "MaxTemp")
 str(July9fore.df)
-
+View(foreloc.df)
 ## need to merge with historical data to get the true values...next time
 USAMap +
   geom_point(data = July1.only, aes(x = longitude, y = latitude,
