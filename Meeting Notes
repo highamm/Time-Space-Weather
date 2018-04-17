@@ -3,7 +3,7 @@
 histWeather.csv - historical weather data starting 7/1/14-Sept 2017
 locations.csv - cities, state, long, lat, airport code
 
-
+4/17/18 Notes
 Plan: -Merge forecast/locations with Historical Weather
       -Work on visualizations of just historical data (maps/variograms eventually
       with different points through time)
