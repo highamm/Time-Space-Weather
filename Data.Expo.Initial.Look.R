@@ -113,6 +113,8 @@ USAMap +
     colour = CloudCover)) +
   scale_colour_continuous(low = "cadetblue3", high = "grey")
 
+
+
 ## each date has more than 1 prediction
 str(foreloc.df)
 July9fore.df <- subset(foreloc.df,
