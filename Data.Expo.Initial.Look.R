@@ -173,16 +173,10 @@ testdf <- merge(histweathersub, foreloc.sub, by.x = c("Date", "AirPtCd",
 testdf[3400, ]
 
 # is value the forecasted value and weatherval the observed weather
-all.df <- merge(histWeatherlong, foreloc.df, by.x = c("Date", "AirPtCd",
-<<<<<<< HEAD
-  "weathermeas"), by.y = c("DatePredicted", "AirPtCd", "Weatherval"))
+all.df <- merge(histWeatherlong, foreloc.df, by.x = c("Date", "AirPtCd", 
+                                                      "weathermeas"), by.y = c("DatePredicted", "AirPtCd", "Weatherval"),
+                all.x = TRUE)
 
-
-
-=======
-  "weathermeas"), by.y = c("DatePredicted", "AirPtCd", "Weatherval"),
-  all.x = TRUE)
->>>>>>> 5c1f526a4ac39c7485dec41a85afe451d973025d
 nrow(all.df)
 nrow(foreloc.df)
 all.df[12000:12050, ]
