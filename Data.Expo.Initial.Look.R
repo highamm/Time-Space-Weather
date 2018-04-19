@@ -206,3 +206,4 @@ exp(basic.mod$coefficients[1] + basic.mod$coefficients[2] * 50) /
 ## Trace is currently counted as a "yes" for precipitation, but should it?
 ## no spatial effects
 ## no time effects
+## we are not differentiating between morning and evening precipitation
