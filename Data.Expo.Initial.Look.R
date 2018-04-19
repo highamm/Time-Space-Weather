@@ -166,6 +166,9 @@ foreloc.df$Weatherval <- as.factor(foreloc.df$Weatherval)
 # is value the forecasted value and weatherval the observed weather
 all.df <- merge(histWeatherlong, foreloc.df, by.x = c("Date", "AirPtCd",
   "weathermeas"), by.y = c("DatePredicted", "AirPtCd", "Weatherval"))
+
+
+
 nrow(all.df)
 nrow(foreloc.df)
 all.df[1:5, ]
