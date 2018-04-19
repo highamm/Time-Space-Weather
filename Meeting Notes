@@ -10,4 +10,5 @@ Plan: -Merge forecast/locations with Historical Weather
       -Visualization on standardized difference between actual and predicted 
       temperature
       -Visualization that explores the differences for different forecast lengths
+      -Look into relationship between percent chance precip and actual precip
       

@@ -120,3 +120,14 @@ str(foreloc.df)
 July9fore.df <- subset(foreloc.df,
     DatePredicted == "2014-07-12" & Weatherval == "MaxTemp" & AirPtCd == "KBHB")
 July9fore.df
+
+## merging historical data with the foreloc data set
+
+library(tidyr)
+
+## first, get rid of unnecessary columns in histWeather
+histWeathersub <- histWeather[ ,c("Date", "Max_TemperatureF",
+  "Min_TemperatureF", "PrecipitationIn", "AirPtCd")]
+str(histWeathersub)
+str(histWeather)
+
