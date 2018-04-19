@@ -131,3 +131,16 @@ histWeathersub <- histWeather[ ,c("Date", "Max_TemperatureF",
 str(histWeathersub)
 str(histWeather)
 
+## wide to long
+histWeatherlong <- gather(histWeathersub, weathermeas, weatherval, 
+  c(Max_TemperatureF, Min_TemperatureF, PrecipitationIn),
+  factor_key = TRUE)
+str(histWeatherlong)
+
+library(plyr)
+
+## remapping factors to match the names in the forecast data frame
+histWeatherlong$weathermeas <- mapvalues(histWeatherlong$weathermeas,
+  from = c("Max_TemperatureF", "Min_TemperatureF", "PrecipitationIn"),
+  to = c("MaxTemp", "MinTemp", "ProbPrecip"))
+
