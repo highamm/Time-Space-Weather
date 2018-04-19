@@ -229,12 +229,21 @@ exp(basic.mod$coefficients[1] + basic.mod$coefficients[2] * 50) /
 
 
 
-
+##### Erin Edits 4/19/18
 ##### Visualization that explores differences in prediction errors for different forecast lengths 
 ##### MinTemp
 
-# subset Eugene and only Min Temps
-Eug_mintemp <- subset(all.df, AirPtCd == "KEUG" & weathermeas == "MinTemp")
+# remove any observations that have an NA 
+all.df_complete <- all.df[complete.cases(all.df), ]
 
-Eug_mintemp$Date[1] 
+# remove any observations where the date of forecast is after observed date
+all.df_complete$Date <- as.Date(all.df_complete$Date)
+all.df_complete$DateofForecast <- as.Date(all.df_complete$DateofForecast)
+
+all.df
+
+# subset Eugene and only Min Temps
+Eug_mintemp <- subset(all.df_complete, AirPtCd == "KEUG" & weathermeas == "MinTemp")
+
+head(Eug_mintemp[complete.cases(Eug_mintemp),])
 
