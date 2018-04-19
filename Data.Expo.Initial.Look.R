@@ -17,9 +17,11 @@ extra.obs <- c(1, "2014-07-09", "63", "MinTemp", "2014-07-09")
 full.forecast <- rbind(forecast.df, extra.obs)
 write.csv(full.forecast, "forecastdf.csv")
 
+# Erin only 
 #write.csv(full.forecast, "~/Desktop/DataExpo2018/forecastdf.csv")
+#forecastdf <- read_csv("~/Desktop/TimeSpaceExpo/forecastdf.csv")
 
-forecastdf <- read_csv("~/Desktop/TimeSpaceExpo/forecastdf.csv")
+forecastdf <- read.csv("~/Desktop/DataExpo2018/forecastdf.csv")
 str(forecastdf)
 
 forecastdfcolnames <- c("Obsnum", "Citynum", "DatePredicted", "Value",
@@ -160,6 +162,8 @@ str(foreloc.df)
 foreloc.df$Weatherval <- as.factor(foreloc.df$Weatherval)
 ?merge
 
+
+# is value the forecasted value and weatherval the observed weather
 all.df <- merge(histWeatherlong, foreloc.df, by.x = c("Date", "AirPtCd",
   "weathermeas"), by.y = c("DatePredicted", "AirPtCd", "Weatherval"))
 nrow(all.df)
@@ -207,3 +211,19 @@ exp(basic.mod$coefficients[1] + basic.mod$coefficients[2] * 50) /
 ## no spatial effects
 ## no time effects
 ## we are not differentiating between morning and evening precipitation
+
+
+
+
+
+
+
+
+##### Visualization that explores differences in prediction errors for different forecast lengths 
+##### MinTemp
+
+# subset Eugene and only Min Temps
+Eug_mintemp <- subset(all.df, AirPtCd == "KEUG" & weathermeas == "MinTemp")
+
+Eug_mintemp$Date[1] 
+
