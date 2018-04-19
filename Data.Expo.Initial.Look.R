@@ -162,16 +162,30 @@ str(foreloc.df)
 foreloc.df$Weatherval <- as.factor(foreloc.df$Weatherval)
 ?merge
 
+foreloc.sub <- subset(foreloc.df, DatePredicted == "2014-07-12" |
+    DatePredicted == "2014-07-13")
+str(foreloc.sub)
+histweathersub <- subset(histWeatherlong, Date == "2014-07-12" |
+    Date == "2014-07-13")
+str(histweathersub)
+testdf <- merge(histweathersub, foreloc.sub, by.x = c("Date", "AirPtCd",
+  "weathermeas"), by.y = c("DatePredicted", "AirPtCd", "Weatherval"))
+testdf[3400, ]
 
 # is value the forecasted value and weatherval the observed weather
 all.df <- merge(histWeatherlong, foreloc.df, by.x = c("Date", "AirPtCd",
+<<<<<<< HEAD
   "weathermeas"), by.y = c("DatePredicted", "AirPtCd", "Weatherval"))
 
 
 
+=======
+  "weathermeas"), by.y = c("DatePredicted", "AirPtCd", "Weatherval"),
+  all.x = TRUE)
+>>>>>>> 5c1f526a4ac39c7485dec41a85afe451d973025d
 nrow(all.df)
 nrow(foreloc.df)
-all.df[1:5, ]
+all.df[12000:12050, ]
 str(as.numeric(all.df$weatherval))
 
 ## convert the character vector of historical weather to numeric
