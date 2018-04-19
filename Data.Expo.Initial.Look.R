@@ -160,16 +160,49 @@ str(foreloc.df)
 foreloc.df$Weatherval <- as.factor(foreloc.df$Weatherval)
 ?merge
 
-testmerge <- merge(histWeatherlong, foreloc.df, by.x = c("Date", "AirPtCd",
+all.df <- merge(histWeatherlong, foreloc.df, by.x = c("Date", "AirPtCd",
   "weathermeas"), by.y = c("DatePredicted", "AirPtCd", "Weatherval"))
-nrow(testmerge)
+nrow(all.df)
 nrow(foreloc.df)
-testmerge[1:5, ]
-str(as.numeric(testmerge$weatherval))
+all.df[1:5, ]
+str(as.numeric(all.df$weatherval))
 
 ## convert the character vector of historical weather to numeric
-testmerge$weatherval <- as.numeric(testmerge$weatherval)
-testmerge[40:100, ]
+all.df$weatherval <- as.numeric(all.df$weatherval)
+all.df[40:100, ]
 
 ## seems to have merged correctly I think?
 
+## let's look at precipitation in Eugene
+
+Eugprec <- subset(all.df, AirPtCd == "KEUG" & weathermeas == "ProbPrecip")
+str(Eugprec)
+
+## convert weatherval to rain or no rain
+
+Eugprec$weatherval[Eugprec$weatherval > 0] <- 1
+basic.mod <- glm(data = Eugprec, weatherval ~ Value, family = "binomial")
+summary(basic.mod)
+
+exp(basic.mod$coefficients[1] + basic.mod$coefficients[2] * 50) / 
+  (1 + exp(basic.mod$coefficients[1] + basic.mod$coefficients[2] * 50))
+
+## same model for San Antonio
+
+## let's look at precipitation in Eugene
+
+SAprec <- subset(all.df, AirPtCd == "KSKF" & weathermeas == "ProbPrecip")
+
+## convert weatherval to rain or no rain
+
+SAprec$weatherval[SAprec$weatherval > 0] <- 1
+basic.mod <- glm(data = SAprec, weatherval ~ Value, family = "binomial")
+summary(basic.mod)
+
+exp(basic.mod$coefficients[1] + basic.mod$coefficients[2] * 50) / 
+  (1 + exp(basic.mod$coefficients[1] + basic.mod$coefficients[2] * 50))
+
+## these models have a lot of flaws, so we would probably want to visualize the data first before expanding on these models. Some flaws are:
+## Trace is currently counted as a "yes" for precipitation, but should it?
+## no spatial effects
+## no time effects
