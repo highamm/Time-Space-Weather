@@ -144,3 +144,32 @@ histWeatherlong$weathermeas <- mapvalues(histWeatherlong$weathermeas,
   from = c("Max_TemperatureF", "Min_TemperatureF", "PrecipitationIn"),
   to = c("MaxTemp", "MinTemp", "ProbPrecip"))
 
+## need to figure out why some of these are NAs
+str(histWeatherlong$weatherval)
+sum(histWeatherlong$weatherval == "T")
+which(is.na(as.numeric(histWeatherlong$weatherval == "78")))
+histWeatherlong$weatherval[122898]
+
+## convert trace values to 0.005 inches for now
+
+sum(histWeatherlong$weatherval == "0.005", na.rm = TRUE)
+histWeatherlong$weatherval[histWeatherlong$weatherval == "T"] <- "0.005"
+
+str(histWeatherlong)
+str(foreloc.df)
+foreloc.df$Weatherval <- as.factor(foreloc.df$Weatherval)
+?merge
+
+testmerge <- merge(histWeatherlong, foreloc.df, by.x = c("Date", "AirPtCd",
+  "weathermeas"), by.y = c("DatePredicted", "AirPtCd", "Weatherval"))
+nrow(testmerge)
+nrow(foreloc.df)
+testmerge[1:5, ]
+str(as.numeric(testmerge$weatherval))
+
+## convert the character vector of historical weather to numeric
+testmerge$weatherval <- as.numeric(testmerge$weatherval)
+testmerge[40:100, ]
+
+## seems to have merged correctly I think?
+
