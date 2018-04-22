@@ -12,3 +12,5 @@ Plan: -Merge forecast/locations with Historical Weather
       -Visualization that explores the differences for different forecast lengths
       -Look into relationship between percent chance precip and actual precip
       
+4/24/18 Notes & Questions:
+1. Should we include days where the forecast date and actual date are the same? Or should we only keep days where the forecast is actually before the observed date?

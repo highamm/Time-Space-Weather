@@ -241,14 +241,33 @@ exp(basic.mod$coefficients[1] + basic.mod$coefficients[2] * 50) /
 # remove any observations that have an NA 
 all.df_complete <- all.df[complete.cases(all.df), ]
 
-# remove any observations where the date of forecast is after observed date
+# make sure dates are recorded as Date objects
 all.df_complete$Date <- as.Date(all.df_complete$Date)
 all.df_complete$DateofForecast <- as.Date(all.df_complete$DateofForecast)
 
-all.df
+# remove any observations where the date of forecast is after observed date
+# This data set (all.df_completeSub) has dates where the forecasted date was 
+# on or before the observed date
+all.df_completeSub <- subset(all.df_complete, all.df_complete$DateofForecast <=
+                               all.df_complete$Date)
+
+
+
+
+
+
+
+
 
 # subset Eugene and only Min Temps
-Eug_mintemp <- subset(all.df_complete, AirPtCd == "KEUG" & weathermeas == "MinTemp")
+Eug_mintemp <- subset(all.df_completeSub, AirPtCd == "KEUG" & weathermeas == "MinTemp")
 
 head(Eug_mintemp[complete.cases(Eug_mintemp),])
 
+# store values as numeric 
+Eug_mintemp$Value <- as.numeric(as.character(Eug_mintemp$Value))
+
+# add a column that has the difference in forecast and actual min temp
+
+Eug_mintemp$forecastDiff <- Eug_mintemp$weatherval - Eug_mintemp$Value
+Eug_mintemp$absForecastDiff <- abs(Eug_mintemp$forecastDiff)
