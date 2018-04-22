@@ -271,3 +271,14 @@ Eug_mintemp$Value <- as.numeric(as.character(Eug_mintemp$Value))
 
 Eug_mintemp$forecastDiff <- Eug_mintemp$weatherval - Eug_mintemp$Value
 Eug_mintemp$absForecastDiff <- abs(Eug_mintemp$forecastDiff)
+
+
+library(lubridate)
+
+
+Eug_mintemp$Date <- ymd(Eug_mintemp$Date)
+Eug_mintemp$DateofForecast <- ymd(Eug_mintemp$DateofForecast)
+
+as.duration(Eug_mintemp$Date[3] %--% Eug_mintemp$DateofForecast[3])
+
+Eug_mintemp$LengthForecast <- as.duration(Eug_mintemp$DateofForecast %--% Eug_mintemp$Date)
