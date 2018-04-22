@@ -62,7 +62,6 @@ USAMap <- ggmap(get_googlemap(center=usa_center, scale=2, zoom=4), extent="norma
 USAMap
 
 ## trying to draw a heatmap, but it doesn't make sense for now so ignore.
-
 USAMap +
   geom_density2d(data = July1.only, aes(x = longitude, y = latitude), size = 0.3) + 
   stat_density2d(data = July1.only,
@@ -83,22 +82,13 @@ USAMap +
 summary(merged.df$CloudCover)
 sum(merged.df$CloudCover < 0, na.rm = TRUE)
 
-
-
-str(merged.df$Date)
-summary(merged.df$Date)
-
-
 str(forecastdf)
 summary(forecastdf$Citynum)
 
 ## try to merge with locatiions data set
 locations$citynum <- as.numeric(rownames(locations))
-str(as.numeric(locations$citynum))
-str(forecastdf$Citynum)
-foreloc.df <- merge(forecastdf, locations, by.x = "Citynum", by.y = "citynum")
-str(foreloc.df)
 
+foreloc.df <- merge(forecastdf, locations, by.x = "Citynum", by.y = "citynum")
 nrow(foreloc.df)
 
 ## July 9th forecast data for July 10th for Eugene
@@ -112,18 +102,14 @@ July9fore.df
 ## let's look at max temp
 July9fore.df <- subset(foreloc.df, DateofForecast == "2014-07-09" &
     DatePredicted == "2014-07-10" & Weatherval == "MaxTemp")
-str(July9fore.df)
-View(foreloc.df)
+
 ## need to merge with historical data to get the true values...next time
 USAMap +
   geom_point(data = July1.only, aes(x = longitude, y = latitude,
     colour = CloudCover)) +
   scale_colour_continuous(low = "cadetblue3", high = "grey")
 
-
-
 ## each date has more than 1 prediction
-str(foreloc.df)
 July9fore.df <- subset(foreloc.df,
     DatePredicted == "2014-07-12" & Weatherval == "MaxTemp" & AirPtCd == "KBHB")
 July9fore.df
@@ -135,14 +121,12 @@ library(tidyr)
 ## first, get rid of unnecessary columns in histWeather
 histWeathersub <- histWeather[ ,c("Date", "Max_TemperatureF",
   "Min_TemperatureF", "PrecipitationIn", "AirPtCd")]
-str(histWeathersub)
-str(histWeather)
+
 
 ## wide to long
 histWeatherlong <- gather(histWeathersub, weathermeas, weatherval, 
   c(Max_TemperatureF, Min_TemperatureF, PrecipitationIn),
   factor_key = TRUE)
-str(histWeatherlong)
 
 library(plyr)
 
@@ -162,41 +146,21 @@ histWeatherlong$weatherval[122898]
 sum(histWeatherlong$weatherval == "0.005", na.rm = TRUE)
 histWeatherlong$weatherval[histWeatherlong$weatherval == "T"] <- "0.005"
 
-str(histWeatherlong)
-str(foreloc.df)
 foreloc.df$Weatherval <- as.factor(foreloc.df$Weatherval)
-?merge
-
-foreloc.sub <- subset(foreloc.df, DatePredicted == "2014-07-12" |
-    DatePredicted == "2014-07-13")
-str(foreloc.sub)
-histweathersub <- subset(histWeatherlong, Date == "2014-07-12" |
-    Date == "2014-07-13")
-str(histweathersub)
-testdf <- merge(histweathersub, foreloc.sub, by.x = c("Date", "AirPtCd",
-  "weathermeas"), by.y = c("DatePredicted", "AirPtCd", "Weatherval"))
-testdf[3400, ]
 
 # is value the forecasted value and weatherval the observed weather
-all.df <- merge(histWeatherlong, foreloc.df, by.x = c("Date", "AirPtCd", 
-                                                      "weathermeas"), by.y = c("DatePredicted", "AirPtCd", "Weatherval"),
-                all.x = TRUE)
+all.df <- merge(histWeatherlong, foreloc.df,
+  by.x = c("Date", "AirPtCd", "weathermeas"),
+  by.y = c("DatePredicted", "AirPtCd", "Weatherval"),
+  all.x = TRUE)
 
-nrow(all.df)
-nrow(foreloc.df)
-all.df[12000:12050, ]
-str(as.numeric(all.df$weatherval))
 
 ## convert the character vector of historical weather to numeric
 all.df$weatherval <- as.numeric(all.df$weatherval)
-all.df[40:100, ]
-
-## seems to have merged correctly I think?
 
 ## let's look at precipitation in Eugene
 
 Eugprec <- subset(all.df, AirPtCd == "KEUG" & weathermeas == "ProbPrecip")
-str(Eugprec)
 
 ## convert weatherval to rain or no rain
 
@@ -208,8 +172,6 @@ exp(basic.mod$coefficients[1] + basic.mod$coefficients[2] * 50) /
   (1 + exp(basic.mod$coefficients[1] + basic.mod$coefficients[2] * 50))
 
 ## same model for San Antonio
-
-## let's look at precipitation in Eugene
 
 SAprec <- subset(all.df, AirPtCd == "KSKF" & weathermeas == "ProbPrecip")
 
@@ -226,10 +188,8 @@ exp(basic.mod$coefficients[1] + basic.mod$coefficients[2] * 50) /
 ## Trace is currently counted as a "yes" for precipitation, but should it?
 ## no spatial effects
 ## no time effects
-## we are not differentiating between morning and evening precipitation
-
-
-
+## we are not differentiating between morning and evening precipitation while
+## the actual observed historical data has precipitation for the entire day
 
 
 
