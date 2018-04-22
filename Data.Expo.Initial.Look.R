@@ -279,6 +279,27 @@ library(lubridate)
 Eug_mintemp$Date <- ymd(Eug_mintemp$Date)
 Eug_mintemp$DateofForecast <- ymd(Eug_mintemp$DateofForecast)
 
+
 as.duration(Eug_mintemp$Date[3] %--% Eug_mintemp$DateofForecast[3])
 
-Eug_mintemp$LengthForecast <- as.duration(Eug_mintemp$DateofForecast %--% Eug_mintemp$Date)
+# record the distance in time between the forecasted date and the observed date
+Eug_mintemp$LengthForecast <- abs(as.duration(Eug_mintemp$DateofForecast %--% Eug_mintemp$Date))
+Eug_mintemp$LengthForecastDays <- seconds_to_period(Eug_mintemp$LengthForecast)
+
+Eug_mintemp$LengthForecastDayOnly <- as.numeric(substring(Eug_mintemp$LengthForecastDays, 1, 1))
+
+library(ggplot2)
+# I think we need a better way to visualize this but should be fine temporarily
+ggplot(Eug_mintemp, aes(x=LengthForecastDayOnly, y=absForecastDiff)) + geom_point()
+
+ggplot(Eug_mintemp, aes(x=LengthForecastDayOnly, y=absForecastDiff)) + geom_count() +
+  scale_size_area()
+
+
+library(dplyr)
+
+group_by(Eug_mintemp, as.factor(LengthForecastDayOnly)) %>% summarize(m = mean(absForecastDiff))
+group_by(Eug_mintemp, as.factor(LengthForecastDayOnly)) %>% summarize(s = sd(absForecastDiff))
+
+# checking means between different legnths of forecasts
+anova(lm(absForecastDiff ~ as.factor(LengthForecastDayOnly), data=Eug_mintemp))
