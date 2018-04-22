@@ -15,13 +15,18 @@ forecast.df <- read.delim("forecast.dat", sep = "")
 
 extra.obs <- c(1, "2014-07-09", "63", "MinTemp", "2014-07-09")
 full.forecast <- rbind(forecast.df, extra.obs)
+
+# Erin don't run following line
 write.csv(full.forecast, "forecastdf.csv")
+forecastdf <- read_csv("~/Desktop/TimeSpaceExpo/forecastdf.csv")
 
 # Erin only 
-#write.csv(full.forecast, "~/Desktop/DataExpo2018/forecastdf.csv")
-#forecastdf <- read_csv("~/Desktop/TimeSpaceExpo/forecastdf.csv")
-
+write.csv(full.forecast, "~/Desktop/DataExpo2018/forecastdf.csv")
 forecastdf <- read.csv("~/Desktop/DataExpo2018/forecastdf.csv")
+
+
+
+
 str(forecastdf)
 
 forecastdfcolnames <- c("Obsnum", "Citynum", "DatePredicted", "Value",
