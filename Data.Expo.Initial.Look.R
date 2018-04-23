@@ -210,7 +210,28 @@ all.df_completeSub <- subset(all.df_complete, all.df_complete$DateofForecast <=
                                all.df_complete$Date)
 
 
+## putting some of the work you did prepping the Eugene subset so that it applies
+## to the whole data set for the purpose of future explorations
 
+# store values as numeric 
+all.df_complete$Value <- as.numeric(as.character(all.df_complete$Value))
+
+# add a column that has the difference in forecast and actual min temp
+
+all.df_complete$forecastDiff <- all.df_complete$weatherval - all.df_complete$Value
+all.df_complete$absForecastDiff <- abs(all.df_complete$forecastDiff)
+
+
+library(lubridate)
+
+all.df_complete$Date <- ymd(all.df_complete$Date)
+all.df_complete$DateofForecast <- ymd(all.df_complete$DateofForecast)
+
+# record the distance in time between the forecasted date and the observed date
+all.df_complete$LengthForecast <- abs(as.duration(all.df_complete$DateofForecast %--% all.df_complete$Date))
+all.df_complete$LengthForecastDays <- seconds_to_period(all.df_complete$LengthForecast)
+
+all.df_complete$LengthForecastDayOnly <- as.numeric(substring(all.df_complete$LengthForecastDays, 1, 1))
 
 
 # subset Eugene and only Min Temps
@@ -218,28 +239,8 @@ Eug_mintemp <- subset(all.df_completeSub, AirPtCd == "KEUG" & weathermeas == "Mi
 
 head(Eug_mintemp[complete.cases(Eug_mintemp),])
 
-# store values as numeric 
-Eug_mintemp$Value <- as.numeric(as.character(Eug_mintemp$Value))
-
-# add a column that has the difference in forecast and actual min temp
-
-Eug_mintemp$forecastDiff <- Eug_mintemp$weatherval - Eug_mintemp$Value
-Eug_mintemp$absForecastDiff <- abs(Eug_mintemp$forecastDiff)
-
-
-library(lubridate)
-
-Eug_mintemp$Date <- ymd(Eug_mintemp$Date)
-Eug_mintemp$DateofForecast <- ymd(Eug_mintemp$DateofForecast)
-
 
 as.duration(Eug_mintemp$Date[3] %--% Eug_mintemp$DateofForecast[3])
-
-# record the distance in time between the forecasted date and the observed date
-Eug_mintemp$LengthForecast <- abs(as.duration(Eug_mintemp$DateofForecast %--% Eug_mintemp$Date))
-Eug_mintemp$LengthForecastDays <- seconds_to_period(Eug_mintemp$LengthForecast)
-
-Eug_mintemp$LengthForecastDayOnly <- as.numeric(substring(Eug_mintemp$LengthForecastDays, 1, 1))
 
 library(ggplot2)
 # I think we need a better way to visualize this but should be fine temporarily
@@ -256,7 +257,7 @@ ggplot(Eug_mintemp, aes(x = LengthForecastDayOnly, y = absForecastDiff)) +
   geom_count() +
   scale_size_area()
 
-## ADDED BY MATT 4/22
+## ADDED  4/22
 subset(Eug_mintemp, absForecastDiff > 25)
 ## particularly for these, I find it hard to believe that they would forecast 
 ## a min temperature of 14 degrees in the middle of April. It could be a problem
@@ -274,3 +275,34 @@ anova(lm(absForecastDiff ~ as.factor(LengthForecastDayOnly), data=Eug_mintemp))
 
 
 
+filtered.df <- filter(all.df_complete,
+  weathermeas == "MinTemp", LengthForecastDayOnly == 3)
+
+sumbyloc <- group_by(filtered.df, as.factor(LengthForecastDayOnly), AirPtCd) %>%
+  summarize(m = mean(absForecastDiff))
+## only using forecasts three days out
+
+
+all_mintempll <- merge(sumbyloc, locations, by = "AirPtCd", all.x = TRUE)
+nrow(all_mintempll)
+
+USAMap +
+  geom_point(data = all_mintempll, aes(x = longitude, y = latitude,
+    colour = m), size = 4) +
+  scale_colour_continuous(low = "lightblue", high = "darkblue")
+
+
+## repeat but now using the true forecastdiff not absolute
+
+sumbylocdiff <- group_by(filtered.df, as.factor(LengthForecastDayOnly), AirPtCd) %>%
+  summarize(m = mean(forecastDiff))
+## only using forecasts three days out
+
+
+all_mintemplldiff <- merge(sumbylocdiff, locations, by = "AirPtCd", all.x = TRUE)
+
+USAMap +
+  geom_point(data = all_mintemplldiff, aes(x = longitude, y = latitude,
+    colour = m), size = 4) +
+  scale_colour_gradient2(low = "red", mid = "white", high = "darkblue")
+## most places seem to underforecast the minimum temperature value. 
