@@ -192,8 +192,6 @@ exp(basic.mod$coefficients[1] + basic.mod$coefficients[2] * 50) /
 ## the actual observed historical data has precipitation for the entire day
 
 
-
-
 ##### Erin Edits 4/19/18
 ##### Visualization that explores differences in prediction errors for different forecast lengths 
 ##### MinTemp
@@ -215,10 +213,6 @@ all.df_completeSub <- subset(all.df_complete, all.df_complete$DateofForecast <=
 
 
 
-
-
-
-
 # subset Eugene and only Min Temps
 Eug_mintemp <- subset(all.df_completeSub, AirPtCd == "KEUG" & weathermeas == "MinTemp")
 
@@ -235,7 +229,6 @@ Eug_mintemp$absForecastDiff <- abs(Eug_mintemp$forecastDiff)
 
 library(lubridate)
 
-
 Eug_mintemp$Date <- ymd(Eug_mintemp$Date)
 Eug_mintemp$DateofForecast <- ymd(Eug_mintemp$DateofForecast)
 
@@ -250,16 +243,34 @@ Eug_mintemp$LengthForecastDayOnly <- as.numeric(substring(Eug_mintemp$LengthFore
 
 library(ggplot2)
 # I think we need a better way to visualize this but should be fine temporarily
-ggplot(Eug_mintemp, aes(x=LengthForecastDayOnly, y=absForecastDiff)) + geom_point()
+ggplot(Eug_mintemp, aes(x = LengthForecastDayOnly, y = absForecastDiff)) +
+  geom_jitter(alpha = 0.2)
+ggplot(Eug_mintemp, aes(x = LengthForecastDayOnly, y = absForecastDiff)) +
+  geom_boxplot(aes(group = LengthForecastDayOnly))
+## that's quite strange that some of the forecasts are off by so much. Like I can't
+## imagine them being off by almost 30 degrees Farenheit when the
+## forecast is made the day before in Eugene.
 
-ggplot(Eug_mintemp, aes(x=LengthForecastDayOnly, y=absForecastDiff)) + geom_count() +
+
+ggplot(Eug_mintemp, aes(x = LengthForecastDayOnly, y = absForecastDiff)) +
+  geom_count() +
   scale_size_area()
 
+## ADDED BY MATT 4/22
+subset(Eug_mintemp, absForecastDiff > 25)
+## particularly for these, I find it hard to believe that they would forecast 
+## a min temperature of 14 degrees in the middle of April. It could be a problem
+## with the merge or could be the result of a few typos in such a large data set.
 
 library(dplyr)
 
 group_by(Eug_mintemp, as.factor(LengthForecastDayOnly)) %>% summarize(m = mean(absForecastDiff))
 group_by(Eug_mintemp, as.factor(LengthForecastDayOnly)) %>% summarize(s = sd(absForecastDiff))
+## nice to see that forecasts seem to get closer the closer we get to the 
+## date to be predicted.
 
 # checking means between different legnths of forecasts
 anova(lm(absForecastDiff ~ as.factor(LengthForecastDayOnly), data=Eug_mintemp))
+
+
+
