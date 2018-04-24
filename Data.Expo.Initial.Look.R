@@ -235,8 +235,12 @@ all.df_complete$LengthForecastDayOnly <- as.numeric(substring(all.df_complete$Le
 # on or before the observed date
 all.df_completeSub <- subset(all.df_complete, all.df_complete$DateofForecast <=
                                all.df_complete$Date)
-
 names(all.df_completeSub)[7] <- "forecastValue"
+
+write.csv(all.df_completeSub, "~/Desktop/DataExpo2018/all_df_completesub.csv")
+write.csv(all.df_completeSub, "all_df_completesub.csv")
+
+
 
 # subset Eugene and only Min Temps
 Eug_mintemp <- subset(all.df_completeSub, AirPtCd == "KEUG" & weathermeas == "MinTemp")
