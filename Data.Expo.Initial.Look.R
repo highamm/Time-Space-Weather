@@ -7,8 +7,8 @@ locations <- read_csv("~/Desktop/TimeSpaceExpo/locations.csv")
 forecast.df <- read.delim("forecast.dat", sep = "") 
 
 # Erin read data 
-# histWeather <- read.csv("~/Desktop/DataExpo2018/histWeather.csv")
-# locations <- read.csv("~/Desktop/DataExpo2018/locations.csv")
+histWeather <- read.csv("~/Desktop/DataExpo2018/histWeather.csv")
+locations <- read.csv("~/Desktop/DataExpo2018/locations.csv")
 # forecast.df <- read.delim("~/Desktop/DataExpo2018/forecast.dat", sep="")
 
 
@@ -203,17 +203,14 @@ all.df_complete <- all.df[complete.cases(all.df), ]
 all.df_complete$Date <- as.Date(all.df_complete$Date)
 all.df_complete$DateofForecast <- as.Date(all.df_complete$DateofForecast)
 
-# remove any observations where the date of forecast is after observed date
-# This data set (all.df_completeSub) has dates where the forecasted date was 
-# on or before the observed date
-all.df_completeSub <- subset(all.df_complete, all.df_complete$DateofForecast <=
-                               all.df_complete$Date)
+
 
 
 ## putting some of the work you did prepping the Eugene subset so that it applies
 ## to the whole data set for the purpose of future explorations
 
 # store values as numeric 
+all.df_complete$weatherval <- as.numeric(as.character(all.df_complete$weatherval))
 all.df_complete$Value <- as.numeric(as.character(all.df_complete$Value))
 
 # add a column that has the difference in forecast and actual min temp
@@ -233,6 +230,13 @@ all.df_complete$LengthForecastDays <- seconds_to_period(all.df_complete$LengthFo
 
 all.df_complete$LengthForecastDayOnly <- as.numeric(substring(all.df_complete$LengthForecastDays, 1, 1))
 
+# remove any observations where the date of forecast is after observed date
+# This data set (all.df_completeSub) has dates where the forecasted date was 
+# on or before the observed date
+all.df_completeSub <- subset(all.df_complete, all.df_complete$DateofForecast <=
+                               all.df_complete$Date)
+
+names(all.df_completeSub)[7] <- "forecastValue"
 
 # subset Eugene and only Min Temps
 Eug_mintemp <- subset(all.df_completeSub, AirPtCd == "KEUG" & weathermeas == "MinTemp")
