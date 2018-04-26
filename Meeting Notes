@@ -11,7 +11,9 @@ Plan: -Merge forecast/locations with Historical Weather
       temperature
       -Visualization that explores the differences for different forecast lengths
       -Look into relationship between percent chance precip and actual precip
-      
+   
+Fixing Git stackexchange: https://stackoverflow.com/questions/20002557/how-to-remove-a-too-large-file-in-a-commit-when-my-branch-is-ahead-of-master-by/43852484
+
 4/24/18 Notes & Questions:
 1. Should we include days where the forecast date and actual date are the same? Or should we only keep days where the forecast is actually before the observed date?
 
