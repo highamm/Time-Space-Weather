@@ -241,6 +241,8 @@ write.csv(all.df_completeSub, "~/Desktop/DataExpo2018/all_df_completesub.csv")
 write.csv(all.df_completeSub, "all_df_completesub.csv")
 
 
+all.df_completeSub <- read.csv("~/Desktop/DataExpo2018/all_df_completesub.csv")
+
 
 # subset Eugene and only Min Temps
 Eug_mintemp <- subset(all.df_completeSub, AirPtCd == "KEUG" & weathermeas == "MinTemp")
