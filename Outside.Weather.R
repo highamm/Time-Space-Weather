@@ -1,5 +1,9 @@
 ## try to read in some outside weather data
 
+## here are the resources I've been using:
+## https://recology.info/2015/07/weather-data-with-rnoaa/
+## https://ropensci.org/tutorials/rnoaa_tutorial/
+
 install.packages("rnoaa")
 library(rnoaa)
 
@@ -28,7 +32,6 @@ ncdc(datasetid = 'GHCND',
   token = 'WZMuuiCHWZfoONOLdblOaDqeRQIBPguI')
 
 
-
 ncdc(datasetid = 'GHCND', stationid = 'GHCND:USW00014895', startdate = '2013-10-01',
   enddate = '2013-12-01', 
   token = 'WZMuuiCHWZfoONOLdblOaDqeRQIBPguI')
@@ -36,4 +39,22 @@ ncdc(datasetid = 'GHCND', stationid = 'GHCND:USW00014895', startdate = '2013-10-
 
 ## this is how we would search for stations based on latitude and longitude
 
-ncdc_stations(extent = c(47.5204, -122.2047, 47.6139, -122.1065))
+## example from website
+ncdc_stations(extent = c(47.5204, -122.2047, 47.6139, -122.1065),
+  token = 'WZMuuiCHWZfoONOLdblOaDqeRQIBPguI')
+
+## trying to find a location that is in Eugene, OR
+ncdc_stations(extent = c(44.0500 - 0.01, -123.0830 - 0.01, 44.0500 + 0.01,
+  -123.0830 + 0.01),
+  token = 'WZMuuiCHWZfoONOLdblOaDqeRQIBPguI')
+
+## which data sets does the Eugene location have?
+ncdc_datasets(stationid = 'GHCND:USC00352706', 
+  token = 'WZMuuiCHWZfoONOLdblOaDqeRQIBPguI')
+
+## no data found at this particular location but not sure why
+ncdc(datasetid = 'GHCND',
+  ##locationid = 'FIPS:12017',
+  stationid = 'GHCND:USC00352706',
+  startdate = '2013-01-01', enddate = '2013-11-12',
+  token = 'WZMuuiCHWZfoONOLdblOaDqeRQIBPguI')
