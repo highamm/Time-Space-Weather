@@ -58,3 +58,6 @@ ncdc(datasetid = 'GHCND',
   stationid = 'GHCND:USC00352706',
   startdate = '2013-01-01', enddate = '2013-11-12',
   token = 'WZMuuiCHWZfoONOLdblOaDqeRQIBPguI')
+
+
+
