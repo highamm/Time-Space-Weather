@@ -1,12 +1,14 @@
 complete_df <- read.csv("~/Desktop/DataExpo2018/all_df_completesub.csv")
 
+complete_df <- all.df_completeSub
 precip <- subset(complete_df, weathermeas == "ProbPrecip")
 
 # very naive approach to just average the percent precip 
 
 library(dplyr)
+
 precip_avg <- precip %>% group_by(Date, AirPtCd) %>% 
-  summarize(mean_precip_prob = mean(Value))
+  summarize(mean_precip_prob = mean(forecastValue))
 
 precip_avg$weatherval <- (precip %>% group_by(Date, AirPtCd) %>% 
   summarize(weatherval = mean(weatherval)))$weatherval
@@ -28,6 +30,7 @@ ggplot(KAAO, aes(x = mean_precip_prob, y = weatherval)) + geom_point()
 #    - split by seasons (still going to be large data sets)
 
 # bad 
+<<<<<<< HEAD
 ggplot(precip_avg, aes(x = mean_precip_prob, y = weatherval)) + geom_point()
 
 
@@ -46,3 +49,7 @@ ggplot(spring, aes(x = mean_precip_prob, y = weatherval)) + geom_point()
 ggplot(summer, aes(x = mean_precip_prob, y = weatherval)) + geom_point()
 ggplot(fall, aes(x = mean_precip_prob, y = weatherval)) + geom_point()
 ggplot(winter, aes(x = mean_precip_prob, y = weatherval)) + geom_point()
+=======
+ggplot(precip_avg, aes(x = mean_precip_prob, y = weatherval)) + geom_point(alpha = 0.01)
+
+>>>>>>> 0ba0d949abf5f1f2207af15dcd7b53ceeccf1780
