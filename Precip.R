@@ -1,12 +1,14 @@
 complete_df <- read.csv("~/Desktop/DataExpo2018/all_df_completesub.csv")
 
+complete_df <- all.df_completeSub
 precip <- subset(complete_df, weathermeas == "ProbPrecip")
 
 # very naive approach to just average the percent precip 
 
 library(dplyr)
+
 precip_avg <- precip %>% group_by(Date, AirPtCd) %>% 
-  summarize(mean_precip_prob = mean(Value))
+  summarize(mean_precip_prob = mean(forecastValue))
 
 precip_avg$weatherval <- (precip %>% group_by(Date, AirPtCd) %>% 
   summarize(weatherval = mean(weatherval)))$weatherval
