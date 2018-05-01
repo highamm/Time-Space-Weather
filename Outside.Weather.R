@@ -44,20 +44,20 @@ ncdc_stations(extent = c(47.5204, -122.2047, 47.6139, -122.1065),
   token = 'WZMuuiCHWZfoONOLdblOaDqeRQIBPguI')
 
 ## trying to find a location that is in Eugene, OR
-ncdc_stations(extent = c(44.0500 - 0.01, -123.0830 - 0.01, 44.0500 + 0.01,
-  -123.0830 + 0.01),
+ncdc_stations(extent = c(44.0500 - 0.03, -123.0830 - 0.03, 44.0500 + 0.03,
+  -123.0830 + 0.03),
   token = 'WZMuuiCHWZfoONOLdblOaDqeRQIBPguI')
 
-## which data sets does the Eugene location have?
-ncdc_datasets(stationid = 'GHCND:USC00352706', 
+## some hourly precipitation for Chicago Midway
+ncdc_datasets(stationid = 'COOP:111577', 
   token = 'WZMuuiCHWZfoONOLdblOaDqeRQIBPguI')
 
 ## no data found at this particular location but not sure why
-ncdc(datasetid = 'GHCND',
+ncdc(datasetid = 'PRECIP_HLY',
   ##locationid = 'FIPS:12017',
-  stationid = 'GHCND:USC00352706',
-  startdate = '2013-01-01', enddate = '2013-11-12',
-  token = 'WZMuuiCHWZfoONOLdblOaDqeRQIBPguI')
+  stationid = 'COOP:111577',
+  startdate = '2013-11-01', enddate = '2013-11-12',
+  token = 'WZMuuiCHWZfoONOLdblOaDqeRQIBPguI')$data
 
 
 
