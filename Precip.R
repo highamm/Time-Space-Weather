@@ -30,4 +30,5 @@ ggplot(KAAO, aes(x = mean_precip_prob, y = weatherval)) + geom_point()
 #    - 
 
 # bad 
-ggplot(precip_avg, aes(x = mean_precip_prob, y = weatherval)) + geom_point()
+ggplot(precip_avg, aes(x = mean_precip_prob, y = weatherval)) + geom_point(alpha = 0.01)
+
