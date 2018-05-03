@@ -28,7 +28,6 @@ tile plots
 Tell a story!
 Figure out where forecast are not working and use that as a starting point.
 
-<<<<<<< HEAD
 
 5/1/18
 Including season in precipitation 
@@ -38,5 +37,7 @@ Lisa: 50 % of area would be raining
 Probability of it raining at all for any period of time during the day is 50%
 See Wikipedia for actual definition used by national weather service
 
+5/3/18
 
->>>>>>> 0ba0d949abf5f1f2207af15dcd7b53ceeccf1780
+rnoaa hourly precipitation data only extends to January 1st, 2014. This is a super-annoying since our forecasts start in July, 2014 so rnoaa won't be helpful for getting hourly precipitation data.
+It also occurred to me that precipitation might just ignore snowfall completely. We can investigate a city in the North to see what it's precipitation looks like in the winter.

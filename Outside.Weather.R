@@ -59,5 +59,29 @@ ncdc(datasetid = 'PRECIP_HLY',
   startdate = '2013-11-01', enddate = '2013-11-12',
   token = 'WZMuuiCHWZfoONOLdblOaDqeRQIBPguI')$data
 
+cpc_prcp(date = "2017-01-15", us = TRUE)
+
+ghcnd_search("AGE00147704", var = "PRCP",
+  date_min = "2000-01-01")
+
+## hourly precipitation data is just so spotty
+ncdc(datasetid='PRECIP_HLY', locationid='ZIP:28801', datatypeid='HPCP',
+  startdate = '2010-05-01', enddate = '2010-05-20',
+  token = 'WZMuuiCHWZfoONOLdblOaDqeRQIBPguI')$data
+
+## 15-minute interval data sets are also spotty
+ncdc(datasetid='PRECIP_15', datatypeid='QPCP',
+  startdate = '2010-05-01', enddate = '2010-05-02',
+  token = 'WZMuuiCHWZfoONOLdblOaDqeRQIBPguI')
 
 
+ncdc_datacats(datasetid=c("ANNUAL", "PRECIP_HLY"),
+  token = 'WZMuuiCHWZfoONOLdblOaDqeRQIBPguI')
+
+## precipitation Hourly and Precipitation-15 do not extend past January 1st, 2014
+## for any location so that's a bummer.
+ncdc_stations(datasetid='PRECIP_HLY', startdate='20130101', enddate='20161231',
+  token = 'WZMuuiCHWZfoONOLdblOaDqeRQIBPguI')
+
+ncdc_stations(datasetid='GHCND', startdate='20130101', enddate='20161231',
+  token = 'WZMuuiCHWZfoONOLdblOaDqeRQIBPguI')
