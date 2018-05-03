@@ -80,8 +80,25 @@ ncdc_datacats(datasetid=c("ANNUAL", "PRECIP_HLY"),
 
 ## precipitation Hourly and Precipitation-15 do not extend past January 1st, 2014
 ## for any location so that's a bummer.
-ncdc_stations(datasetid='PRECIP_HLY', startdate='20130101', enddate='20161231',
-  token = 'WZMuuiCHWZfoONOLdblOaDqeRQIBPguI')
+max(ncdc_stations(datasetid='PRECIP_HLY', startdate='20130101', enddate='20161231',
+  token = 'WZMuuiCHWZfoONOLdblOaDqeRQIBPguI')$data[ ,"maxdate"])
 
 ncdc_stations(datasetid='GHCND', startdate='20130101', enddate='20161231',
   token = 'WZMuuiCHWZfoONOLdblOaDqeRQIBPguI')
+
+
+
+## ditch NOAA, try package rwunderground
+
+install.packages("rwunderground")
+library(rwunderground)
+
+## Erin: here is an API key i got from weather underground: a618a9283b58695a
+
+## here's some data from weather underground. It has a ton of missing values though.
+## Maybe some locations would be better than others?
+## 
+## I'm frustrated with this now so I'm stopping but, in summary, rnoaa is a bit
+## of a dead end while weather underground *might have some potential
+
+history_range(set_location(airport_code = "PDX"), "20140131", "20140201")$precip
