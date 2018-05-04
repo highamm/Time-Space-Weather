@@ -3,6 +3,11 @@ complete_df <- read.csv("~/Desktop/DataExpo2018/all_df_completesub.csv")
 complete_df <- all.df_completeSub
 precip <- subset(complete_df, weathermeas == "ProbPrecip")
 
+precip$Date <- as.Date(precip$Date)
+precip$DateofForecast <- as.Date(precip$DateofForecast)
+
+library(lubridate)
+
 # very naive approach to just average the percent precip 
 
 library(dplyr)
@@ -36,7 +41,7 @@ ggplot(precip_avg, aes(x = mean_precip_prob, y = weatherval)) + geom_point()
 
 # split into seasons 
 
-library(lubridate)
+
 
 precip_avg$month <- month(as.POSIXlt(precip_avg$Date))
 
@@ -51,6 +56,7 @@ ggplot(fall, aes(x = mean_precip_prob, y = weatherval)) + geom_point()
 ggplot(winter, aes(x = mean_precip_prob, y = weatherval)) + geom_point()
 
 ggplot(precip_avg, aes(x = mean_precip_prob, y = weatherval)) + geom_point(alpha = 0.01)
+
 
 
 
@@ -113,3 +119,35 @@ leaflet(winter_avg) %>% addTiles %>%
              radius = ~mean_precip_inches*750000, popup = ~city) %>%
   addCircles(lng = ~longitude, lat = ~latitude, weight = 1, 
              radius = ~mean_POP*5000, popup = ~city, color = "Green")
+
+ggplot(data = spring, aes(x = mean_precip_prob, y = weatherval)) + geom_point() +
+  facet_wrap( ~ AirPtCd)
+
+
+
+
+
+
+
+####### Summarize at higher resolution
+####### Hoquiam and Spokane seem interesting to look at 
+precip$month <- month(as.POSIXlt(precip$Date))
+spring_df <- subset(precip, month %in% c(3,4,5))
+
+spring_WA <- subset(spring_df, city %in% c("Hoquiam", "Spokane"))
+
+# subset only forecasts of length 1 (day before)
+spring_WA_f1 <- subset(spring_WA, LengthForecastDayOnly== 1)
+
+# only 2016 data for WA spring
+spring_WA_f1_16 <- subset(spring_WA_f1, year(as.POSIXlt(spring_WA_f1$Date)) == 2016)
+
+spring_WA_f1_16$ForecastTimeDay <- rep(c("Morning", "Evening"), length.out=nrow(spring_WA_f1_16)) 
+
+
+library(ggplot2)
+
+# in this plot, each day has two points, one associated with morning prediction, one with evening
+ggplot(spring_WA_f1_16, aes(x=Value, y=weatherval, colour=ForecastTimeDay)) + geom_point() + facet_grid(.~ city) +
+  xlab("Probability of Precipitation") + ylab("Precipitation (in)") + 
+  ggtitle("Spring 2016, 1 Day Forecast")

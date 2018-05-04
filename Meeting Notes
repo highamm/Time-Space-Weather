@@ -28,7 +28,6 @@ tile plots
 Tell a story!
 Figure out where forecast are not working and use that as a starting point.
 
-<<<<<<< HEAD
 
 5/1/18
 Including season in precipitation 
@@ -39,5 +38,12 @@ Lisa: 50 % of area would be raining
 Probability of it raining at all for any period of time during the day is 50%
 See Wikipedia for actual definition used by national weather service
 
+<<<<<<< HEAD
 Do smaller cities have more extreme PoP values?
 
+=======
+5/3/18
+
+rnoaa hourly precipitation data only extends to January 1st, 2014. This is a super-annoying since our forecasts start in July, 2014 so rnoaa won't be helpful for getting hourly precipitation data.
+It also occurred to me that precipitation might just ignore snowfall completely. We can investigate a city in the North to see what it's precipitation looks like in the winter.
+>>>>>>> 320ffa3d74ea3b2cfd51e414c5a459a24b90d7b7
