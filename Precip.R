@@ -90,7 +90,7 @@ leaflet(spring_avg) %>% addTiles %>%
 
 leaflet(spring_avg) %>% addTiles %>% 
   addCircles(lng = ~longitude, lat = ~latitude, weight = 1, 
-             radius = ~scaled_mean_POP, popup = ~city, color = "Green")
+             radius = ~abs(scaled_mean_POP), popup = ~city, color = "Green")
 
 
 
