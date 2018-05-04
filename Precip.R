@@ -91,3 +91,25 @@ leaflet(spring_avg) %>% addTiles %>%
 leaflet(spring_avg) %>% addTiles %>% 
   addCircles(lng = ~longitude, lat = ~latitude, weight = 1, 
              radius = ~scaled_mean_POP, popup = ~city, color = "Green")
+
+
+
+
+# winter
+winter_avg <- winter %>% group_by(AirPtCd) %>% 
+  summarize(mean_precip_inches = mean(weatherval))
+
+winter_avg$mean_POP <- (winter %>% group_by(AirPtCd) %>% 
+                          summarize(mean_POP = mean(mean_precip_prob)))$mean_POP
+
+winter_avg <- merge(x=winter_avg, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
+                    by.y = "AirPtCd", all.x=TRUE)
+
+winter_avg$scaled_mean_precip_inches <- scale(winter_avg$mean_precip_inches)
+winter_avg$scaled_mean_POP <- scale(winter_avg$mean_POP)
+
+leaflet(winter_avg) %>% addTiles %>% 
+  addCircles(lng = ~longitude, lat = ~latitude, weight = 1, 
+             radius = ~mean_precip_inches*750000, popup = ~city) %>%
+  addCircles(lng = ~longitude, lat = ~latitude, weight = 1, 
+             radius = ~mean_POP*5000, popup = ~city, color = "Green")
