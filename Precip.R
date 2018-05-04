@@ -30,7 +30,7 @@ ggplot(KAAO, aes(x = mean_precip_prob, y = weatherval)) + geom_point()
 #    - split by seasons (still going to be large data sets)
 
 # bad 
-<<<<<<< HEAD
+
 ggplot(precip_avg, aes(x = mean_precip_prob, y = weatherval)) + geom_point()
 
 
@@ -49,7 +49,45 @@ ggplot(spring, aes(x = mean_precip_prob, y = weatherval)) + geom_point()
 ggplot(summer, aes(x = mean_precip_prob, y = weatherval)) + geom_point()
 ggplot(fall, aes(x = mean_precip_prob, y = weatherval)) + geom_point()
 ggplot(winter, aes(x = mean_precip_prob, y = weatherval)) + geom_point()
-=======
+
 ggplot(precip_avg, aes(x = mean_precip_prob, y = weatherval)) + geom_point(alpha = 0.01)
 
->>>>>>> 0ba0d949abf5f1f2207af15dcd7b53ceeccf1780
+
+
+
+# make data frame with averages of precip and POP
+
+spring_avg <- spring %>% group_by(AirPtCd) %>% 
+  summarize(mean_precip_inches = mean(weatherval))
+
+spring_avg$mean_POP <- (spring %>% group_by(AirPtCd) %>% 
+                          summarize(mean_POP = mean(mean_precip_prob)))$mean_POP
+
+spring_avg <- merge(x=spring_avg, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
+                    by.y = "AirPtCd", all.x=TRUE)
+
+spring_avg$scaled_mean_precip_inches <- scale(spring_avg$mean_precip_inches)
+spring_avg$scaled_mean_POP <- scale(spring_avg$mean_POP)
+
+library(leaflet)
+library(maps)
+
+# average inches map for spring
+leaflet(spring_avg) %>% addTiles %>% 
+  addCircles(lng = ~longitude, lat = ~latitude, weight = 1, 
+             radius = ~mean_precip_inches*750000, popup = ~city)
+leaflet(spring_avg) %>% addTiles %>% 
+  addCircles(lng = ~longitude, lat = ~latitude, weight = 1, 
+             radius = ~mean_POP*5000, popup = ~city, color = "Green")
+
+leaflet(spring_avg) %>% addTiles %>% 
+  addCircles(lng = ~longitude, lat = ~latitude, weight = 1, 
+             radius = ~mean_precip_inches*750000, popup = ~city) %>%
+  addCircles(lng = ~longitude, lat = ~latitude, weight = 1, 
+             radius = ~mean_POP*5000, popup = ~city, color = "Green")
+
+
+
+leaflet(spring_avg) %>% addTiles %>% 
+  addCircles(lng = ~longitude, lat = ~latitude, weight = 1, 
+             radius = ~scaled_mean_POP, popup = ~city, color = "Green")
