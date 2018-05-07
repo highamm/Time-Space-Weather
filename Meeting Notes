@@ -40,8 +40,14 @@ See Wikipedia for actual definition used by national weather service
 
 Do smaller cities have more extreme PoP values?
 
-=======
+
 5/3/18
 
 rnoaa hourly precipitation data only extends to January 1st, 2014. This is a super-annoying since our forecasts start in July, 2014 so rnoaa won't be helpful for getting hourly precipitation data.
 It also occurred to me that precipitation might just ignore snowfall completely. We can investigate a city in the North to see what it's precipitation looks like in the winter.
+
+
+
+5/7/18
+Added some plots to explore whether or not precipitation forecasts get better over time.
+Might consider adding similar plots for min and max temperature next time.

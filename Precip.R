@@ -168,3 +168,48 @@ ggplot(spring_WA_f1_16, aes(x=forecastValue, y=weatherval, colour=ForecastTimeDa
 ## in this plot or another plot, it might be nice to somehow connect points from
 ## the same day. Connecting points using lines did not really work though
 ## so we would have to think of another way to make the connection
+
+
+
+## now thinking about adding the "length of forecast" dimension
+
+spring_WA <- subset(spring_df, city %in% c("Spokane"))
+
+# subset only forecasts of length 1 (day before)
+## spring_WA_f1 <- subset(spring_WA, LengthForecastDayOnly== 1)
+
+# only 2016 data for WA spring
+##spring_WA_f1_16 <- subset(spring_WA_f1, year(as.POSIXlt(spring_WA_f1$Date)) == 2016)
+
+##spring_WA_f1_16$ForecastTimeDay <- rep(c("Morning", "Evening"), length.out=nrow(spring_WA_f1_16)) 
+nrow(spring_WA) ## odd number of rows here, so not sure which are morning
+## and which are evening
+
+
+
+Spok.precip <- subset(precip, city == "Spokane")
+Spok.precip$ForecastTimeDay <- rep(c("Morning", "Evening"),
+  length.out = nrow(Spok.precip)) 
+head(Spok.precip)
+
+Spok.precip$precipbinary <- as.numeric(Spok.precip$weatherval > 0)
+Spok.precip$precipbinary
+
+
+## for each forecastValue, want to figure out the proportion of days that it actually
+## rained
+
+Spok.precip$proprain <- (Spok.precip %>% group_by(forecastValue, 
+  LengthForecastDayOnly) %>% 
+    mutate(proprain = mean(precipbinary)))$proprain
+
+ggplot(data = Spok.precip, aes(x = forecastValue, y = proprain)) + 
+  geom_point() + ylim(c(0, 1)) +
+  facet_wrap(~LengthForecastDayOnly)
+
+## there is still a problem with using both morning and evening precipitation
+## predictions for a single precip response. But, ignoring that issue,
+## we would expect "good" forecasts to be a straight line (in that case,
+## half of the time 50% of rain was predicted, it actually rained). It's
+## interesting that the forecasts don't look to get substantially better
+## for precipitation, at least in Spokane.
