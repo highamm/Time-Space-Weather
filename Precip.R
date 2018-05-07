@@ -1,6 +1,9 @@
 complete_df <- read.csv("~/Desktop/DataExpo2018/all_df_completesub.csv")
 
+## MATT ONLY
 complete_df <- all.df_completeSub
+
+
 precip <- subset(complete_df, weathermeas == "ProbPrecip")
 
 precip$Date <- as.Date(precip$Date)
@@ -18,6 +21,7 @@ precip_avg <- precip %>% group_by(Date, AirPtCd) %>%
 precip_avg$weatherval <- (precip %>% group_by(Date, AirPtCd) %>% 
   summarize(weatherval = mean(weatherval)))$weatherval
 
+## ERIN ONLY
 locations <- read.csv("~/Desktop/DataExpo2018/locations.csv")
 histWeather <- read.csv("~/Desktop/DataExpo2018/histWeather.csv")
 
@@ -45,10 +49,10 @@ ggplot(precip_avg, aes(x = mean_precip_prob, y = weatherval)) + geom_point()
 
 precip_avg$month <- month(as.POSIXlt(precip_avg$Date))
 
-spring <- subset(precip_avg, month %in% c(3,4,5))
-summer <- subset(precip_avg, month %in% c(6,7,8))
-fall <- subset(precip_avg, month %in% c(9,10,11))
-winter <- subset(precip_avg, month %in% c(12,1,2))
+spring <- subset(precip_avg, month %in% c(3, 4, 5))
+summer <- subset(precip_avg, month %in% c(6, 7, 8))
+fall <- subset(precip_avg, month %in% c(9, 10, 11))
+winter <- subset(precip_avg, month %in% c(12, 1, 2))
 
 ggplot(spring, aes(x = mean_precip_prob, y = weatherval)) + geom_point()
 ggplot(summer, aes(x = mean_precip_prob, y = weatherval)) + geom_point()
@@ -72,6 +76,7 @@ spring_avg$mean_POP <- (spring %>% group_by(AirPtCd) %>%
 spring_avg <- merge(x=spring_avg, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
                     by.y = "AirPtCd", all.x=TRUE)
 
+## getting POP and actual precipitation on a similar scale
 spring_avg$scaled_mean_precip_inches <- scale(spring_avg$mean_precip_inches)
 spring_avg$scaled_mean_POP <- scale(spring_avg$mean_POP)
 
@@ -79,6 +84,9 @@ library(leaflet)
 library(maps)
 
 # average inches map for spring
+
+## why are we multiplying by 750,000 and 5,000 for the radius? Is this
+## to scale them appropriately?
 leaflet(spring_avg) %>% addTiles %>% 
   addCircles(lng = ~longitude, lat = ~latitude, weight = 1, 
              radius = ~mean_precip_inches*750000, popup = ~city)
@@ -151,3 +159,12 @@ library(ggplot2)
 ggplot(spring_WA_f1_16, aes(x=Value, y=weatherval, colour=ForecastTimeDay)) + geom_point() + facet_grid(.~ city) +
   xlab("Probability of Precipitation") + ylab("Precipitation (in)") + 
   ggtitle("Spring 2016, 1 Day Forecast")
+
+## MATT ONLY: I'm not sure where the Value is coming from (not forecastValue)
+ggplot(spring_WA_f1_16, aes(x=forecastValue, y=weatherval, colour=ForecastTimeDay)) + geom_point() + facet_grid(.~ city) +
+  xlab("Probability of Precipitation") + ylab("Precipitation (in)") + 
+  ggtitle("Spring 2016, 1 Day Forecast")
+
+## in this plot or another plot, it might be nice to somehow connect points from
+## the same day. Connecting points using lines did not really work though
+## so we would have to think of another way to make the connection
