@@ -141,9 +141,9 @@ sum(histWeatherlong$weatherval == "T")
 which(is.na(as.numeric(histWeatherlong$weatherval == "78")))
 histWeatherlong$weatherval[122898]
 
-## convert trace values to 0.005 inches for now
+## convert trace values to 0 inches for now
 
-sum(histWeatherlong$weatherval == "0.005", na.rm = TRUE)
+sum(histWeatherlong$weatherval == "T", na.rm = TRUE) / nrow(histWeatherlong)
 histWeatherlong$weatherval[histWeatherlong$weatherval == "T"] <- "0.005"
 
 foreloc.df$Weatherval <- as.factor(foreloc.df$Weatherval)

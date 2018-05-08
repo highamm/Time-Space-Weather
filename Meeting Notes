@@ -51,3 +51,9 @@ It also occurred to me that precipitation might just ignore snowfall completely.
 5/7/18
 Added some plots to explore whether or not precipitation forecasts get better over time.
 Might consider adding similar plots for min and max temperature next time.
+
+Possible Place to get data:
+http://ram-n.github.io/weatherData/example_Humidity.html
+
+make line graph
+look into this website to get hourly precipitation data.
