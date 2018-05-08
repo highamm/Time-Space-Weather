@@ -1,5 +1,6 @@
 complete_df <- read.csv("~/Desktop/DataExpo2018/all_df_completesub.csv")
 
+names(complete_df)[8] <- "forecastValue"
 ## MATT ONLY
 complete_df <- all.df_completeSub
 
@@ -156,7 +157,7 @@ spring_WA_f1_16$ForecastTimeDay <- rep(c("Morning", "Evening"), length.out=nrow(
 library(ggplot2)
 
 # in this plot, each day has two points, one associated with morning prediction, one with evening
-ggplot(spring_WA_f1_16, aes(x=Value, y=weatherval, colour=ForecastTimeDay)) + geom_point() + facet_grid(.~ city) +
+ggplot(spring_WA_f1_16, aes(x=forecastValue, y=weatherval, colour=ForecastTimeDay)) + geom_point() + facet_grid(.~ city) +
   xlab("Probability of Precipitation") + ylab("Precipitation (in)") + 
   ggtitle("Spring 2016, 1 Day Forecast")
 
@@ -192,7 +193,7 @@ Spok.precip$ForecastTimeDay <- rep(c("Morning", "Evening"),
   length.out = nrow(Spok.precip)) 
 head(Spok.precip)
 
-Spok.precip$precipbinary <- as.numeric(Spok.precip$weatherval > 0)
+Spok.precip$precipbinary <- as.numeric(Spok.precip$weatherval > 0.005)
 Spok.precip$precipbinary
 
 
@@ -200,10 +201,10 @@ Spok.precip$precipbinary
 ## rained
 
 Spok.precip$proprain <- (Spok.precip %>% group_by(forecastValue, 
-  LengthForecastDayOnly) %>% 
+  LengthForecastDayOnly, ForecastTimeDay) %>% 
     mutate(proprain = mean(precipbinary)))$proprain
 
-ggplot(data = Spok.precip, aes(x = forecastValue, y = proprain)) + 
+ggplot(data = Spok.precip, aes(x = forecastValue, y = proprain, colour=ForecastTimeDay)) + 
   geom_point() + ylim(c(0, 1)) +
   facet_wrap(~LengthForecastDayOnly)
 
