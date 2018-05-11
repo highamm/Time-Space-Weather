@@ -6,7 +6,7 @@ complete_df <- all.df_completeSub
 
 
 precip <- subset(complete_df, weathermeas == "ProbPrecip")
-
+head(precip)
 precip$Date <- as.Date(precip$Date)
 precip$DateofForecast <- as.Date(precip$DateofForecast)
 
@@ -189,7 +189,7 @@ nrow(spring_WA) ## odd number of rows here, so not sure which are morning
 
 
 
-Spok.precip <- subset(precip, city == "Spokane")
+Spok.precip <- subset(precip, city %in% c("Spokane") & month %in% c(3, 4, 5))
 Spok.precip$ForecastTimeDay <- rep(c("Morning", "Evening"),
   length.out = nrow(Spok.precip)) 
 head(Spok.precip)
@@ -215,3 +215,26 @@ ggplot(data = Spok.precip, aes(x = forecastValue, y = proprain, colour=ForecastT
 ## half of the time 50% of rain was predicted, it actually rained). It's
 ## interesting that the forecasts don't look to get substantially better
 ## for precipitation, at least in Spokane.
+
+## SPRING IN SPOKANE
+ggplot(data = Spok.precip, aes(x = ForecastTimeDay, y = forecastValue,
+  group = Date)) +
+  geom_point() + 
+  facet_wrap( ~LengthForecastDayOnly) + geom_line(aes(colour = weatherval))
+
+## some of the dates have two evening forecasts but no morning forecasts: example:
+subset(Spok.precip, LengthForecastDayOnly == 6)[c(3, 4), c("Date", "ForecastTimeDay")]
+
+## I'm guessing this is because of something we are doing. Maybe putting in 
+## the "ForecastTimeDay" variable so late is creating problems.
+## The graph looks really bad because of this. I'm not really sure how much better
+## it will look once we correct this though.
+## I think this problem is happening because some dates legitimately do not have a morning or evening forecast. So we can't just go every other line for "morning" and "evening".
+
+
+## EXAMPLE: See how the dat july 16, 2014 only has one ProbPrecip measurement. 
+## We don't know if it's morning or evening. And, if we use the every other line
+## method for assigning morning and evening, things will get thrown off.
+
+testdf <- subset(precip, LengthForecastDayOnly == 6 & city == "Spokane")
+head(testdf)
