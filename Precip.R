@@ -78,7 +78,7 @@ spring_avg <- merge(x=spring_avg, y=locations[,c("longitude","latitude", "AirPtC
                     by.y = "AirPtCd", all.x=TRUE)
 
 ## getting POP and actual precipitation on a similar scale
-spring_avg$scaled_mean_precip_inches <- scale(spring_avg$mean_precip_inches)
+spring_avg$scaled_mean_precip_inches <- as.vector(scale(spring_avg$mean_precip_inches))
 spring_avg$scaled_mean_POP <- as.vector(scale(spring_avg$mean_POP))
 str(spring_avg$scaled_mean_POP)
 str(spring_avg$mean_POP)
@@ -103,10 +103,10 @@ leaflet(spring_avg) %>% addTiles %>%
              radius = ~mean_POP*5000, popup = ~city, color = "Green")
 
 
-
+# weird 
 leaflet(spring_avg) %>% addTiles %>% 
   addCircles(lng = ~longitude, lat = ~latitude, weight = 1, 
-             radius = ~scaled_mean_POP, popup = ~city, color = "Green")
+             radius = ~scaled_mean_POP*50000, popup = ~city, color = "Green")
 ?addCircles
 
 
