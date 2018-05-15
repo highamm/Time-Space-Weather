@@ -209,11 +209,18 @@ nrow(spring_WA_Spok) ## odd number of rows here, so not sure which are morning
 
 
 Spok.precip <- subset(precip, city %in% c("Spokane") & month %in% c(3, 4, 5))
+Spok.precip.summer <- subset(precip, city %in% c("Spokane") & month %in% c(6,7,8))
+Spok.precip.fall <- subset(precip, city %in% c("Spokane") & month %in% c(9,10,11))
+Spok.precip.winter <- subset(precip, city %in% c("Spokane") & month %in% c(12,1,2))
 Spok.precip$ForecastTimeDay <- rep(c("Morning", "Evening"),
   length.out = nrow(Spok.precip)) 
+
 head(Spok.precip)
 
 Spok.precip$precipbinary <- as.numeric(Spok.precip$weatherval > 0.005)
+Spok.precip.summer$precipbinary <- as.numeric(Spok.precip.summer$weatherval > 0.005)
+Spok.precip.fall$precipbinary <- as.numeric(Spok.precip.fall$weatherval > 0.005)
+Spok.precip.winter$precipbinary <- as.numeric(Spok.precip.winter$weatherval > 0.005)
 Spok.precip$precipbinary
 
 
@@ -224,13 +231,42 @@ Spok.precip$proprain <- (Spok.precip %>% group_by(forecastValue,
   LengthForecastDayOnly, ForecastTimeDay) %>% 
     mutate(proprain = mean(precipbinary)))$proprain
 
+
+
 Spok.precip$proprain_noMornEv <- (Spok.precip %>% group_by(forecastValue,
                                                            LengthForecastDayOnly) %>%
                                     mutate(proprain_noMornEv = mean(precipbinary)))$proprain_noMornEv
 
+Spok.precip.summer$proprain_noMornEv <- (Spok.precip.summer %>% group_by(forecastValue,
+                                                                         LengthForecastDayOnly) %>%
+                                           mutate(proprain_noMornEv = mean(precipbinary)))$proprain_noMornEv
+
+Spok.precip.fall$proprain_noMornEv <- (Spok.precip.fall %>% group_by(forecastValue,
+                                                                         LengthForecastDayOnly) %>%
+                                           mutate(proprain_noMornEv = mean(precipbinary)))$proprain_noMornEv
+
+Spok.precip.winter$proprain_noMornEv <- (Spok.precip.winter %>% group_by(forecastValue,
+                                                                     LengthForecastDayOnly) %>%
+                                         mutate(proprain_noMornEv = mean(precipbinary)))$proprain_noMornEv
+
+
 Spok.precip$Numerator_noMornEv <- (Spok.precip %>% group_by(forecastValue,
                                                             LengthForecastDayOnly) %>%
                                      mutate(Numerator_noMornEv = length(precipbinary)))$Numerator_noMornEv
+
+Spok.precip.summer$Numerator_noMornEv <- (Spok.precip.summer %>% group_by(forecastValue, 
+                                                                          LengthForecastDayOnly) %>%
+                                            mutate(Numerator_noMornEv = length(precipbinary)))$Numerator_noMornEv
+
+Spok.precip.fall$Numerator_noMornEv <- (Spok.precip.fall %>% group_by(forecastValue, 
+                                                                          LengthForecastDayOnly) %>%
+                                            mutate(Numerator_noMornEv = length(precipbinary)))$Numerator_noMornEv
+
+Spok.precip.winter$Numerator_noMornEv <- (Spok.precip.winter %>% group_by(forecastValue, 
+                                                                      LengthForecastDayOnly) %>%
+                                          mutate(Numerator_noMornEv = length(precipbinary)))$Numerator_noMornEv
+
+
 
 ggplot(data = Spok.precip, aes(x = forecastValue, y = proprain, colour=ForecastTimeDay)) + 
   geom_point() + ylim(c(0, 1)) +
@@ -246,6 +282,63 @@ ggplot(data = Spok.precip, aes(x = forecastValue/100, y = proprain_noMornEv)) +
   ylab("Proportion of Rainy Days") + 
   xlab("PoP") +
   geom_abline(intercept=0,slope=1)
+
+
+
+ggplot(data = Spok.precip.summer, aes(x = forecastValue/100, y = proprain_noMornEv)) + 
+  geom_point(aes(alpha=Numerator_noMornEv)) + ylim(c(0, 1)) +
+  facet_wrap(~LengthForecastDayOnly) +
+  ggtitle("Spokane, Summer") + 
+  geom_smooth(method="lm", formula = y ~ x + I(x^2), size = 0.5, se = FALSE) +
+  scale_alpha_continuous(name = "Number of Obs") + 
+  ylab("Proportion of Rainy Days") + 
+  xlab("PoP") +
+  geom_abline(intercept=0,slope=1)
+
+
+ggplot(data = Spok.precip.fall, aes(x = forecastValue/100, y = proprain_noMornEv)) + 
+  geom_point(aes(alpha=Numerator_noMornEv)) + ylim(c(0, 1)) +
+  facet_wrap(~LengthForecastDayOnly) +
+  ggtitle("Spokane, Fall") + 
+  geom_smooth(method="lm", formula = y ~ x + I(x^2), size = 0.5, se = FALSE) +
+  scale_alpha_continuous(name = "Number of Obs") + 
+  ylab("Proportion of Rainy Days") + 
+  xlab("PoP") +
+  geom_abline(intercept=0,slope=1)
+
+
+ggplot(data = Spok.precip.winter, aes(x = forecastValue/100, y = proprain_noMornEv)) + 
+  geom_point(aes(alpha=Numerator_noMornEv)) + ylim(c(0, 1)) +
+  facet_wrap(~LengthForecastDayOnly) +
+  ggtitle("Spokane, Winter") + 
+  geom_smooth(method="lm", formula = y ~ x + I(x^2), size = 0.5, se = FALSE) +
+  scale_alpha_continuous(name = "Number of Obs") + 
+  ylab("Proportion of Rainy Days") + 
+  xlab("PoP") +
+  geom_abline(intercept=0,slope=1)
+
+Spok.precip$season <- rep("Spring", nrow(Spok.precip))
+Spok.precip.summer$season <- rep("Summer", nrow(Spok.precip.summer))
+Spok.precip.fall$season <- rep("Fall", nrow(Spok.precip.fall))
+Spok.precip.winter$season <- rep("Winter", nrow(Spok.precip.winter))
+
+Spok.precip.all <- rbind(Spok.precip[,-c(20,22)], Spok.precip.summer, 
+                         Spok.precip.fall, Spok.precip.winter)
+                         
+
+ggplot(data = Spok.precip.all, aes(x = forecastValue/100, y = proprain_noMornEv)) + 
+  geom_point(aes(alpha=Numerator_noMornEv)) + ylim(c(0, 1)) +
+  facet_wrap(~LengthForecastDayOnly) +
+  ggtitle("Spokane, Winter") + 
+  geom_smooth(method="lm", formula = y ~ x + I(x^2), size = 0.5, se = FALSE) +
+  scale_alpha_continuous(name = "Number of Obs") + 
+  ylab("Proportion of Rainy Days") + 
+  xlab("PoP") +
+  geom_abline(intercept=0,slope=1)
+
+
+
+
 
 ## there is still a problem with using both morning and evening precipitation
 ## predictions for a single precip response. But, ignoring that issue,
