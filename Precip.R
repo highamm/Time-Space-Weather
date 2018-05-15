@@ -162,6 +162,25 @@ ggplot(spring_WA_f1_16, aes(x=forecastValue, y=weatherval, colour=ForecastTimeDa
   xlab("Probability of Precipitation") + ylab("Precipitation (in)") + 
   ggtitle("Spring 2016, 1 Day Forecast")
 
+
+
+
+ggplot(spring_WA_f1_16, aes(x=forecastValue, y=weatherval, colour=ForecastTimeDay)) + 
+  geom_violin(aes(x=factor(forecastValue))) + facet_grid(.~ city) +
+  xlab("Probability of Precipitation") + ylab("Precipitation (in)") + 
+  ggtitle("Spring 2016, 1 Day Forecast")
+
+
+ggplot(spring_WA_f1_16, aes(x=forecastValue, y=weatherval, colour=ForecastTimeDay)) + 
+  geom_dotplot(aes(x=factor(forecastValue)), binaxis = "y", stackdir="center", 
+               dotsize=0.5) +
+  facet_grid(.~ city) +
+  xlab("Probability of Precipitation") + ylab("Precipitation (in)") + 
+  ggtitle("Spring 2016, 1 Day Forecast")
+
+
+
+
 ## MATT ONLY: I'm not sure where the Value is coming from (not forecastValue)
 ggplot(spring_WA_f1_16, aes(x=forecastValue, y=weatherval, colour=ForecastTimeDay)) + geom_point() + facet_grid(.~ city) +
   xlab("Probability of Precipitation") + ylab("Precipitation (in)") + 
@@ -175,7 +194,7 @@ ggplot(spring_WA_f1_16, aes(x=forecastValue, y=weatherval, colour=ForecastTimeDa
 
 ## now thinking about adding the "length of forecast" dimension
 
-spring_WA <- subset(spring_df, city %in% c("Spokane"))
+spring_WA_Spok <- subset(spring_df, city %in% c("Spokane"))
 
 # subset only forecasts of length 1 (day before)
 ## spring_WA_f1 <- subset(spring_WA, LengthForecastDayOnly== 1)
@@ -184,7 +203,7 @@ spring_WA <- subset(spring_df, city %in% c("Spokane"))
 ##spring_WA_f1_16 <- subset(spring_WA_f1, year(as.POSIXlt(spring_WA_f1$Date)) == 2016)
 
 ##spring_WA_f1_16$ForecastTimeDay <- rep(c("Morning", "Evening"), length.out=nrow(spring_WA_f1_16)) 
-nrow(spring_WA) ## odd number of rows here, so not sure which are morning
+nrow(spring_WA_Spok) ## odd number of rows here, so not sure which are morning
 ## and which are evening
 
 
@@ -205,9 +224,28 @@ Spok.precip$proprain <- (Spok.precip %>% group_by(forecastValue,
   LengthForecastDayOnly, ForecastTimeDay) %>% 
     mutate(proprain = mean(precipbinary)))$proprain
 
+Spok.precip$proprain_noMornEv <- (Spok.precip %>% group_by(forecastValue,
+                                                           LengthForecastDayOnly) %>%
+                                    mutate(proprain_noMornEv = mean(precipbinary)))$proprain_noMornEv
+
+Spok.precip$Numerator_noMornEv <- (Spok.precip %>% group_by(forecastValue,
+                                                            LengthForecastDayOnly) %>%
+                                     mutate(Numerator_noMornEv = length(precipbinary)))$Numerator_noMornEv
+
 ggplot(data = Spok.precip, aes(x = forecastValue, y = proprain, colour=ForecastTimeDay)) + 
   geom_point() + ylim(c(0, 1)) +
   facet_wrap(~LengthForecastDayOnly)
+
+# make the scatter plot without time of day since we don't know if it is correct 
+ggplot(data = Spok.precip, aes(x = forecastValue/100, y = proprain_noMornEv)) + 
+  geom_point(aes(alpha=Numerator_noMornEv)) + ylim(c(0, 1)) +
+  facet_wrap(~LengthForecastDayOnly) +
+  ggtitle("Spokane, Spring") + 
+  geom_smooth(method="lm", formula = y ~ x + I(x^2), size = 0.5, se = FALSE) +
+  scale_alpha_continuous(name = "Number of Obs") + 
+  ylab("Proportion of Rainy Days") + 
+  xlab("PoP") +
+  geom_abline(intercept=0,slope=1)
 
 ## there is still a problem with using both morning and evening precipitation
 ## predictions for a single precip response. But, ignoring that issue,
@@ -220,7 +258,7 @@ ggplot(data = Spok.precip, aes(x = forecastValue, y = proprain, colour=ForecastT
 ggplot(data = Spok.precip, aes(x = ForecastTimeDay, y = forecastValue,
   group = Date)) +
   geom_point() + 
-  facet_wrap( ~LengthForecastDayOnly) + geom_line(aes(colour = weatherval))
+  facet_wrap( ~LengthForecastDayOnly) + geom_line(aes(colour = weatherval), alpha=.1)
 
 ## some of the dates have two evening forecasts but no morning forecasts: example:
 subset(Spok.precip, LengthForecastDayOnly == 6)[c(3, 4), c("Date", "ForecastTimeDay")]
