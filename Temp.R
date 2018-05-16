@@ -23,3 +23,22 @@ ggplot(springtemp, aes(x = forecastValue, y = weatherval)) + geom_point()
 ggplot(summertemp, aes(x = forecastValue, y = weatherval)) + geom_point()
 ggplot(falltemp, aes(x = forecastValue, y = weatherval)) + geom_point()
 ggplot(wintertemp, aes(x = forecastValue, y = weatherval)) + geom_point()
+
+## do a bit of data cleaning
+
+## get rid of these points. These are almost surely data entry errors.
+## The weather value is 1 degree for the first five days of March while the
+## forecast is in the 40s.
+
+## getting rid of the obvious outliers
+springclean <- springtemp[-which(springtemp$weatherval < 5 & springtemp$forecastValue > 30), ]
+summerclean <- summertemp
+fallclean <- falltemp
+winterclean <- wintertemp[-which(wintertemp$weatherval > 95), ]
+winterclean <- winterclean[-which(winterclean$forecastValue < 32 &
+    winterclean$weatherval > 75), ]
+winterclean <- winterclean[-which(winterclean$forecastValue > 31 &
+    winterclean$weatherval < 5), ]
+ggplot(winterclean, aes(x = forecastValue, y = weatherval)) + geom_point()
+
+
