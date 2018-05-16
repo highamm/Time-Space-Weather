@@ -215,6 +215,9 @@ Spok.precip.winter <- subset(precip, city %in% c("Spokane") & month %in% c(12,1,
 Spok.precip$ForecastTimeDay <- rep(c("Morning", "Evening"),
   length.out = nrow(Spok.precip)) 
 
+
+
+
 head(Spok.precip)
 
 Spok.precip$precipbinary <- as.numeric(Spok.precip$weatherval > 0.005)
@@ -277,7 +280,7 @@ ggplot(data = Spok.precip, aes(x = forecastValue/100, y = proprain_noMornEv)) +
   geom_point(aes(alpha=Numerator_noMornEv)) + ylim(c(0, 1)) +
   facet_wrap(~LengthForecastDayOnly) +
   ggtitle("Spokane, Spring") + 
-  geom_smooth(method="lm", formula = y ~ x + I(x^2), size = 0.5, se = FALSE) +
+  geom_smooth(aes(weight=Numerator_noMornEv)) +
   scale_alpha_continuous(name = "Number of Obs") + 
   ylab("Proportion of Rainy Days") + 
   xlab("PoP") +
@@ -327,10 +330,12 @@ Spok.precip.all <- rbind(Spok.precip[,-c(20,22)], Spok.precip.summer,
                          
 
 ggplot(data = Spok.precip.all, aes(x = forecastValue/100, y = proprain_noMornEv)) + 
-  geom_point(aes(alpha=Numerator_noMornEv)) + ylim(c(0, 1)) +
+  geom_point(aes(colour = season,alpha=Numerator_noMornEv)) + ylim(c(0, 1)) +
   facet_wrap(~LengthForecastDayOnly) +
-  ggtitle("Spokane, Winter") + 
-  geom_smooth(method="lm", formula = y ~ x + I(x^2), size = 0.5, se = FALSE) +
+  ggtitle("Spokane, WA") + 
+  geom_smooth(aes(colour = season, weight = Numerator_noMornEv), method="lm", formula = y ~ x + I(x^2), 
+              size = 0.5, se = FALSE) +
+  #(aes(colour=season))
   scale_alpha_continuous(name = "Number of Obs") + 
   ylab("Proportion of Rainy Days") + 
   xlab("PoP") +
@@ -369,3 +374,20 @@ subset(Spok.precip, LengthForecastDayOnly == 6)[c(3, 4), c("Date", "ForecastTime
 
 testdf <- subset(precip, LengthForecastDayOnly == 6 & city == "Spokane")
 head(testdf)
+
+
+
+
+
+
+
+
+
+# how many days only have one forecast for precip
+
+date_counts <- Spok.precip.all %>% group_by(Date, DateofForecast, LengthForecastDayOnly) %>% 
+  summarize(count = length(forecastValue))
+
+sum(date_counts$count < 2)
+
+qplot(LengthForecastDayOnly, count, data = date_counts)
