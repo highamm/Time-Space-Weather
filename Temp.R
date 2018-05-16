@@ -13,12 +13,20 @@ maxtemp$DateofForecast <- as.Date(maxtemp$DateofForecast)
 
 maxtemp$month <- month(as.POSIXlt(maxtemp$Date))
 
+
+
+maxtemp$season <- cut(maxtemp$month, 
+  breaks = c(0.5, 2.5, 5.5, 8.5, 11.5, 12.5), 
+  labels = c("Winter", "Spring", "Summer", "Fall", "Winter2"), 
+  right = FALSE)
+maxtemp$season[maxtemp$season == "Winter2"] <- "Winter"
+maxtemp$season <- factor(maxtemp$season)
+
 springtemp <- subset(maxtemp, month %in% c(3, 4, 5))
 summertemp <- subset(maxtemp, month %in% c(6, 7, 8))
 falltemp <- subset(maxtemp, month %in% c(9, 10, 11))
 wintertemp <- subset(maxtemp, month %in% c(12, 1, 2))
 
-summary(springtemp)
 ggplot(springtemp, aes(x = forecastValue, y = weatherval)) + geom_point()
 ggplot(summertemp, aes(x = forecastValue, y = weatherval)) + geom_point()
 ggplot(falltemp, aes(x = forecastValue, y = weatherval)) + geom_point()
@@ -41,4 +49,19 @@ winterclean <- winterclean[-which(winterclean$forecastValue > 31 &
     winterclean$weatherval < 5), ]
 ggplot(winterclean, aes(x = forecastValue, y = weatherval)) + geom_point()
 
+## clean(er) data set
+maxtempall <- rbind(springclean, summerclean, fallclean, winterclean)
+summary(maxtempall$season)
+summary(maxtempall)
 
+## one pattern I've noticed: forecast gets much worse for longer days for 
+## less temperate cities, which makes sense.
+## might think about how to get different cities on the same plot
+## without having to change the subset every time we want to look
+## at a new city
+ggplot(data = subset(maxtempall, city == "Scranton"),
+  aes(x = LengthForecastDayOnly, y = absForecastDiff, 
+    group = LengthForecastDayOnly)) +
+  geom_boxplot() +
+  facet_wrap( ~ season)
+summary(maxtempall$city)
