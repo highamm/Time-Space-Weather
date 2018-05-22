@@ -65,3 +65,13 @@ ggplot(data = subset(maxtempall, city == "Scranton"),
   geom_boxplot() +
   facet_wrap( ~ season)
 summary(maxtempall$city)
+
+str(maxtempall)
+ggplot(data = subset(maxtempall, city == "Shreveport" & LengthForecastDayOnly == 3),
+  aes(x = weatherval, y = forecastValue, group = season)) +
+  geom_point() + 
+  facet_wrap( ~ season) + 
+  geom_smooth() +
+  geom_abline(slope = 1, intercept = 0)
+
+## underprediction in winter for Scranton. Also underpredicts winter for Cleveland, Buffalo, etc. Seems to be a regional thing.
