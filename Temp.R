@@ -86,9 +86,6 @@ ggplot(data = subset(maxtempall, city == "Buffalo" & LengthForecastDayOnly == 4)
 
 quantile(maxtempall$weatherval, c(0.10, 0.90))
 
-oq.precip$proprain <- (Hoq.precip %>% group_by(forecastValue, 
-  LengthForecastDayOnly, ForecastTimeDay) %>% 
-    mutate(proprain = mean(precipbinary)))$proprain
 
 
 ninetyperc <- (maxtempall %>% dplyr::group_by(city, season) %>%
