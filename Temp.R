@@ -34,6 +34,9 @@ ggplot(wintertemp, aes(x = forecastValue, y = weatherval)) + geom_point()
 
 ## do a bit of data cleaning
 
+ggplot(winterclean, aes(x = forecastValue, y = weatherval)) + geom_point()
+
+
 ## get rid of these points. These are almost surely data entry errors.
 ## The weather value is 1 degree for the first five days of March while the
 ## forecast is in the 40s.
@@ -88,12 +91,27 @@ oq.precip$proprain <- (Hoq.precip %>% group_by(forecastValue,
     mutate(proprain = mean(precipbinary)))$proprain
 
 
-ninetyperc <- (maxtempall %>% dplyr::group_by(city, season) %>% dplyr::distinct(maxtempall, Date, 
-  .keep_all = TRUE) %>% dplyr::summarize(q90 = quantile(weatherval, 0.90)))
+ninetyperc <- (maxtempall %>% dplyr::group_by(city, season) %>%
+    dplyr::distinct(maxtempall, Date, .keep_all = TRUE) %>% 
+    dplyr::mutate(q90 = quantile(weatherval, .750)))
 
 
 head(ninetyperc)
 
-loess(forecastValue ~ weatherval, family = "gaussian",
+testdf <- ninetyperc %>% dplyr::filter(LengthForecastDayOnly == 3) %>%
+  dplyr::group_by(city, season) %>%
+  dplyr::mutate(testval = predict(loess(forecastValue ~ weatherval, family = "gaussian", span = .75, degree = 1), newdata = q90[1]))
+str(testdf)
+testdf
+
+testdf[ ,c("testval", "q90")]
+ggplot(data = testdf, aes(x = q90, y = testval, colour = season)) + geom_point() +
+  geom_abline(slope = 1, intercept = 0)
+
+qplot(unique(testdf$testval - testdf$q90))
+
+loess.mod <- loess(forecastValue ~ weatherval, family = "gaussian",
   data = subset(maxtempall, city == "Buffalo" & season == "Winter"),
   span = .75, degree = 1)
+predict(loess.mod, newdata = 50)
+ninetyperc
