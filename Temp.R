@@ -67,7 +67,7 @@ ggplot(data = subset(maxtempall, city == "Scranton"),
 summary(maxtempall$city)
 
 str(maxtempall)
-ggplot(data = subset(maxtempall, city == "Shreveport" & LengthForecastDayOnly == 3),
+ggplot(data = subset(maxtempall, city == "Buffalo" & LengthForecastDayOnly == 4),
   aes(x = weatherval, y = forecastValue, group = season)) +
   geom_point() + 
   facet_wrap( ~ season) + 
@@ -75,3 +75,25 @@ ggplot(data = subset(maxtempall, city == "Shreveport" & LengthForecastDayOnly ==
   geom_abline(slope = 1, intercept = 0)
 
 ## underprediction in winter for Scranton. Also underpredicts winter for Cleveland, Buffalo, etc. Seems to be a regional thing.
+
+
+
+## compare temperature predictions across different cities for the 10th and 90th percentile 
+## of temperature for each season
+
+quantile(maxtempall$weatherval, c(0.10, 0.90))
+
+oq.precip$proprain <- (Hoq.precip %>% group_by(forecastValue, 
+  LengthForecastDayOnly, ForecastTimeDay) %>% 
+    mutate(proprain = mean(precipbinary)))$proprain
+
+
+ninetyperc <- (maxtempall %>% dplyr::group_by(city, season) %>% dplyr::distinct(maxtempall, Date, 
+  .keep_all = TRUE) %>% dplyr::summarize(q90 = quantile(weatherval, 0.90)))
+
+
+head(ninetyperc)
+
+loess(forecastValue ~ weatherval, family = "gaussian",
+  data = subset(maxtempall, city == "Buffalo" & season == "Winter"),
+  span = .75, degree = 1)

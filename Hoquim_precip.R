@@ -1,3 +1,5 @@
+
+
 Hoq.precip <- subset(precip, city %in% c("Hoquiam") & month %in% c(3, 4, 5))
 Hoq.precip.summer <- subset(precip, city %in% c("Hoquiam") & month %in% c(6,7,8))
 Hoq.precip.fall <- subset(precip, city %in% c("Hoquiam") & month %in% c(9,10,11))
