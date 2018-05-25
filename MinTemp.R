@@ -111,8 +111,6 @@ mintempall <- mintempall %>% dplyr::filter(LengthForecastDayOnly == 3) %>%
 
 mintempall[ ,c("q90", "q90.pred")]
 
-subset(maxtempall, q90 == 86)$q90.pred
-
 ggplot(data = mintempall, aes(x = q90, y = q90.pred, colour = season)) + geom_point() +
   geom_abline(slope = 1, intercept = 0)
 
@@ -154,3 +152,66 @@ ggplot(data = mintempunique, aes(x = q50.diff)) +
 ggplot(data = mintempunique, aes(x = q90.diff)) + 
   geom_histogram(fill = "white", colour = "black", bins = 14) + 
   facet_wrap( ~season)
+
+## the above days are just for forecast lengths of 3. We might consider how to
+## incorporate a visualization for different lenghts of forecast days. Like one 
+## way might be to facet by length of days and then colour by season?
+## Oh, or facet by season and then have boxplots for each of the lengths of days. I
+## like that idea better:
+
+mintempall <- rbind(springclean, summerclean, fallclean, winterclean)
+
+mintempall <- (mintempall %>% dplyr::group_by(city, season) %>%
+    dplyr::distinct(mintempall, Date, .keep_all = TRUE) %>% 
+    dplyr::mutate(q90 = quantile(weatherval, .90)) %>% 
+    dplyr::mutate(q50 = quantile(weatherval, .50)) %>% 
+    dplyr::mutate(q10 = quantile(weatherval, .10)))
+
+mintempall <- mintempall %>% dplyr::filter(LengthForecastDayOnly %in% c(1, 2, 3, 4, 5)) %>%
+  dplyr::group_by(city, season, LengthForecastDayOnly) %>%
+  dplyr::mutate(q90.pred = predict(loess(forecastValue ~ weatherval, family = "gaussian", span = .75, degree = 1), newdata = q90[1])) %>%
+  dplyr::mutate(q50.pred = predict(loess(forecastValue ~ weatherval, family = "gaussian", span = .75, degree = 1), newdata = q50[1])) %>%
+  dplyr::mutate(q10.pred = predict(loess(forecastValue ~ weatherval, family = "gaussian", span = .75, degree = 1), newdata = q10[1]))
+head(mintempall)
+
+mintempall[ ,c("q90", "q90.pred")]
+
+ggplot(data = mintempall, aes(x = q90, y = q90.pred, colour = season)) + geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  facet_wrap( ~ LengthForecastDayOnly)
+
+## some values are missing, which is weird.
+summary(mintempall$q10.pred); nrow(mintempall)
+
+
+length(unique(mintempall$q10.pred - mintempall$q10))
+432 / 4; 436 / 4
+length(unique(mintempall$city))
+## seems like we are missing a few observations for some of the quantiles
+
+mintempunique <- mintempall %>% distinct(q50.pred, .keep_all = TRUE)
+mintempunique$q90.diff <- mintempunique$q90.pred - mintempunique$q90
+mintempunique$q50.diff <- mintempunique$q50.pred - mintempunique$q50
+mintempunique$q10.diff <- mintempunique$q10.pred - mintempunique$q10
+
+qplot(mintempunique$q10.diff)
+qplot(mintempunique$q50.diff)
+qplot(mintempunique$q90.diff)
+
+## kind of the opposite pattern for minimum daily temperature, though not quite
+## as extreme as the max temperature. Here, we see overprediction for the
+## lowest quantile and for the median. There is underprediction for the largest
+## quantile
+
+
+ggplot(data = mintempunique, aes(x = q90.diff)) + 
+  geom_histogram(fill = "white", colour = "black", bins = 14) + 
+  facet_wrap( ~season)
+
+ggplot(data = mintempunique, aes(x = as.factor(LengthForecastDayOnly),
+  y = q10.diff)) + 
+  geom_boxplot() +
+  facet_wrap( ~season)
+
+## predictions do seem to get better but are still either under or over predicting,
+## depending on the quantile.
