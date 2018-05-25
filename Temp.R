@@ -2,7 +2,9 @@
 
 library(lubridate)
 library(dplyr)
+library(ggplot2)
 
+all.df_completeSub <- read.csv("all_df_completesub.csv")
 complete_df <- all.df_completeSub
 
 summary(all.df_completeSub)
@@ -87,28 +89,86 @@ ggplot(data = subset(maxtempall, city == "Buffalo" & LengthForecastDayOnly == 4)
 quantile(maxtempall$weatherval, c(0.10, 0.90))
 
 
+distinct(subset(maxtempall, city == "Buffalo" & season == "Winter"),
+  Date) ## about 259 observations per city, season, and date combination
 
-ninetyperc <- (maxtempall %>% dplyr::group_by(city, season) %>%
+maxtempall <- (maxtempall %>% dplyr::group_by(city, season) %>%
     dplyr::distinct(maxtempall, Date, .keep_all = TRUE) %>% 
-    dplyr::mutate(q90 = quantile(weatherval, .750)))
+    dplyr::mutate(q90 = quantile(weatherval, .90)) %>% 
+  dplyr::mutate(q50 = quantile(weatherval, .50)) %>% 
+  dplyr::mutate(q10 = quantile(weatherval, .10)))
 
 
-head(ninetyperc)
 
-testdf <- ninetyperc %>% dplyr::filter(LengthForecastDayOnly == 3) %>%
+head(maxtempall)
+
+maxtempall <- maxtempall %>% dplyr::filter(LengthForecastDayOnly == 3) %>%
   dplyr::group_by(city, season) %>%
-  dplyr::mutate(testval = predict(loess(forecastValue ~ weatherval, family = "gaussian", span = .75, degree = 1), newdata = q90[1]))
-str(testdf)
-testdf
+  dplyr::mutate(q90.pred = predict(loess(forecastValue ~ weatherval, family = "gaussian", span = .75, degree = 1), newdata = q90[1])) %>%
+  dplyr::mutate(q50.pred = predict(loess(forecastValue ~ weatherval, family = "gaussian", span = .75, degree = 1), newdata = q50[1])) %>%
+  dplyr::mutate(q10.pred = predict(loess(forecastValue ~ weatherval, family = "gaussian", span = .75, degree = 1), newdata = q10[1]))
 
-testdf[ ,c("testval", "q90")]
-ggplot(data = testdf, aes(x = q90, y = testval, colour = season)) + geom_point() +
+
+maxtempall[ ,c("q90", "q90.pred")]
+
+subset(maxtempall, q90 == 86)$q90.pred
+
+ggplot(data = maxtempall, aes(x = q90, y = q90.pred, colour = season)) + geom_point() +
   geom_abline(slope = 1, intercept = 0)
 
-qplot(unique(testdf$testval - testdf$q90))
+## some values are missing, which is weird.
+summary(maxtempall$q10.pred); nrow(maxtempall)
+
+
+length(unique(maxtempall$q10.pred - maxtempall$q10))
+432 / 4; 436 / 4
+length(unique(maxtempall$city))
+## seems like we are missing a city for some of the quantiles
+
+maxtempunique <- maxtempall %>% distinct(q50.pred, .keep_all = TRUE)
+maxtempunique$q90.diff <- maxtempunique$q90.pred - maxtempunique$q90
+maxtempunique$q50.diff <- maxtempunique$q50.pred - maxtempunique$q50
+maxtempunique$q10.diff <- maxtempunique$q10.pred - maxtempunique$q10
+
+qplot(maxtempunique$q10.diff)
+
+cbind(maxtempunique$q10.diff, maxtempunique$city, maxtempunique$season)
+levels(maxtempunique$city)[4]
+levels(maxtempunique$season)[2]
+
+## check out why Loess is not fitting for Atlanta in the Spring
+
+subset(maxtempall, city == "Atlanta" & season == "Spring")$q10
+subset(maxtempall, city == "Atlanta" & season == "Spring")$q10.pred
+## not fitting because loess turns in NAs
 
 loess.mod <- loess(forecastValue ~ weatherval, family = "gaussian",
-  data = subset(maxtempall, city == "Buffalo" & season == "Winter"),
-  span = .75, degree = 1)
-predict(loess.mod, newdata = 50)
-ninetyperc
+  data = subset(maxtempall, city == "Atlanta" & season == "Spring"),
+  span = 0.75, degree = 1)
+loess.mod
+predict(loess.mod, newdata = 63); predict(loess.mod, newdata = 67)
+## 63 seems to be outside the scope of the model, I suppose. It should not be 
+## because it is only the 10th percentile of the actual data....
+
+
+## ANYWAYS
+
+qplot(maxtempunique$q10.diff)
+qplot(maxtempunique$q50.diff)
+qplot(maxtempunique$q90.diff)
+
+## we have overprediction for the lower temperatures and underprediction
+## for the "average" and higher temperatures, lumping data across cities and seasons
+
+ggplot(data = maxtempunique, aes(x = q10.diff)) + 
+  geom_histogram(fill = "white", colour = "black", bins = 14) + 
+  facet_wrap( ~season)
+## might be interesting to check if my "outliers" match up with Erin's
+
+ggplot(data = maxtempunique, aes(x = q50.diff)) + 
+  geom_histogram(fill = "white", colour = "black", bins = 14) + 
+  facet_wrap( ~season)
+
+ggplot(data = maxtempunique, aes(x = q90.diff)) + 
+  geom_histogram(fill = "white", colour = "black", bins = 14) + 
+  facet_wrap( ~season)
