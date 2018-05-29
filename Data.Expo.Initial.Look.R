@@ -85,7 +85,7 @@ sum(merged.df$CloudCover < 0, na.rm = TRUE)
 str(forecastdf)
 summary(forecastdf$Citynum)
 
-## try to merge with locatiions data set
+## try to merge with locations data set
 locations$citynum <- as.numeric(rownames(locations))
 
 foreloc.df <- merge(forecastdf, locations, by.x = "Citynum", by.y = "citynum")
@@ -237,11 +237,14 @@ all.df_completeSub <- subset(all.df_complete, all.df_complete$DateofForecast <=
                                all.df_complete$Date)
 names(all.df_completeSub)[7] <- "forecastValue"
 
+## Erin
 write.csv(all.df_completeSub, "~/Desktop/DataExpo2018/all_df_completesub.csv")
-write.csv(all.df_completeSub, "all_df_completesub.csv")
-
-
 all.df_completeSub <- read.csv("~/Desktop/DataExpo2018/all_df_completesub.csv")
+
+## Matt
+write.csv(all.df_completeSub, "all_df_completesub.csv")
+all.df_completeSub <- read.csv("all_df_completesub.csv")
+
 
 
 # subset Eugene and only Min Temps
