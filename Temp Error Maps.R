@@ -9,7 +9,7 @@ names(complete_df)[8] <- "forecastValue"
 
 # subset the data into sets of only max and min temps 
 maxTemp <- subset(maxtempall, weathermeas == "MaxTemp")
-minTemp <- subset(maxtempall, weathermeas == "MinTemp")
+minTemp <- subset(mintempall, weathermeas == "MinTemp")
 
 maxTemp$Date <- as.Date(maxTemp$Date)
 minTemp$Date <- as.Date(minTemp$Date)
@@ -117,9 +117,39 @@ leaflet(winter_max_error_F1) %>% addTiles() %>%
 
 ##### Try to animate maps #######
 
+
+maxTempSummary <- maxTemp %>% group_by(city, season, LengthForecastDayOnly) %>%
+  summarize(avgError = mean(Error), longitude = mean(longitude), latitude = mean(latitude))
+
+
 ui <- fluidPage(
-  sliderInput()
+  sliderInput("time", "ForecastLength", min(maxTemp$LengthForecastDayOnly), 
+              max(maxTemp$LengthForecastDayOnly), 
+              value=min(maxTemp$LengthForecastDayOnly),
+              step=1, animate = T), 
+  leafletOutput("maxTempMap")
 )
+
+server <- function(input, output, session){
+  points <- reactive({
+    maxTempSummary[maxTempSummary$season == "Winter" & 
+                     complete.cases(maxTempSummary) == TRUE & maxTempSummary$city == "Albany",] %>% 
+      filter(LengthForecastDayOnly == input$time)
+  })
+
+  output$maxTempMap <- renderLeaflet({
+    leaflet() %>% addTiles() %>% 
+      addCircles(lng=~longitude, lat =~latitude, weight=1, radius=~(abs(avgError)^2)*7500)
+  })
+}
+
+
+shinyApp(ui,server)
+
+
+
+
+
 
 
 
