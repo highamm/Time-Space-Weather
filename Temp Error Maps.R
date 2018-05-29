@@ -4,11 +4,14 @@ library(leaflet)
 library(dplyr)
 library(maps)
 
+## Matt only
+complete_df <- all.df_completeSub
+
 complete_df <- read.csv("~/Desktop/DataExpo2018/all_df_completesub.csv")
 names(complete_df)[8] <- "forecastValue"
 
 # subset the data into sets of only max and min temps 
-maxTemp <- subset(maxtempall, weathermeas == "MaxTemp")
+maxTemp <- subset(complete_df, weathermeas == "MaxTemp")
 minTemp <- subset(mintempall, weathermeas == "MinTemp")
 
 maxTemp$Date <- as.Date(maxTemp$Date)
@@ -117,35 +120,96 @@ leaflet(winter_max_error_F1) %>% addTiles() %>%
 
 ##### Try to animate maps #######
 
+maxTemp$season <- cut(maxTemp$month, 
+  breaks = c(0.5, 2.5, 5.5, 8.5, 11.5, 12.5), 
+  labels = c("Winter", "Spring", "Summer", "Fall", "Winter2"), 
+  right = FALSE)
 
 maxTempSummary <- maxTemp %>% group_by(city, season, LengthForecastDayOnly) %>%
   summarize(avgError = mean(Error), longitude = mean(longitude), latitude = mean(latitude))
+maxTempSummarysub <- subset(maxTempSummary, city == "Albany")
 
+summary(maxTempSummary$LengthForecastDayOnly)
 
-ui <- fluidPage(
-  sliderInput("time", "ForecastLength", min(maxTemp$LengthForecastDayOnly), 
-              max(maxTemp$LengthForecastDayOnly), 
-              value=min(maxTemp$LengthForecastDayOnly),
-              step=1, animate = T), 
-  leafletOutput("maxTempMap")
+leaflet(data = maxTempSummary) %>% addTiles() %>% 
+  addCircles(lng=~longitude, lat =~latitude, weight=1, radius=~(abs(avgError)^2)*7500)
+
+library(shiny)
+library(ggplot2)
+
+ui <- navbarPage("Data Expo",
+  tabPanel("Leaflet Map",
+  
+  fluidPage(titlePanel("Title of Leaflet Map"),
+  sidebarLayout(
+    sidebarPanel(helpText("Words that we want here"),
+    sliderInput("time", label = p("Forecast Length"),
+      min = min(maxTempSummary$LengthForecastDayOnly), 
+      max = max(maxTempSummary$LengthForecastDayOnly), 
+      value = min(maxTempSummary$LengthForecastDayOnly),
+      step = 1, animate = T) 
+  ),
+    mainPanel(
+      plotOutput("MaxTempMap"),
+      leafletOutput("leafletmap")
+      
+    )
+
 )
+)),
+  tabPanel("Possible Second Graph",
+    fluidPage(
+      titlePanel("Second Title")
+    )))
 
 server <- function(input, output, session){
   points <- reactive({
-    maxTempSummary[maxTempSummary$season == "Winter" & 
-                     complete.cases(maxTempSummary) == TRUE & maxTempSummary$city == "Albany",] %>% 
-      filter(LengthForecastDayOnly == input$time)
+    maxTempSummary %>% 
+      dplyr::filter(LengthForecastDayOnly == input$time)
   })
 
-  output$maxTempMap <- renderLeaflet({
-    leaflet() %>% addTiles() %>% 
-      addCircles(lng=~longitude, lat =~latitude, weight=1, radius=~(abs(avgError)^2)*7500)
-  })
+  ##output$maxTempMap <- renderLeaflet({
+  ##  leaflet() %>% addTiles() %>% 
+  ##    addCircles(lng=~longitude, lat =~latitude, weight=1, radius=~(abs(avgError)^2)*7500)
+ ## })
+ 
+  
+  output$MaxTempMap <- renderPlot({
+   test.df <- points()
+   ggplot(data = test.df, aes(x = longitude, y = latitude)) +
+     geom_point(aes(colour = avgError))
+ })
+ 
+output$leafletmap <- renderLeaflet({
+  test.df <- points()
+    leaflet(data = test.df) %>% addTiles() %>% 
+      addCircles(lng=~longitude, lat =~latitude, weight = 1, radius=~(abs(avgError)^2)*7500)
+   })
 }
 
 
 shinyApp(ui,server)
 
+## other notes: use something like this to switch between columns of data:
+##   datasetInput <- reactive({
+##switch(input$ts,
+##  "Johnson & Johnson quarterly" = jj,
+##  "CO2" = co2)
+##})
+##
+##  # reactive graph title
+##graphtitle <- reactive({
+##  switch(input$ts,
+##    "Johnson & Johnson quarterly" = "Johnson & Johnson Quarterly Earnings",
+##    "CO2" = "Monthly CO2 concentrations")
+##})
+
+# reactive axis label
+##axislabel <- reactive({
+##  switch(input$ts,
+##    "Johnson & Johnson quarterly" = "earnings",
+##    "CO2" = "ppm")
+##})
 
 
 
