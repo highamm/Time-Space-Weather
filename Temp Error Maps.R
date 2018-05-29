@@ -34,18 +34,19 @@ fall_min <- subset(minTemp, month %in% c(9, 10, 11))
 winter_min <- subset(minTemp, month %in% c(12, 1, 2))
 
 
-spring_max_avg_F1 <- (spring_max[spring_max$LengthForecastDayOnly==1 & 
-                                   complete.cases(spring_max), ] %>% 
-  group_by(AirPtCd) %>% summarize(mean_max = mean(weatherval)))
-spring_max_avg_F1$forecast <- (spring_max[spring_max$LengthForecastDayOnly==1 & 
-                                            complete.cases(spring_max), ] %>% 
-  group_by(AirPtCd) %>% summarize(mean_forecast = mean(forecastValue)))$mean_forecast
+# spring_max_avg_F1 <- (spring_max[spring_max$LengthForecastDayOnly==1 & 
+#                                    complete.cases(spring_max), ] %>% 
+#   group_by(AirPtCd) %>% summarize(mean_max = mean(weatherval)))
+# spring_max_avg_F1$forecast <- (spring_max[spring_max$LengthForecastDayOnly==1 & 
+#                                             complete.cases(spring_max), ] %>% 
+#   group_by(AirPtCd) %>% summarize(mean_forecast = mean(forecastValue)))$mean_forecast
+# 
+# 
+# spring_max_avg_F1 <- merge(x=spring_max_avg_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
+#                     by.y = "AirPtCd", all.x=TRUE)
 
 
-spring_max_avg_F1 <- merge(x=spring_max_avg_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
-                    by.y = "AirPtCd", all.x=TRUE)
-
-
+# compute the average of the errors (error = hist temp - forecast temp)
 spring_max_error_F1 <- spring_max[spring_max$LengthForecastDayOnly==1 & 
                                      complete.cases(spring_max), ] %>% 
                           group_by(AirPtCd) %>% summarize(mean_error = mean(Error))
@@ -92,6 +93,7 @@ fall_max_error_F1$AbsError <- abs(fall_max_error_F1$mean_error)
 #              popup=~city, col="Green")
 
 pal <- colorFactor(c("navy", "red"), domain = c(TRUE,FALSE))
+
 leaflet(spring_max_error_F1) %>% addTiles() %>% 
   addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError^2)*7500, 
              popup=~city, color=~pal(TrueValGreater)) 
@@ -111,6 +113,13 @@ leaflet(winter_max_error_F1) %>% addTiles() %>%
 
 
 
+
+
+##### Try to animate maps #######
+
+ui <- fluidPage(
+  sliderInput()
+)
 
 
 
