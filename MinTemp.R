@@ -209,9 +209,22 @@ ggplot(data = mintempunique, aes(x = q90.diff)) +
   facet_wrap( ~season)
 
 ggplot(data = mintempunique, aes(x = as.factor(LengthForecastDayOnly),
-  y = q10.diff)) + 
+  y = q50.diff)) + 
   geom_boxplot() +
   facet_wrap( ~season)
 
+mintempall$Error <- mintempall$forecastValue - mintempall$weatherval
+
+mintempall <- mintempall %>% dplyr::filter(LengthForecastDayOnly %in% c(1, 2, 3, 4, 5)) %>%
+  dplyr::group_by(city, season, LengthForecastDayOnly) %>%
+  dplyr::summarize(meanerror = mean(Error))
+  
+View(mintempall)
+str(mintempall$meanerror)
+
+ggplot(data = mintempall, aes(x = as.factor(LengthForecastDayOnly),
+  y = meanerror)) + 
+  geom_boxplot() +
+  facet_wrap( ~season)
 ## predictions do seem to get better but are still either under or over predicting,
 ## depending on the quantile.
