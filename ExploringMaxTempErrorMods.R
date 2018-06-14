@@ -69,13 +69,21 @@ buffonly$adjmeanhum <- lag(buffonly$Mean_Humidity)
 ## following models ignore time-dependence in weather data
 
 ## underprediction of max temps
-summary(with(buffonly,
-  lm(forecastDiff ~  adjmeanhum)))
+moderrors <- with(buffonly,
+  lm(forecastDiff ~  adjmeanhum))
+acf(moderrors$residuals) 
+pacf(moderrors$residuals)
+## there seems to be a little time dependence among the errors in forecast
+## and observed with mean humidity in the model for Buffalo.
+## 
+## I would not expect there to be much time dependence in the errors because
+## I do not think that overpredicting the temperature on one day would necessarily
+## indicate overprediction or underprediction on the following day.
 
 ## include season and humidity
-summary(with(buffonly,
-  lm(weatherval ~ forecastValue + adjmeanhum)))
-
+mod <- with(buffonly,
+  lm(weatherval ~ forecastValue + adjmeanhum))
+acf(mod$residuals) 
 
 ggplot(data = maxtempwpreds, aes(x = Mean_Humidity, y = forecastDiff)) + 
   geom_point()
