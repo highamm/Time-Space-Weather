@@ -1,6 +1,31 @@
 ## exploring visualizations and models for maxtemp errors
 
 
+#### Interpreting errors models: (all the stuff written here is based on one day forecasts)
+
+# A negative value of forecastDiff means that the forecast predicted a higher max temperature 
+# than what was observed. Thus a negative forecastDiff value implies an overestimate and a 
+# positive forecastDiff value implies an underestimate. The median forecastDiff across all seasons
+# is 1 and the mean forecastDiff across all seasons is 0.861. Agrees with our idea that max temps
+# are underestimated. For the different seasons:
+# Spring - median forecastDiff = 1 , mean forecastDiff = 1.013
+# Summer - median forecastDiff = 0, mean forecastDiff = 0.39
+# Fall - median forecastDiff = 1, mean forecastDiff = 0.9506
+# Winter - median forecastDiff = 1, mean forecastDiff = 1.382
+
+# Winter maxtemps are the most underpredicted on average, Summer maxtemps least underpredicted 
+# on average
+# If coefficient estimate for wind speed (in the error model) is positive, that implies that 
+# as wind speed increases the prediction for max temp is expected to be further from the observed
+# temp but as an underestimate. The covariates that have negative coefficient estimates have the
+# opposite interpretation. 
+
+
+
+
+
+
+
 library(lubridate)
 library(dplyr)
 library(ggplot2)
