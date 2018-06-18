@@ -1,14 +1,16 @@
 ## exploring visualizations and models for maxtemp errors
 
-<<<<<<< HEAD
+
 library(lubridate)
 library(dplyr)
+library(ggplot2)
+library(lme4)
 
 all.df_completeSub <- read.csv("all_df_completesub.csv")
+colnames(all.df_completeSub)[8] <- "forecastValue"
 histWeather <- read.csv("histWeather.csv")
 
-=======
->>>>>>> 1037ccb2fbf8124361d97b1a1f4543461754c4c3
+
 complete_df <- all.df_completeSub
 str(complete_df)
 
@@ -40,10 +42,16 @@ springclean <- springtemp[-which(springtemp$weatherval < 5 & springtemp$forecast
 summerclean <- summertemp
 fallclean <- falltemp
 winterclean <- wintertemp[-which(wintertemp$weatherval > 95), ]
-winterclean <- winterclean[-which(winterclean$forecastValue < 32 &
-    winterclean$weatherval > 75), ]
-winterclean <- winterclean[-which(winterclean$forecastValue > 31 &
-    winterclean$weatherval < 5), ]
+
+#### ISSUE
+#winterclean <- winterclean[-which(winterclean$forecastValue < 32 &
+   # winterclean$weatherval > 75), ]
+
+winterclean <- winterclean[winterclean$absForecastDiff < 26, ]
+
+
+# winterclean <- winterclean[winterclean$forecastValue < 31 &
+#     winterclean$weatherval < 5), ]
 
 ## clean(er) data set
 maxtempall <- rbind(springclean, summerclean, fallclean, winterclean)
@@ -54,10 +62,9 @@ str(maxtemponeday)
 
 histWeather <- histWeather
 str(histWeather)
-<<<<<<< HEAD
+
 histWeather$Date <- as.Date(histWeather$Date, format = "%Y-%m-%d")
-=======
->>>>>>> 1037ccb2fbf8124361d97b1a1f4543461754c4c3
+
 
 maxtempwpreds <- merge(histWeather, maxtemponeday, 
   by.x = c("Date", "AirPtCd"),
@@ -66,7 +73,10 @@ str(maxtempwpreds)
 
 ## first, fit a model to 1 city
 
-ggplot(data = subset(test.df, city == "Buffalo"),
+# Just for Buffalo 
+# temps are a lot less variable in the summer than in the winter 
+# spring and fall similar
+ggplot(data = subset(maxtempwpreds, city == "Buffalo"),
   aes(x = forecastValue, y = weatherval, group = season)) +
   geom_point() + 
   facet_wrap( ~ season) + 
@@ -82,10 +92,46 @@ buffonly$adjmeanhum <- lag(buffonly$Mean_Humidity)
 ## following models ignore time-dependence in weather data
 
 ## underprediction of max temps
+
+# model for errors using humidity of previous day 
 moderrors <- with(buffonly,
   lm(forecastDiff ~  adjmeanhum))
 acf(moderrors$residuals) 
 pacf(moderrors$residuals)
+
+
+# model for errors using same day humidity
+moderrors2 <- with(buffonly, 
+                   lm(forecastDiff ~ Mean_Humidity))
+
+acf(moderrors2$residuals)
+
+
+# all mean covariates (except temperature)
+moderrors3 <- lm(forecastDiff ~ MeanDew_PointF + Mean_Humidity + 
+                        Mean_Sea_Level_PressureIn + Mean_VisibilityMiles + 
+                   Mean_Wind_SpeedMPH, 
+                 data=maxtempwpreds)
+
+summary(moderrors3)
+plot(moderrors3)
+
+
+moderrors4 <- lm(forecastDiff ~ MeanDew_PointF + Mean_Humidity + 
+                   Mean_Sea_Level_PressureIn + Mean_VisibilityMiles + 
+                   Mean_Wind_SpeedMPH + as.factor(season) + Mean_Wind_SpeedMPH*as.factor(season), 
+                 data=maxtempwpreds)
+summary(moderrors4)
+plot(moderrors4)
+
+
+moderrorsrand <- lmer(forecastDiff ~ MeanDew_PointF + Mean_Humidity + 
+                        Mean_Sea_Level_PressureIn + Mean_VisibilityMiles + 
+                        Mean_Wind_SpeedMPH + as.factor(season) + 
+                        Mean_Wind_SpeedMPH*as.factor(season) + (Mean_Wind_SpeedMPH | city), 
+                      data=maxtempwpreds)
+summary(moderrorsrand)
+
 ## there seems to be a little time dependence among the errors in forecast
 ## and observed with mean humidity in the model for Buffalo.
 ## 
