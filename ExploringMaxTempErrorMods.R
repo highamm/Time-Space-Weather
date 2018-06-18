@@ -20,6 +20,9 @@
 # temp but as an underestimate. The covariates that have negative coefficient estimates have the
 # opposite interpretation. 
 
+# Including city and city*wind as random effects in the model: removes potential confounding
+# between the two variables in the interpretation? 
+
 
 
 
