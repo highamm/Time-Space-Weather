@@ -1,11 +1,14 @@
 ## exploring visualizations and models for maxtemp errors
 
+<<<<<<< HEAD
 library(lubridate)
 library(dplyr)
 
 all.df_completeSub <- read.csv("all_df_completesub.csv")
 histWeather <- read.csv("histWeather.csv")
 
+=======
+>>>>>>> 1037ccb2fbf8124361d97b1a1f4543461754c4c3
 complete_df <- all.df_completeSub
 str(complete_df)
 
@@ -51,7 +54,10 @@ str(maxtemponeday)
 
 histWeather <- histWeather
 str(histWeather)
+<<<<<<< HEAD
 histWeather$Date <- as.Date(histWeather$Date, format = "%Y-%m-%d")
+=======
+>>>>>>> 1037ccb2fbf8124361d97b1a1f4543461754c4c3
 
 maxtempwpreds <- merge(histWeather, maxtemponeday, 
   by.x = c("Date", "AirPtCd"),
