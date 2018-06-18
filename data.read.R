@@ -26,9 +26,20 @@ foreloc.df <- merge(forecastdf, locations, by.x = "Citynum", by.y = "citynum")
 
 library(tidyr)
 
+str(histWeather)
+head(histWeather)
 ## first, get rid of unnecessary columns in histWeather
 histWeathersub <- histWeather[ ,c("Date", "Max_TemperatureF",
   "Min_TemperatureF", "PrecipitationIn", "AirPtCd")]
+
+## keeping all the variables in histWeathernow
+##histWeathersub <- histWeather[ ,c("Date", "Max_TemperatureF",
+##  "Min_TemperatureF", "Mean_TemperatureF", "Max_Dew_PointF",
+##  "MeanDew_PointF", "Min_DewpointF", "Max_Humidity", "Mean_Humidity",
+##  "Min_Humidity", "Mean_Sea_Level_PressureIn", 
+##  "Mean_VisibilityMiles", "Max_Wind_SpeedMPH", "Mean_Wind_SpeedMPH",
+##  "Max_Gust_SpeedMPH", "PrecipitationIn", "CloudCover",
+##  "WindDirDegrees", "AirPtCd")]
 
 ## wide to long
 histWeatherlong <- gather(histWeathersub, weathermeas, weatherval, 

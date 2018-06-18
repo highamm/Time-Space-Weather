@@ -62,6 +62,8 @@ mintempall <- rbind(springclean, summerclean, fallclean, winterclean)
 summary(mintempall$season)
 summary(mintempall)
 
+#write.csv(mintempall, "mintempall.csv")
+
 ## one pattern I've noticed: forecast gets much worse for longer days for 
 ## less temperate cities, which makes sense.
 ## might think about how to get different cities on the same plot

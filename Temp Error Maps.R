@@ -10,8 +10,12 @@ complete_df <- all.df_completeSub
 complete_df <- read.csv("~/Desktop/DataExpo2018/all_df_completesub.csv")
 names(complete_df)[8] <- "forecastValue"
 
+# File paths for Erin
+maxtempall <- read.csv("~/Desktop/DataExpo2018/DataExpo2018/maxtempall.csv")
+mintempall <- read.csv("~/Desktop/DataExpo2018/DataExpo2018/mintempall.csv")
+
 # subset the data into sets of only max and min temps 
-maxTemp <- subset(complete_df, weathermeas == "MaxTemp")
+maxTemp <- subset(maxtempall, weathermeas == "MaxTemp")
 minTemp <- subset(mintempall, weathermeas == "MinTemp")
 
 maxTemp$Date <- as.Date(maxTemp$Date)
@@ -26,15 +30,15 @@ nrow(unique(maxTemp[c("Date", "AirPtCd", "DateofForecast")]))
 maxTemp$month <- month(as.POSIXlt(maxTemp$Date))
 minTemp$month <- month(as.POSIXlt(minTemp$Date))
 
-spring_max <- subset(maxTemp, month %in% c(3, 4, 5))
-summer_max <- subset(maxTemp, month %in% c(6, 7, 8))
-fall_max <- subset(maxTemp, month %in% c(9, 10, 11))
-winter_max <- subset(maxTemp, month %in% c(12, 1, 2))
+spring_max <- subset(maxTemp, season == "Spring")
+summer_max <- subset(maxTemp, season == "Summer")
+fall_max <- subset(maxTemp, season == "Fall")
+winter_max <- subset(maxTemp, season == "Winter")
 
-spring_min <- subset(minTemp, month %in% c(3, 4, 5))
-summer_min <- subset(minTemp, month %in% c(6, 7, 8))
-fall_min <- subset(minTemp, month %in% c(9, 10, 11))
-winter_min <- subset(minTemp, month %in% c(12, 1, 2))
+spring_min <- subset(minTemp, season == "Spring")
+summer_min <- subset(minTemp, season == "Summer")
+fall_min <- subset(minTemp, season == "Fall")
+winter_min <- subset(minTemp, season == "Winter")
 
 
 # spring_max_avg_F1 <- (spring_max[spring_max$LengthForecastDayOnly==1 & 
@@ -118,15 +122,22 @@ leaflet(winter_max_error_F1) %>% addTiles() %>%
 
 
 
+
+
+
+###### START SHINY #############
 ##### Try to animate maps #######
 
-maxTemp$season <- cut(maxTemp$month, 
-  breaks = c(0.5, 2.5, 5.5, 8.5, 11.5, 12.5), 
-  labels = c("Winter", "Spring", "Summer", "Fall", "Winter2"), 
-  right = FALSE)
+# maxTemp$season <- cut(maxTemp$month, 
+#   breaks = c(0.5, 2.5, 5.5, 8.5, 11.5, 12.5), 
+#   labels = c("Winter", "Spring", "Summer", "Fall", "Winter2"), 
+#   right = FALSE)
+# maxtemp$season[maxtemp$season == "Winter2"] <- "Winter"
+# maxtemp$season <- factor(maxtemp$season)
 
 maxTempSummary <- maxTemp %>% group_by(city, season, LengthForecastDayOnly) %>%
   summarize(avgError = mean(Error), longitude = mean(longitude), latitude = mean(latitude))
+maxTempSummary$TrueValGreater <- maxTempSummary$avgError >= 0
 maxTempSummarysub <- subset(maxTempSummary, city == "Albany")
 
 summary(maxTempSummary$LengthForecastDayOnly)
@@ -135,7 +146,7 @@ leaflet(data = maxTempSummary) %>% addTiles() %>%
   addCircles(lng=~longitude, lat =~latitude, weight=1, radius=~(abs(avgError)^2)*7500)
 
 library(shiny)
-library(ggplot2)
+
 
 ui <- navbarPage("Data Expo",
   tabPanel("Leaflet Map",
@@ -164,7 +175,7 @@ ui <- navbarPage("Data Expo",
 
 server <- function(input, output, session){
   points <- reactive({
-    maxTempSummary %>% 
+    maxTempSummary[maxTempSummary$season == "Winter", ] %>% 
       dplyr::filter(LengthForecastDayOnly == input$time)
   })
 
@@ -183,12 +194,13 @@ server <- function(input, output, session){
 output$leafletmap <- renderLeaflet({
   test.df <- points()
     leaflet(data = test.df) %>% addTiles() %>% 
-      addCircles(lng=~longitude, lat =~latitude, weight = 1, radius=~(abs(avgError)^2)*7500)
+      addCircles(lng=~longitude, lat =~latitude, weight = 1, 
+                 radius=~(abs(avgError)^2)*7500, color=~pal(TrueValGreater))
    })
 }
 
 
-shinyApp(ui,server)
+shinyApp(ui,server) 
 
 ## other notes: use something like this to switch between columns of data:
 ##   datasetInput <- reactive({
