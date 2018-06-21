@@ -255,8 +255,7 @@ predict(mod3, todayinfo2) - todayinfo2$forecastValue
 library(rpart)
 
 ## actually is not using city or season in tree construction, which is interesting
-tree1 <- rpart(weatherval ~  forecastValue + season + city, data = maxtemplags,
-  method = "anova") 
+tree1 <- rpart(weatherval ~  forecastValue + season + city + adjmeanhum, data = maxtemplags) 
 printcp(tree1)
 ## prune according to the minimum x.error
 tree1.pruned <- summary(prune(tree1, cp = 0.01000))
