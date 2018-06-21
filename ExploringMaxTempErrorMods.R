@@ -252,5 +252,18 @@ todayinfo2 <- data.frame("forecastValue" = 100,
   "city" = "Atlanta")
 predict(mod3, todayinfo2) - todayinfo2$forecastValue
 
+library(rpart)
 
+## actually is not using city or season in tree construction, which is interesting
+tree1 <- rpart(weatherval ~  forecastValue + season + city, data = maxtemplags,
+  method = "anova") 
+printcp(tree1)
+## prune according to the minimum x.error
+tree1.pruned <- summary(prune(tree1, cp = 0.01000))
+printcp(tree1.pruned)
 
+library(rpart.plot)
+rpart.plot(tree1.pruned)
+
+## unless i'm doing something wrong, the regression tree is doing an extremely
+## shitty job.
