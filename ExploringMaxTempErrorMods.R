@@ -181,3 +181,76 @@ ggplot(data = maxtempwpreds, aes(x = Mean_Humidity, y = forecastDiff)) +
 summary(with(subset(maxtempwpreds, city == "Buffalo"),
   lm(weatherval ~ forecastValue + season + Mean_Wind_SpeedMPH + 
       Mean_Humidity)))
+
+
+## predicting max temperature
+
+## break up by city, then sort by date, then take lags of predictors, 
+## then put the cities back together
+
+library(dplyr)
+
+## maxtempwpreds is already sorted by date:
+## qplot(1:nrow(maxtempwpreds), maxtempwpreds$Date)
+
+maxtemplags <- maxtempwpreds %>% dplyr::group_by(city) %>%
+  mutate(adjmeanhum = lag(Mean_Humidity),
+    adjmeanwind = lag(Mean_Wind_SpeedMPH),
+    adjmeandew = lag(MeanDew_PointF),
+    adjmeanpressure = lag(Mean_Sea_Level_PressureIn),
+    adjmeanvis = lag(Mean_VisibilityMiles))
+str(maxtemplags)
+summary(maxtemplags$adjmeandew)
+
+## seems to be doing what we want it to do with the lag function
+cbind(subset(maxtemplags, city == "Eugene")$Mean_Humidity, subset(maxtemplags, city == "Eugene")$adjmeanhum)[200:250, ]
+
+
+mod <- with(maxtemplags,
+  lm(weatherval ~ forecastValue + adjmeanhum +
+      adjmeandew + adjmeanwind + adjmeanpressure + adjmeanvis + season +
+      city))
+summary(mod)
+
+## when city"forecastValue is included as an interaction, one of the coefficients
+## is not estimated, which is strange 
+mod2 <- with(maxtemplags,
+  lm(weatherval ~ forecastValue + adjmeanhum +
+      adjmeandew + adjmeanwind + adjmeanpressure + season +
+      city))
+mod2sum <- summary(mod2)
+
+## I'd imagine we would want to do some sort of cross-validation in order to
+## select a model. but suppose we settled on mod2 as a final model. 
+## What we might want a user to be able to do is to give a bunch of weather conditions
+## for today in order to modify the prediction for tomorrow.
+summary(maxtemplags$adjmeanpressure)
+todayinfo <- data.frame("forecastValue" = 40,
+  "adjmeanhum" = 50,
+  "adjmeandew" = 15,
+  "adjmeanwind" = 10,
+  "adjmeanpressure" = 29.99,
+  "season" = "Spring",
+  "city" = "Atlantic City")
+str(todayinfo)
+str(mod2$coefficients)
+predict(mod2, todayinfo) - todayinfo$forecastValue
+## bump up your prediction by 3.92 degrees
+
+## might also think about a model with only season, city, and forecastValue,
+## in case someone might not have all of today's weather information.
+## a city:forecastValue interaction makes sense to include too. I would expect
+## forecastValue to be associated with the true temperature differently for
+## different cities and perhaps even in different seasons
+
+mod3 <- with(maxtemplags,
+  lm(weatherval ~ forecastValue*season*city))
+summary(mod3)
+
+todayinfo2 <- data.frame("forecastValue" = 100,
+  "season" = "Summer",
+  "city" = "Atlanta")
+predict(mod3, todayinfo2) - todayinfo2$forecastValue
+
+
+
