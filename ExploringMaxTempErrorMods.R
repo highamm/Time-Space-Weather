@@ -121,14 +121,14 @@ buffonly$adjmeanhum <- lag(buffonly$Mean_Humidity)
 
 ## underprediction of max temps
 
-# model for errors using humidity of previous day 
+# model for errors using humidity of previous day, Buffalo only 
 moderrors <- with(buffonly,
   lm(forecastDiff ~  adjmeanhum))
 acf(moderrors$residuals) 
 pacf(moderrors$residuals)
 
 
-# model for errors using same day humidity
+# model for errors using same day humidity, Buffalo only 
 moderrors2 <- with(buffonly, 
                    lm(forecastDiff ~ Mean_Humidity))
 
