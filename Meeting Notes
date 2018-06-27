@@ -91,3 +91,13 @@ A "how good are the temperature forecasts for your city" graphic, in which we de
 
 A "can you construct a good prediction model for your city" app. In this one, I am imagining us building a basic prediction model for temperature using some of the 
 variables in the historical weather data set (not really spending too much time on this and building one model for all of the cities). Then, we would have an app set up on our computer where the user would try to select some variables that he or she thinks would be important to his or her own city and see if their model beats our more general one (a simple way would be to build both models on a subset of the data and then test the model predictions on a test data set). 
+
+
+
+
+
+
+Poster:
+Maps?
+Models? 
+
