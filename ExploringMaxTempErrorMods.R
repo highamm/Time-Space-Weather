@@ -243,6 +243,14 @@ predict(mod2, todayinfo) - todayinfo$forecastValue
 ## forecastValue to be associated with the true temperature differently for
 ## different cities and perhaps even in different seasons
 
+
+# If the idea of this model is to allow someone to input information about their city 
+# in order to figure out how much to adjust their forecast by, I don't think we should 
+# treat city as fixed. If city is fixed that would mean the default city (absorbed in the
+# slope) would represent any city that isn't included in this data set. I'm not sure how 
+# we would deal with city in this case. If your city is included in the data then I guess 
+# it would be okay to keep city in the dataset 
+
 mod3 <- with(maxtemplags,
   lm(weatherval ~ forecastValue*season*city))
 summary(mod3)

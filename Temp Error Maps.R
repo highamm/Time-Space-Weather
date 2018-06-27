@@ -7,12 +7,14 @@ library(maps)
 ## Matt only
 complete_df <- all.df_completeSub
 
+locations <- read.csv("~/Desktop/DataExpo2018/locations.csv")
+
 complete_df <- read.csv("~/Desktop/DataExpo2018/all_df_completesub.csv")
 names(complete_df)[8] <- "forecastValue"
 
 # File paths for Erin
-maxtempall <- read.csv("~/Desktop/DataExpo2018/DataExpo2018/maxtempall.csv")
-mintempall <- read.csv("~/Desktop/DataExpo2018/DataExpo2018/mintempall.csv")
+maxtempall <- read.csv("~/Desktop/DataExpo2018/Data Expo 2018/maxtempall.csv")
+mintempall <- read.csv("~/Desktop/DataExpo2018/Data Expo 2018/mintempall.csv")
 
 # subset the data into sets of only max and min temps 
 maxTemp <- subset(maxtempall, weathermeas == "MaxTemp")
@@ -62,6 +64,13 @@ spring_max_error_F1 <- merge(x=spring_max_error_F1, y=locations[,c("longitude","
                            by.y = "AirPtCd", all.x=TRUE)
 spring_max_error_F1$AbsError <- abs(spring_max_error_F1$mean_error)
 
+spring_min_error_F1 <- spring_min[spring_min$LengthForecastDayOnly==1 &
+                                    complete.cases(spring_min), ] %>%
+  group_by(AirPtCd) %>% summarize(mean_error = mean(Error))
+spring_min_error_F1$TrueValGreater <- spring_min_error_F1$mean_error >= 0  
+spring_min_error_F1 <- merge(x=spring_min_error_F1, y=locations[,c("longitude", "latitude", "AirPtCd", "city")], by.x = "AirPtCd", 
+                             by.y = "AirPtCd", all.x=TRUE)
+spring_min_error_F1$AbsError <- abs(spring_min_error_F1$mean_error)
 
 winter_max_error_F1 <- winter_max[winter_max$LengthForecastDayOnly==1 & 
                                     complete.cases(winter_max), ] %>% 
@@ -71,6 +80,16 @@ winter_max_error_F1 <- merge(x=winter_max_error_F1, y=locations[,c("longitude","
                              by.y = "AirPtCd", all.x=TRUE)
 winter_max_error_F1$AbsError <- abs(winter_max_error_F1$mean_error)
 
+winter_min_error_F1 <- winter_min[winter_min$LengthForecastDayOnly==1 & 
+                                    complete.cases(winter_min), ] %>% 
+  group_by(AirPtCd) %>% summarize(mean_error = mean(Error))
+winter_min_error_F1$TrueValGreater <- winter_min_error_F1$mean_error >= 0
+winter_min_error_F1 <- merge(x=winter_min_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
+                             by.y = "AirPtCd", all.x=TRUE)
+winter_min_error_F1$AbsError <- abs(winter_min_error_F1$mean_error)
+
+
+
 ####
 summer_max_error_F1 <- summer_max[summer_max$LengthForecastDayOnly==1 & 
                                     complete.cases(summer_max), ] %>% 
@@ -79,6 +98,14 @@ summer_max_error_F1$TrueValGreater <- summer_max_error_F1$mean_error >= 0
 summer_max_error_F1 <- merge(x=summer_max_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
                              by.y = "AirPtCd", all.x=TRUE)
 summer_max_error_F1$AbsError <- abs(summer_max_error_F1$mean_error)
+
+summer_min_error_F1 <- summer_min[summer_min$LengthForecastDayOnly==1 & 
+                                    complete.cases(summer_min), ] %>% 
+  group_by(AirPtCd) %>% summarize(mean_error = mean(Error))
+summer_min_error_F1$TrueValGreater <- summer_min_error_F1$mean_error >= 0
+summer_min_error_F1 <- merge(x=summer_min_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
+                             by.y = "AirPtCd", all.x=TRUE)
+summer_min_error_F1$AbsError <- abs(summer_min_error_F1$mean_error)
 
 
 ####
@@ -91,6 +118,15 @@ fall_max_error_F1 <- merge(x=fall_max_error_F1, y=locations[,c("longitude","lati
                              by.y = "AirPtCd", all.x=TRUE)
 fall_max_error_F1$AbsError <- abs(fall_max_error_F1$mean_error)
 
+fall_min_error_F1 <- fall_min[fall_min$LengthForecastDayOnly==1 & 
+                                complete.cases(fall_min), ] %>% 
+  group_by(AirPtCd) %>% summarize(mean_error = mean(Error))
+fall_min_error_F1$TrueValGreater <- fall_min_error_F1$mean_error >= 0
+fall_min_error_F1 <- merge(x=fall_min_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
+                           by.y = "AirPtCd", all.x=TRUE)
+fall_min_error_F1$AbsError <- abs(fall_min_error_F1$mean_error)
+
+
 
 # Spring Max Temps Map 1 day forecast
 # leaflet(spring_max_avg_F1) %>% addTiles() %>% 
@@ -101,23 +137,61 @@ fall_max_error_F1$AbsError <- abs(fall_max_error_F1$mean_error)
 
 pal <- colorFactor(c("navy", "red"), domain = c(TRUE,FALSE))
 
+# Spring Max
 leaflet(spring_max_error_F1) %>% addTiles() %>% 
   addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError^2)*7500, 
-             popup=~city, color=~pal(TrueValGreater)) 
+             popup=~city, color=~pal(TrueValGreater)) %>%
+  addLegend("topright", colors=c("#000080", "#FF0000"), labels=c("Overestimate", "Underestimate"),
+            title="Squared average max temp forecast error: Spring")
 
+# Spring Min
+leaflet(spring_min_error_F1) %>% addTiles() %>% 
+  addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError^2)*7500, 
+             popup=~city, color=~pal(TrueValGreater)) %>%
+  addLegend("topright", colors=c("#000080", "#FF0000"), labels=c("Overestimate", "Underestimate"),
+            title="Squared average min temp forecast error: Spring")
+
+# Summer Max
 leaflet(summer_max_error_F1) %>% addTiles() %>% 
   addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError^2)*7500, 
-             popup=~city, color=~pal(TrueValGreater)) 
+             popup=~city, color=~pal(TrueValGreater)) %>%
+  addLegend("topright", colors=c("#000080", "#FF0000"), labels=c("Overestimate", "Underestimate"),
+            title="Squared average forecast error: Summer")
 
+# Summer Min
+leaflet(summer_min_error_F1) %>% addTiles() %>% 
+  addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError^2)*7500, 
+             popup=~city, color=~pal(TrueValGreater)) %>%
+  addLegend("topright", colors=c("#000080", "#FF0000"), labels=c("Overestimate", "Underestimate"),
+            title="Squared average forecast error: Summer")
 
+# Fall Max
 leaflet(fall_max_error_F1) %>% addTiles() %>% 
   addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError^2)*7500, 
-             popup=~city, color=~pal(TrueValGreater)) 
+             popup=~city, color=~pal(TrueValGreater)) %>%
+  addLegend("topright", colors=c("#000080", "#FF0000"), labels=c("Overestimate", "Underestimate"),
+            title="Squared average forecast error: Fall")
 
+# Fall Min
+leaflet(fall_min_error_F1) %>% addTiles() %>% 
+  addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError^2)*7500, 
+             popup=~city, color=~pal(TrueValGreater)) %>%
+  addLegend("topright", colors=c("#000080", "#FF0000"), labels=c("Overestimate", "Underestimate"),
+            title="Squared average forecast error: Fall")
+
+# Winter Max
 leaflet(winter_max_error_F1) %>% addTiles() %>% 
   addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError^2)*7500, 
-             popup=~city, color=~pal(TrueValGreater)) 
+             popup=~city, color=~pal(TrueValGreater)) %>%
+  addLegend("topright", colors=c("#000080", "#FF0000"), labels=c("Overestimate", "Underestimate"),
+            title="Squared average forecast error: Winter")
 
+# Winter Min
+leaflet(winter_min_error_F1) %>% addTiles() %>% 
+  addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError^2)*7500, 
+             popup=~city, color=~pal(TrueValGreater)) %>%
+  addLegend("topright", colors=c("#000080", "#FF0000"), labels=c("Overestimate", "Underestimate"),
+            title="Squared average forecast error: Winter")
 
 
 
