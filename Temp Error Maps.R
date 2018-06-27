@@ -197,6 +197,7 @@ leaflet(winter_min_error_F1) %>% addTiles() %>%
 
 
 
+# may be too complicated to include a shiny app in the poster?
 
 
 ###### START SHINY #############
