@@ -195,6 +195,17 @@ leaflet(winter_min_error_F1) %>% addTiles() %>%
 
 
 
+# Austin 
+
+Austin_fall_max <- fall_max[fall_max$city == "Austin", ] 
+
+summary(Austin_fall_max$weatherval)
+summary(Austin_fall_max$forecastValue)
+
+qplot(Austin_fall_max$weatherval, Austin_fall_max$forecastValue)
+
+Austin_spring_min <- spring_min[spring_min$city == "Austin", ] 
+qplot(Austin_spring_min$weatherval, Austin_spring_min$forecastValue)
 
 
 # may be too complicated to include a shiny app in the poster?
