@@ -83,3 +83,16 @@ which(dists > 500000)
 
 qplot(dists, spring_max_error_F1$AbsError)
 summary(lm(spring_max_error_F1$AbsError ~ dists))
+
+
+
+
+
+
+
+updlocations <- read.csv("~/Desktop/DataExpo2018/Data Expo 2018/updlocations.csv")
+
+dists <- distGeo(cbind(updlocations$longitude, updlocations$latitude), 
+                 cbind(updlocations$citylons, updlocations$citylats))
+
+
