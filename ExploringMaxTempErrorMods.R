@@ -255,11 +255,22 @@ mod3 <- with(maxtemplags,
   lm(weatherval ~ forecastValue*season*city))
 summary(mod3)
 
-todayinfo2 <- data.frame("forecastValue" = 100,
-  "season" = "Summer",
-  "city" = "Atlanta")
-predict(mod3, todayinfo2) - todayinfo2$forecastValue
+library(lme4)
+modrand <- lmer(weatherval ~  forecastValue + adjmeanhum
+  + adjmeanwind + season + (1 | city), 
+  data = maxtemplags)
+ranef(modrand)
 
+todayinfo2 <- data.frame("forecastValue" = 20,
+  "season" = "Winter",
+  "city" = "Blah",
+  "adjmeanhum" = 60,
+  "adjmeanwind" = 10)
+todayinfo2
+predict(modrand, todayinfo2,
+  allow.new.levels = TRUE) - todayinfo2$forecastValue
+predict(modrand)
+?predict.merMod
 library(rpart)
 
 ## actually is not using city or season in tree construction, which is interesting
