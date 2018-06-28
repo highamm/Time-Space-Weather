@@ -1,0 +1,114 @@
+"","city","state","longitude","latitude","AirPtCd","citstate","citylons","citylats"
+"1","Eastport","Maine",-66.99,44.91,"KBHB","Eastport Maine",-66.9899785,44.9061906
+"2","Bangor","Maine",-68.7833,44.8,"KBGR","Bangor Maine",-68.7712257,44.8016128
+"3","Portland","Maine",-70.25,43.6667,"KPWM","Portland Maine",-70.2568189,43.6590993
+"4","Boston","Massachusetts",-71.0833,42.35,"KBOS","Boston Massachusetts",-71.0588801,42.3600825
+"5","Providence","Rhode Island",-71.4,41.8333,"KPVD","Providence Rhode Island",-71.4128343,41.8239891
+"6","Manchester","New Hampshire",-71.5,43,"KMHT","Manchester New Hampshire",-71.4547891,42.9956397
+"7","Montpelier","Vermont",-72.5333,44.25,"KMPV","Montpelier Vermont",-72.5753869,44.2600593
+"8","Springfield","Massachusetts",-72.5667,42.1,"KCEF","Springfield Massachusetts",-72.589811,42.1014831
+"9","New Haven","Connecticut",-72.9167,41.3167,"KHVN","New Haven Connecticut",-72.9278835,41.308274
+"10","Albany","New York",-73.75,42.6667,"KALB","Albany New York",-73.7562317,42.6525793
+"11","New York","New York",-73.9667,40.7833,"KNYC","New York New York",-74.0059728,40.7127753
+"12","Atlantic City","New Jersey",-74.4167,39.3667,"KACY","Atlantic City New Jersey",-74.4229266,39.3642834
+"13","Philadelphia","Pennsylvania",-75.1667,39.95,"KPHL","Philadelphia Pennsylvania",-75.1652215,39.9525839
+"14","Dover","Delaware",-75.5267,39.1619,"KDOV","Dover Delaware",-75.5243682,39.158168
+"15","Scranton","Pennsylvania",-75.65,41.4,"KAVP","Scranton Pennsylvania",-75.6624122,41.408969
+"16","Watertown","New York",-75.9167,43.9667,"KART","Watertown New York",-75.9107565,43.9747838
+"17","Syracuse","New York",-76.1333,43.0333,"KSYR","Syracuse New York",-76.1474244,43.0481221
+"18","Baltimore","Maryland",-76.6333,39.3,"KDMH","Baltimore Maryland",-76.6121893,39.2903848
+"19","Richmond","Virginia",-77.4833,37.55,"KOFP","Richmond Virginia",-77.4360481,37.5407246
+"20","Wilmington","North Carolina",-77.95,34.2333,"KILM","Wilmington North Carolina",-77.9447102,34.2257255
+"21","Raleigh","North Carolina",-78.65,35.7667,"KRDU","Raleigh North Carolina",-78.6381787,35.7795897
+"22","Buffalo","New York",-78.8333,42.9167,"KBUF","Buffalo New York",-78.8783689,42.8864468
+"23","Charleston","South Carolina",-79.9333,32.7833,"KCHS","Charleston South Carolina",-79.9310512,32.7764749
+"24","Pittsburgh","Pennsylvania",-79.95,40.45,"KAGC","Pittsburgh Pennsylvania",-79.9958864,40.4406248
+"25","Roanoke","Virginia",-79.95,37.2833,"KROA","Roanoke Virginia",-79.9414266,37.2709704
+"26","Miami","Florida",-80.2,25.7667,"KMIA","Miami Florida",-80.1917902,25.7616798
+"27","Charlotte","North Carolina",-80.8333,35.2333,"KCLT","Charlotte North Carolina",-80.8431267,35.2270869
+"28","Columbia","South Carolina",-81.0333,34,"KCUB","Columbia South Carolina",-81.0348144,34.0007104
+"29","Savannah","Georgia",-81.0833,32.0833,"KSVN","Savannah Georgia",-81.091203,32.0808989
+"30","Cleveland","Ohio",-81.6167,41.4667,"KBKL","Cleveland Ohio",-81.6943605,41.49932
+"31","Charleston","West Virginia",-81.6333,38.35,"KCRW","Charleston West Virginia",-81.6326234,38.3498195
+"32","Jacksonville","Florida",-81.6667,30.3667,"KNIP","Jacksonville Florida",-81.655651,30.3321838
+"33","Key West","Florida",-81.8,24.55,"KEYW","Key West Florida",-81.7799871,24.5550593
+"34","Tampa","Florida",-82.45,27.95,"KTPA","Tampa Florida",-82.4571776,27.950575
+"35","Columbus","Ohio",-83.0167,40,"KOSU","Columbus Ohio",-82.9987942,39.9611755
+"36","Detroit","Michigan",-83.05,42.3333,"KDET","Detroit Michigan",-83.0457538,42.331427
+"37","Knoxville","Tennessee",-83.9333,35.95,"KTYS","Knoxville Tennessee",-83.9207392,35.9606384
+"38","Sault Ste Marie","Michigan",-84.35,46.5,"KANJ","Sault Ste Marie Michigan",-84.3475876,46.4977115
+"39","Atlanta","Georgia",-84.3833,33.75,"KATL","Atlanta Georgia",-84.3879824,33.7489954
+"40","Cincinnati","Ohio",-84.5,39.1333,"KLUK","Cincinnati Ohio",-84.5120196,39.1031182
+"41","Grand Rapids","Michigan",-85.6667,42.9667,"KGRR","Grand Rapids Michigan",-85.6680863,42.9633599
+"42","Louisville","Kentucky",-85.7667,38.25,"KSDF","Louisville Kentucky",-85.7584557,38.2526647
+"43","Indianapolis","Indiana",-86.1667,39.7667,"KEYE","Indianapolis Indiana",-86.158068,39.768403
+"44","Montgomery","Alabama",-86.3,32.35,"KMXF","Montgomery Alabama",-86.2999689,32.3668052
+"45","Nashville","Tennessee",-86.7833,36.1667,"KBNA","Nashville Tennessee",-86.7816016,36.1626638
+"46","Birmingham","Alabama",-86.8333,33.5,"KBHM","Birmingham Alabama",-86.80249,33.5206608
+"47","Chicago","Illinois",-87.6167,41.8333,"KMDW","Chicago Illinois",-87.6297982,41.8781136
+"48","Milwaukee","Wisconsin",-87.9167,43.0333,"KMKE","Milwaukee Wisconsin",-87.9064736,43.0389025
+"49","Mobile","Alabama",-88.05,30.7,"KBFM","Mobile Alabama",-88.0398912,30.6953657
+"50","Springfield","Illinois",-89.6333,39.8,"KSPI","Springfield Illinois",-89.6501481,39.7817213
+"51","Memphis","Tennessee",-90.05,35.15,"KMEM","Memphis Tennessee",-90.0489801,35.1495343
+"52","New Orleans","Louisiana",-90.0667,29.95,"KNEW","New Orleans Louisiana",-90.0715323,29.9510658
+"53","Jackson","Mississippi",-90.2,32.3333,"KHKS","Jackson Mississippi",-90.1848103,32.2987573
+"54","St Louis","Missouri",-90.2,38.5833,"KCPS","St Louis Missouri",-90.1994042,38.6270025
+"55","Dubuque","Iowa",-90.6667,42.5167,"KDBQ","Dubuque Iowa",-90.6645718,42.5005583
+"56","Duluth","Minnesota",-92.0833,46.8167,"KDLH","Duluth Minnesota",-92.1004852,46.7866719
+"57","Hot Springs","Arkansas",-93.05,34.5167,"KHOT","Hot Springs Arkansas",-93.0551795,34.5037004
+"58","Minneapolis","Minnesota",-93.2333,44.9833,"KMSP","Minneapolis Minnesota",-93.2650108,44.977753
+"59","Springfield","Missouri",-93.2833,37.2167,"KSGF","Springfield Missouri",-93.2922989,37.2089572
+"60","Des Moines","Iowa",-93.6167,41.5833,"KDSM","Des Moines Iowa",-93.6091064,41.6005448
+"61","Shreveport","Louisiana",-93.7,32.4667,"KBAD","Shreveport Louisiana",-93.7501789,32.5251516
+"62","Kansas City","Missouri",-94.5833,39.1,"KMKC","Kansas City Missouri",-94.5785667,39.0997265
+"63","Lincoln","Nebraska",-96.6667,40.8333,"KLNK","Lincoln Nebraska",-96.7025955,40.813616
+"64","Sioux Falls","South Dakota",-96.7333,43.55,"KFSD","Sioux Falls South Dakota",-96.7311034,43.5445959
+"65","Dallas","Texas",-96.7667,32.7667,"KDAL","Dallas Texas",-96.7969879,32.7766642
+"66","Fargo","North Dakota",-96.8,46.8667,"KFAR","Fargo North Dakota",-96.7898034,46.8771863
+"67","Wichita","Kansas",-97.2833,37.7167,"KAAO","Wichita Kansas",-97.330053,37.6871761
+"68","Oklahoma City","Oklahoma",-97.4667,35.4333,"KTIK","Oklahoma City Oklahoma",-97.5164276,35.4675602
+"69","San Antonio","Texas",-98.55,29.3833,"KSKF","San Antonio Texas",-98.4936282,29.4241219
+"70","Pierre","South Dakota",-100.35,44.3667,"KPIR","Pierre South Dakota",-100.3537522,44.3667876
+"71","North Platte","Nebraska",-100.767,41.1333,"KLBF","North Platte Nebraska",-100.7601454,41.1402759
+"72","Bismarck","North Dakota",-100.783,46.8,"KBIS","Bismarck North Dakota",-100.7837392,46.8083268
+"73","Garden City","Kansas",-100.883,37.9667,"KGCK","Garden City Kansas",-100.8726618,37.9716898
+"74","Amarillo","Texas",-101.833,35.1833,"KAMA","Amarillo Texas",-101.8312969,35.2219971
+"75","Carlsbad","New Mexico",-104.25,32.4333,"KCNM","Carlsbad New Mexico",-104.2288375,32.4206736
+"76","Trinidad","Colorado",-104.5,37.1667,"KTAD","Trinidad Colorado",-104.5005407,37.1694632
+"77","Cheyenne","Wyoming",-104.867,41.15,"KCYS","Cheyenne Wyoming",-104.8202462,41.1399814
+"78","Denver","Colorado",-105,39.75,"KBJC","Denver Colorado",-104.990251,39.7392358
+"79","Santa Fe","New Mexico",-105.95,35.6833,"KSAF","Santa Fe New Mexico",-105.937799,35.6869752
+"80","El Paso","Texas",-106.483,31.7667,"KELP","El Paso Texas",-106.4850217,31.7618778
+"81","Grand Junction","Colorado",-108.55,39.0833,"KGJT","Grand Junction Colorado",-108.5506486,39.0638705
+"82","Lander","Wyoming",-108.667,42.8333,"KLND","Lander Wyoming",-108.7306725,42.833014
+"83","Harve","Montana",-109.717,48.55,"KHVR","Harve Montana",-109.6840887,48.549999
+"84","Nogales","Arizona",-110.933,31.35,"KOLS","Nogales Arizona",-110.9342532,31.3403775
+"85","Provo","Utah",-111.6608,40.2444,"KPVU","Provo Utah",-111.6585337,40.2338438
+"86","Flagstaff","Arizona",-111.683,35.2167,"KFLG","Flagstaff Arizona",-111.651302,35.1982836
+"87","Salt Lake City","Utah",-111.9,40.7667,"KSLC","Salt Lake City Utah",-111.8910474,40.7607793
+"88","Idaho Falls","Idaho",-112.017,43.5,"KIDA","Idaho Falls Idaho",-112.0407584,43.4926607
+"89","Helena","Montana",-112.033,46.5833,"KHLN","Helena Montana",-112.0391057,46.5891452
+"90","Phoenix","Arizona",-112.067,33.4833,"KPHX","Phoenix Arizona",-112.0740373,33.4483771
+"91","Richfield","Utah",-112.083,38.7667,"KMLF","Richfield Utah",-112.0840943,38.7724673
+"92","St. George","Utah",-113.5781,37.0953,"KSGU","St. George Utah",-113.5684164,37.0965278
+"93","Salmon","Idaho",-113.9,45.1833,"KSMN","Salmon Idaho",-113.8959008,45.1757547
+"94","Needles","California",-114.6,34.8333,"KEED","Needles California",-114.6141315,34.8480597
+"95","Las Vegas","Nevada",-115.2,36.1667,"KVGT","Las Vegas Nevada",-115.1398296,36.1699412
+"96","Boise","Idaho",-116.217,43.6,"KBOI","Boise Idaho",-116.2023137,43.6150186
+"97","Lewiston","Idaho",-117.033,46.4,"KLWS","Lewiston Idaho",-117.001189,46.4004089
+"98","Austin","Nevada",-117.067,39.4833,"KP68","Austin Nevada",-117.0672356,39.4925701
+"99","San Diego","California",-117.15,32.72,"KSAN","San Diego California",-117.1610838,32.715738
+"100","Spokane","Washington",-117.433,47.6667,"KGEG","Spokane Washington",-117.4260465,47.6587802
+"101","Baker","Oregon",-117.833,44.7833,"KBKE","Baker Oregon",-117.8343848,44.7748748
+"102","Los Angeles","California",-118.25,34.05,"KCQT","Los Angeles California",-118.2436849,34.0522342
+"103","Fresno","California",-119.8,36.7333,"KFAT","Fresno California",-119.7871247,36.7377981
+"104","Reno","Nevada",-119.817,39.5,"KRNO","Reno Nevada",-119.8138027,39.5296329
+"105","Sacramento","California",-121.5,38.5833,"KSAC","Sacramento California",-121.4943996,38.5815719
+"106","Klamath Falls","Oregon",-121.733,42.1667,"KLMT","Klamath Falls Oregon",-121.7816704,42.224867
+"107","Seattle","Washington",-122.333,47.6167,"KBFI","Seattle Washington",-122.3320708,47.6062095
+"108","San Francisco","California",-122.433,37.7833,"KSFO","San Francisco California",-122.4194155,37.7749295
+"109","Portland","Oregon",-122.683,45.5167,"KVUO","Portland Oregon",-122.6587185,45.5122308
+"110","Eugene","Oregon",-123.083,44.05,"KEUG","Eugene Oregon",-123.0867536,44.0520691
+"111","Hoquiam","Washington",-123.9,46.9833,"KHQM","Hoquiam Washington",-123.8893348,46.9809247
+"112","Anchorage","Alaska",-149.9,61.2167,"PAMR","Anchorage Alaska",-149.9002778,61.2180556
+"113","Honolulu","Hawaii",-157.8167,21.3,"PHNL","Honolulu Hawaii",-157.8583333,21.3069444
