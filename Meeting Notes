@@ -105,7 +105,14 @@ Maps?
 Models? 
 
 
-7/2/18 Comments:
-The plots used to assess distance and latitudinal distance are in the file Temp Error Maps.R starting around line 271
+7/2/18 Comments
 
+Erin's comments/questions: 
+  The plots used to assess distance and latitudinal distance are in the file Temp Error Maps.R    starting around line 271
 
+  Doesn't look like distance plays a role in forecast error (visually)
+  From the plots in Temp Error Maps.R (lines 357 and 356) do show the biasness 
+
+  I also made leaflet maps where the size of the points is determined by the average squared      error (instead of the squared average error). Gives a sense of variation by city, but don't     see the bias issue.
+
+  In line 139 of ExploringMaxTempErrorMods.R, the dataset forecastDiff is written. Do yoy know    where this dataset is created, doesn't seem like it's that script
