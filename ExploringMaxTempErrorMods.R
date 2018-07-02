@@ -91,6 +91,10 @@ str(maxtemponeday)
 histWeather <- histWeather
 str(histWeather)
 
+
+
+
+
 histWeather$Date <- as.Date(histWeather$Date, format = "%Y-%m-%d")
 
 
