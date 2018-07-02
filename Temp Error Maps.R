@@ -183,7 +183,7 @@ leaflet(spring_max_error_F1) %>% addTiles() %>%
   addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError)*10000, 
              popup=~city, color=~pal(TrueValGreater)) %>%
   addLegend("topright", colors=c("#000080", "#FF0000"), labels=c("Overestimate", "Underestimate"),
-            title="Squared average max temp forecast error: Spring")
+            title="Average max temp forecast error: Spring")
 
 # This map has the sizes of the circles based on the average error squared for each city in spring
 leaflet(spring_max_error_F1) %>% addTiles() %>% 
@@ -202,6 +202,14 @@ leaflet(spring_max_error_F1) %>% addTiles() %>%
 
 
 # Spring Min
+
+leaflet(spring_min_error_F1) %>% addTiles() %>% 
+  addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError)*10000, 
+             popup=~city, color=~pal(TrueValGreater)) %>%
+  addLegend("topright", colors=c("#000080", "#FF0000"), labels=c("Overestimate", "Underestimate"),
+            title="Average min temp forecast error: Spring")
+
+
 leaflet(spring_min_error_F1) %>% addTiles() %>% 
   addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError^2)*7500, 
              popup=~city, color=~pal(TrueValGreater)) %>%
@@ -275,11 +283,11 @@ updlocations <- read.csv("~/Desktop/DataExpo2018/Data Expo 2018/updlocations.csv
 
 updlocations_withDist <- updlocations
 
-# spherical distances 
+# spherical distances - distGeo function calculates absolute distance in meters 
 updlocations_withDist$dists <- distGeo(cbind(updlocations_withDist$longitude, updlocations_withDist$latitude), 
                  cbind(updlocations_withDist$citylons, updlocations_withDist$citylats))
 
-# latitude distances
+# latitude distances - positive and negative values possible 
 updlocations_withDist$latDists <- updlocations_withDist$latitude - updlocations_withDist$citylats
 
 
@@ -335,11 +343,22 @@ allSeasons_F1 <- rbind(spring_max_error_F1, spring_min_error_F1,
                     fall_max_error_F1, fall_min_error_F1, 
                     winter_max_error_F1, winter_min_error_F1)
 
+# Matt, write your own copy of this file, it is not very large, but I didn't push it just to be
+# safe 
+write.csv(allSeasons_F1, "~/Desktop/DataExpo2018/Data Expo 2018/allSeasons_F1.csv")
+
+# The bias in max temps being underestimated and min temps being overestimated is also evident
+# in the following plots 
+
+# caution: x-axis scales are very different in the following two plots
+# the first is absolute distance in meters
+# the second is simply the difference in latitudes of airport and city center
+
 ggplot(allSeasons_F1, aes(x=dists, y=mean_error, color=factor(measure))) + 
   geom_point() + 
   facet_grid(.~season) + 
   facet_wrap(~season, ncol=2) + 
-  xlab("Distance") + 
+  xlab("Distance (m)") + 
   ylab("Mean Forecast Error") + 
   scale_color_discrete(name="Temperature\nMeasure") + 
   ggtitle("Distance between City Center and Airport vs. \nMean Forecast Error")
@@ -352,6 +371,15 @@ ggplot(allSeasons_F1, aes(x=latDists, y=mean_error, color=factor(measure))) +
   ylab("Mean Forecast Error") + 
   scale_color_discrete(name="Temperature\nMeasure") + 
   ggtitle("Latitudinal distance between City Center and Airport \nvs. Mean Forecast Error")
+
+
+
+
+
+
+
+
+
 
 
 
