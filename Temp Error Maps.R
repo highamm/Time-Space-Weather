@@ -3,6 +3,7 @@ library(ggplot2)
 library(leaflet)
 library(dplyr)
 library(maps)
+library(geosphere)
 
 ## Matt only
 complete_df <- all.df_completeSub
@@ -337,9 +338,20 @@ allSeasons_F1 <- rbind(spring_max_error_F1, spring_min_error_F1,
 ggplot(allSeasons_F1, aes(x=dists, y=mean_error, color=factor(measure))) + 
   geom_point() + 
   facet_grid(.~season) + 
-  facet_wrap(~season, ncol=2)
+  facet_wrap(~season, ncol=2) + 
+  xlab("Distance") + 
+  ylab("Mean Forecast Error") + 
+  scale_color_discrete(name="Temperature\nMeasure") + 
+  ggtitle("Distance between City Center and Airport vs. \nMean Forecast Error")
 
-
+ggplot(allSeasons_F1, aes(x=latDists, y=mean_error, color=factor(measure))) + 
+  geom_point() + 
+  facet_grid(.~season) + 
+  facet_wrap(~season, ncol=2) +  
+  xlab("Latitudinal Distance") + 
+  ylab("Mean Forecast Error") + 
+  scale_color_discrete(name="Temperature\nMeasure") + 
+  ggtitle("Latitudinal distance between City Center and Airport \nvs. Mean Forecast Error")
 
 
 
