@@ -263,7 +263,12 @@ library(lme4)
 modrand <- lmer(weatherval ~  forecastValue + adjmeanhum
   + adjmeanwind + season + (1 | city), 
   data = maxtemplags)
+
+
+## another idea is to add predicted probability and/or Precipitation to the model
 ranef(modrand)
+str(maxtemplags)
+modprec <- lmer(weatherval ~ forecastValue)
 
 todayinfo2 <- data.frame("forecastValue" = 20,
   "season" = "Winter",
