@@ -13,9 +13,13 @@ locations <- read.csv("~/Desktop/DataExpo2018/locations.csv")
 complete_df <- read.csv("~/Desktop/DataExpo2018/all_df_completesub.csv")
 names(complete_df)[8] <- "forecastValue"
 
+mintempall <- subset(complete_df, weathermeas == "MinTemp")
+maxtempall <- subset(complete_df, weathermeas == "MaxTemp")
+
 # File paths for Erin
 maxtempall <- read.csv("~/Desktop/DataExpo2018/Data Expo 2018/maxtempall.csv")
 mintempall <- read.csv("~/Desktop/DataExpo2018/Data Expo 2018/mintempall.csv")
+
 
 # subset the data into sets of only max and min temps 
 maxTemp <- subset(maxtempall, weathermeas == "MaxTemp")
@@ -279,7 +283,11 @@ qplot(Austin_spring_min$weatherval, Austin_spring_min$forecastValue)
 ### Distance qplots (doing this in this file because all of the summarized city datasets are 
 ### written in here)
 
+## Erin
 updlocations <- read.csv("~/Desktop/DataExpo2018/Data Expo 2018/updlocations.csv")
+
+## Matt
+updlocations <- read.csv("~/Desktop/TimeSpaceExpo/updlocations.csv")
 
 updlocations_withDist <- updlocations
 
@@ -293,8 +301,25 @@ updlocations_withDist$latDists <- updlocations_withDist$latitude - updlocations_
 
 # merge all the temp summary data sets with the distance data sets
 # there was totally a quicker way to do this...
+
+subset(updlocations_withDist, city == "Pittsburgh")
+subset(locations, city == "Eugene")
+## the airport latitudes and longitudes in the data set are not actually
+## accurate. This is most obvious for Austin, Nevade, but can also check out
+## st. louis:
+
+## google st. louis airport lat/lon to get 38.7503° N, 90.3755° W
+subset(locations, city == "St Louis")$latitude ## 38.5833, -90.2
+## find distance and convert to miles: 15 miles apart!
+(distGeo(c(-90.2, 38.5833), c(-90.3755, 38.7503)) / 1000) * 0.62
+
+
+
 spring_max_error_F1 <- merge(x=spring_max_error_F1, y=updlocations_withDist[,c("AirPtCd", "dists", "latDists")], 
               by.x = "AirPtCd", by.y="AirPtCd", all.x = TRUE)
+##head(spring_max_error_F1)
+##subset(updlocations_withDist, city == "Sault Ste Marie")
+
 spring_min_error_F1 <- merge(x=spring_min_error_F1, y=updlocations_withDist[,c("AirPtCd", "dists", "latDists")], 
                              by.x = "AirPtCd", by.y="AirPtCd", all.x = TRUE)
 summer_max_error_F1 <- merge(x=summer_max_error_F1, y=updlocations_withDist[,c("AirPtCd", "dists", "latDists")], 
@@ -347,6 +372,31 @@ allSeasons_F1 <- rbind(spring_max_error_F1, spring_min_error_F1,
 # safe 
 write.csv(allSeasons_F1, "~/Desktop/DataExpo2018/Data Expo 2018/allSeasons_F1.csv")
 
+## Matt only
+library(readr)
+allSeasons_F1 <- read_csv("~/Desktop/TimeSpaceExpo/allSeasons_F1.csv")
+
+doubleupdlocations <- read_csv("~/Desktop/TimeSpaceExpo/doubleupdlocations.csv")
+doubleupdlocations$distance <- distGeo(cbind(doubleupdlocations$newairlon, doubleupdlocations$newairlat), 
+  cbind(doubleupdlocations$citylons, doubleupdlocations$citylats))
+View(doubleupdlocations)
+head(doubleupdlocations); head(allSeasons_F1)
+doubleupdlocations[1, 3:12]
+
+## these outliers are accurate
+testdf <- merge(allSeasons_F1, doubleupdlocations, by.x = "city", by.y = "city")
+head(testdf)
+cbind(testdf$dists, testdf$distance)
+testdf$londif <- abs(testdf$citylons - testdf$newairlon)
+testdf$latdif <- abs(testdf$citylats - testdf$newairlat)
+
+ggplot(data = subset(testdf, distance < 50000), aes(x = latdif, y = abs(mean_error), colour = factor(measure))) +
+  geom_point() +
+  facet_grid(.~season) + 
+  facet_wrap(~season, ncol=2) +
+  geom_smooth()
+
+
 # The bias in max temps being underestimated and min temps being overestimated is also evident
 # in the following plots 
 
@@ -372,7 +422,17 @@ ggplot(allSeasons_F1, aes(x=latDists, y=mean_error, color=factor(measure))) +
   scale_color_discrete(name="Temperature\nMeasure") + 
   ggtitle("Latitudinal distance between City Center and Airport \nvs. Mean Forecast Error")
 
+summary(subset(allSeasons_F1, city == "Austin"))
 
+
+ggplot(allSeasons_F1, aes(x=dists, y=mean_error, color=factor(measure))) + 
+  geom_point() + geom_point(data = subset(allSeasons_F1, city == "Pittsburgh"), colour = "black")
+  facet_grid(.~season) + 
+  facet_wrap(~season, ncol=2) + 
+  xlab("Distance (m)") + 
+  ylab("Mean Forecast Error") + 
+  scale_color_discrete(name="Temperature\nMeasure") + 
+  ggtitle("Distance between City Center and Airport vs. \nMean Forecast Error")
 
 
 

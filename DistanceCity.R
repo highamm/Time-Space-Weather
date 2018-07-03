@@ -80,6 +80,7 @@ qplot(dists)
 dists
 which(dists > 500000)
 
+write.csv(locations, file = "updlocations.csv")
 
 qplot(dists, spring_max_error_F1$AbsError)
 summary(lm(spring_max_error_F1$AbsError ~ dists))

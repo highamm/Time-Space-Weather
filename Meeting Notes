@@ -116,3 +116,8 @@ Erin's comments/questions:
   I also made leaflet maps where the size of the points is determined by the average squared      error (instead of the squared average error). Gives a sense of variation by city, but don't     see the bias issue.
 
   In line 139 of ExploringMaxTempErrorMods.R, the dataset forecastDiff is written. Do yoy know    where this dataset is created, doesn't seem like it's that script
+
+
+Matt's Comments:
+
+The lat/lon coordinates with airport codes provided to us in the locations data set were not accurate. I tried to fix that through using geocode again, but there were some issues. Distance is currently not accurate between the actual airport and the city center.
