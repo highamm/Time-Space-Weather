@@ -96,4 +96,45 @@ updlocations <- read.csv("~/Desktop/DataExpo2018/Data Expo 2018/updlocations.csv
 dists <- distGeo(cbind(updlocations$longitude, updlocations$latitude), 
                  cbind(updlocations$citylons, updlocations$citylats))
 
+apts1 <- geocode(locations$AirPtCd)
+apts2 <- geocode(locations$AirPtCd)
+apts3 <- geocode(locations$AirPtCd)
+apts4 <- geocode(locations$AirPtCd)
 
+apts11 <- geocode("KJFK")
+apts11 <- as.numeric(apts11)
+apts94 <- geocode(locations$AirPtCd[94])
+apts94 <- c(-114.6194, 34.7688)
+locations[102, ]
+apts98 <- c(-116.00556, 39.6014)
+apts102 <- c(-117.863, 33.679)
+
+testdfapts <- data.frame(cbind(apts1, apts2, apts3, apts4))
+## 11, 94, 98, 102
+airlons <- coalesce(testdfapts$lon, testdfapts$lon.1, testdfapts$lon.2, testdfapts$lon.3)
+
+airlats <- coalesce(testdfapts$lat, testdfapts$lat.1, testdfapts$lat.2, testdfapts$lat.3)
+airlons[11] <- apts11[1]; airlons[94] <- apts94[1]
+airlons[98] <- apts98[1]
+airlons[102] <- apts102[1]
+
+airlats[11] <- apts11[2]; airlats[94] <- apts94[2]
+airlats[98] <- apts98[2]
+airlats[102] <- apts102[2]
+airlats[1] <- 44.4450; airlons[1] <- -68.3621
+
+geocode(locations$AirPtCd[6])
+locations[6, ]
+
+## there's like 30 that are incorrect....I'm dropping these for now! # bye
+## testing
+cbind(updlocations$newairlon, updlocations$citylons)
+which(abs(updlocations$newairlon - updlocations$citylons) > 2)
+updlocations$newairlon <- airlons
+updlocations$newairlat <- airlats
+updlocationsred <- updlocations[abs(updlocations$newairlon -
+    updlocations$citylons) < 2, ]
+updlocationsred
+
+updlocations[1, ]
+write.csv(updlocationsred, "~/Desktop/TimeSpaceExpo/doubleupdlocations.csv")
