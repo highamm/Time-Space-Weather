@@ -96,10 +96,10 @@ updlocations <- read.csv("~/Desktop/DataExpo2018/Data Expo 2018/updlocations.csv
 dists <- distGeo(cbind(updlocations$longitude, updlocations$latitude), 
                  cbind(updlocations$citylons, updlocations$citylats))
 
-apts1 <- geocode(locations$AirPtCd)
-apts2 <- geocode(locations$AirPtCd)
-apts3 <- geocode(locations$AirPtCd)
-apts4 <- geocode(locations$AirPtCd)
+apts1 <- geocode(as.character(locations$AirPtCd))
+apts2 <- geocode(as.character(locations$AirPtCd))
+apts3 <- geocode(as.character(locations$AirPtCd))
+apts4 <- geocode(as.character(locations$AirPtCd))
 
 apts11 <- geocode("KJFK")
 apts11 <- as.numeric(apts11)
