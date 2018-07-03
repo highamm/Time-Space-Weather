@@ -103,7 +103,7 @@ apts4 <- geocode(as.character(locations$AirPtCd))
 
 apts11 <- geocode("KJFK")
 apts11 <- as.numeric(apts11)
-apts94 <- geocode(locations$AirPtCd[94])
+apts94 <- geocode(as.character(locations$AirPtCd[94]))
 apts94 <- c(-114.6194, 34.7688)
 locations[102, ]
 apts98 <- c(-116.00556, 39.6014)
@@ -123,7 +123,7 @@ airlats[98] <- apts98[2]
 airlats[102] <- apts102[2]
 airlats[1] <- 44.4450; airlons[1] <- -68.3621
 
-geocode(locations$AirPtCd[6])
+geocode(as.character(locations$AirPtCd[6]))
 locations[6, ]
 
 ## there's like 30 that are incorrect....I'm dropping these for now! # bye
@@ -132,9 +132,16 @@ cbind(updlocations$newairlon, updlocations$citylons)
 which(abs(updlocations$newairlon - updlocations$citylons) > 2)
 updlocations$newairlon <- airlons
 updlocations$newairlat <- airlats
+
+# reduced data set 
 updlocationsred <- updlocations[abs(updlocations$newairlon -
     updlocations$citylons) < 2, ]
 updlocationsred
+
+# here are the 32 cities that need updated airlat and airlon
+nrow(updlocations[abs(updlocations$newairlon - updlocations$citylons) > 2, ])
+
+
 
 updlocations[1, ]
 write.csv(updlocationsred, "~/Desktop/TimeSpaceExpo/doubleupdlocations.csv")
