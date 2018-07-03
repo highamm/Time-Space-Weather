@@ -102,3 +102,35 @@ library(rwunderground)
 ## of a dead end while weather underground *might have some potential
 
 history_range(set_location(airport_code = "PDX"), "20140131", "20140201")$precip
+
+
+
+
+library(rwunderground)
+
+
+## I believe the forecasts are for cities, not airports.
+## But, historical weather is based on airports
+## 
+## Can we get historical weather for cities easily?
+
+updlocations <- read_csv("~/Desktop/TimeSpaceExpo/updlocations.csv")
+updlocations$citylons
+updlocations$citylats
+updlocations$city
+as.numeric(updlocations[98, c(8, 9)])
+history_daily(location = set_location(lat_long="39.49257,-117.06724"),
+  date = "20150731", use_metric = FALSE,
+  key = "a618a9283b58695a", raw = FALSE, message = TRUE)[, "max_temp"]
+history_daily(location = set_location(lat_long="39.5125,-115.961"),
+  date = "20150731", use_metric = FALSE,
+  key = "a618a9283b58695a", raw = FALSE, message = TRUE)[, "max_temp"]
+
+history_daily(location = set_location(lat_long="44.90619,-66.98998"),
+  date = "20150701", use_metric = FALSE,
+  key = "a618a9283b58695a", raw = FALSE, message = TRUE)[, "max_temp"]
+
+?history_daily
+history_daily(location = set_location(territory = "United States", city = "Columbus"),
+  date = "20150101", use_metric = FALSE,
+  key = "a618a9283b58695a", raw = FALSE, message = TRUE)[, "max_temp"]
