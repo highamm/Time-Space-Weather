@@ -86,6 +86,7 @@ qplot(dists, spring_max_error_F1$AbsError)
 summary(lm(spring_max_error_F1$AbsError ~ dists))
 
 
+## Matt: do first half of cities
 
 
 
