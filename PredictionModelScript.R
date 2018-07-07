@@ -76,6 +76,11 @@ modrand <- lmer(weatherval ~ forecastValue + adjmeanhum
   data = maxtemplagstrain)
 ranef(modrand)
 
+## ERIN!! Hi, and you could also mess around with the model above.
+## I picked that one to allow for cities to have different "intercepts"
+## for the different seasons and since wind and humidity can easily be found
+## on your phone.
+
 ## Baltimore is completely missing one of the variables so is
 ## not included in the model
 
