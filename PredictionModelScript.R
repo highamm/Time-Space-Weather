@@ -58,19 +58,26 @@ maxtemplags <- maxtempwpreds %>% dplyr::group_by(city) %>%
     adjmeanpressure = lag(Mean_Sea_Level_PressureIn),
     adjmeanvis = lag(Mean_VisibilityMiles))
 
+str(maxtemplags)
+maxtemplagscomp <- maxtemplags[complete.cases(maxtemplags$adjmeanhum, 
+  maxtemplags$adjmeanwind), ] 
 
 ## only use half of the data for model fitting. Save the other half for
 ## validation
 
 set.seed(070718)
-sampindeces <- sample(1:nrow(maxtemplags), size = floor(nrow(maxtemplags) / 2),
+sampindeces <- sample(1:nrow(maxtemplagscomp), size = floor(nrow(maxtemplagscomp) / 2),
   replace = FALSE)
 
-maxtemplagstrain <- maxtemplags[sampindeces, ]
-maxtemplagstest <- maxtemplags[-sampindeces, ]
+maxtemplagstrain <- maxtemplagscomp[sampindeces, ]
+maxtemplagstest <- maxtemplagscomp[-sampindeces, ]
 modrand <- lmer(weatherval ~ forecastValue + adjmeanhum
   + adjmeanwind + season + (season | city), 
   data = maxtemplagstrain)
+ranef(modrand)
+
+## Baltimore is completely missing one of the variables so is
+## not included in the model
 
 pred.fun <- function(forecastValue, adjmeanhum, adjmeanwind, season,
   city) {
@@ -84,17 +91,28 @@ pred.fun <- function(forecastValue, adjmeanhum, adjmeanwind, season,
 }
 
 
-newpreds <- with(maxtemplagstest, 
+maxtemplagstest$newpreds <- with(maxtemplagstest, 
   pred.fun(forecastValue = forecastValue,
     adjmeanhum = adjmeanhum, adjmeanwind = adjmeanwind, 
   season = season, city = city))
-oldpreds <- maxtemplagstest$forecastValue
-histdata <- maxtemplagstest$weatherval
-summary(newpreds)
-oldpreds
-histdata
-mean(newpreds - histdata, na.rm = TRUE)
-mean(oldpreds - histdata)
+maxtemplagstest$oldpreds <- maxtemplagstest$forecastValue
+maxtemplagstest$histdata <- maxtemplagstest$weatherval
+
+maxtemplagstest$mod.diff <- maxtemplagstest$newpreds - maxtemplagstest$histdata
+maxtemplagstest$orig.diff <- maxtemplagstest$oldpreds - maxtemplagstest$histdata
+with(maxtemplagstest,
+  tapply(mod.diff, INDEX = list(city, season), FUN = mean))
+MSPEfun <- function(x) {
+  mean(x^2)
+}
+with(maxtemplagstest,
+  tapply(mod.diff, INDEX = list(city, season), FUN = mean))
+with(maxtemplagstest,
+  tapply(orig.diff, INDEX = list(city, season), FUN = mean))
+with(maxtemplagstest,
+  tapply(mod.diff, INDEX = list(city, season), FUN = MSPEfun))
+with(maxtemplagstest,
+  tapply(orig.diff, INDEX = list(city, season), FUN = MSPEfun))
 
 mean((newpreds - histdata)^2, na.rm = TRUE)
 mean((oldpreds - histdata)^2)
