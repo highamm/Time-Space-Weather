@@ -121,3 +121,57 @@ with(maxtemplagstest,
 
 mean((newpreds - histdata)^2, na.rm = TRUE)
 mean((oldpreds - histdata)^2)
+
+
+
+
+
+
+modrandnoforecast <- lmer(weatherval ~ adjmeanhum
+  + adjmeanwind + month + (month | city), 
+  data = maxtemplagstrain)
+
+pred.fun2 <- function(adjmeanhum, adjmeanwind, month,
+  city) {
+  todayinfo2 <- data.frame("month" = month,
+    "city" = city,
+    "adjmeanhum" = adjmeanhum,
+    "adjmeanwind" = adjmeanwind)
+  predict(modrandnoforecast, todayinfo2,
+    allow.new.levels = TRUE)
+}
+
+
+maxtemplagstest$newpredsnoforecast <- with(maxtemplagstest, 
+  pred.fun2(adjmeanhum = adjmeanhum, adjmeanwind = adjmeanwind, 
+    month = month, city = city))
+maxtemplagstest$oldpreds <- maxtemplagstest$forecastValue
+maxtemplagstest$histdata <- maxtemplagstest$weatherval
+
+maxtemplagstest$mod.diffnoforecast <- maxtemplagstest$newpredsnoforecast - maxtemplagstest$histdata
+maxtemplagstest$orig.diff <- maxtemplagstest$oldpreds - maxtemplagstest$histdata
+
+with(maxtemplagstest, mean((newpreds - histdata)^2, na.rm = TRUE))
+with(maxtemplagstest, mean((newpredsnoforecast - histdata)^2, na.rm = TRUE))
+with(maxtemplagstest, mean((oldpreds - histdata)^2))
+
+with(maxtemplagstest, mean((newpreds - histdata), na.rm = TRUE))
+with(maxtemplagstest, mean((newpredsnoforecast - histdata), na.rm = TRUE))
+with(maxtemplagstest, mean((oldpreds - histdata)))
+
+## gets rid of the bias but has very large variance
+
+
+with(maxtemplagstest,
+  tapply(mod.diff, INDEX = list(city, season), FUN = mean))
+MSPEfun <- function(x) {
+  mean(x^2)
+}
+with(maxtemplagstest,
+  tapply(mod.diff, INDEX = list(city, season), FUN = mean))
+with(maxtemplagstest,
+  tapply(orig.diff, INDEX = list(city, season), FUN = mean))
+with(maxtemplagstest,
+  tapply(mod.diff, INDEX = list(city, season), FUN = MSPEfun))
+with(maxtemplagstest,
+  tapply(orig.diff, INDEX = list(city, season), FUN = MSPEfun))

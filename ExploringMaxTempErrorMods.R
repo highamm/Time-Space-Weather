@@ -260,26 +260,56 @@ mod3 <- with(maxtemplags,
 summary(mod3)
 
 library(lme4)
-modrand <- lmer(weatherval ~  forecastValue + adjmeanhum
-  + adjmeanwind + season + (1 | city), 
+
+## CONSIDER ADDING DISTANCE TO THE MODEL
+## change forecast value back to city
+
+modrand <- lmer(weatherval ~ forecastValue + adjmeanhum
+  + adjmeanwind + season + (season | city), 
   data = maxtemplags)
+
+pred.fun <- function(forecastValue, adjmeanhum, adjmeanwind, season,
+  city) {
+  todayinfo2 <- data.frame("forecastValue" = forecastValue,
+    "season" = season,
+    "city" = city,
+    "adjmeanhum" = adjmeanhum,
+    "adjmeanwind" = adjmeanwind)
+  predict(modrand, todayinfo2,
+    allow.new.levels = TRUE) - todayinfo2$forecastValue
+}
+pred.fun(forecastValue = c(50, 40), adjmeanhum = c(50, 10), adjmeanwind = c(10, 5), 
+  season = c("Winter", "Winter"), city = c("Austin", "Austin"))
+
+## doing some simple cross-validation to compare our model to the original
+## forecasts
+
+
+
+
+
+
 
 
 ## another idea is to add predicted probability and/or Precipitation to the model
 ranef(modrand)
+summary(modrand)
 str(maxtemplags)
-modprec <- lmer(weatherval ~ forecastValue)
 
 todayinfo2 <- data.frame("forecastValue" = 20,
   "season" = "Winter",
   "city" = "Blah",
   "adjmeanhum" = 60,
-  "adjmeanwind" = 10)
+  "adjmeanwind" = 20)
 todayinfo2
 predict(modrand, todayinfo2,
   allow.new.levels = TRUE) - todayinfo2$forecastValue
 predict(modrand)
-?predict.merMod
+
+
+
+
+
 library(rpart)
 
 ## actually is not using city or season in tree construction, which is interesting
