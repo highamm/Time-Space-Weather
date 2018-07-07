@@ -58,7 +58,6 @@ maxtemplags <- maxtempwpreds %>% dplyr::group_by(city) %>%
     adjmeanpressure = lag(Mean_Sea_Level_PressureIn),
     adjmeanvis = lag(Mean_VisibilityMiles))
 
-str(maxtemplags)
 maxtemplagscomp <- maxtemplags[complete.cases(maxtemplags$adjmeanhum, 
   maxtemplags$adjmeanwind), ] 
 
@@ -175,3 +174,104 @@ with(maxtemplagstest,
   tapply(mod.diff, INDEX = list(city, season), FUN = MSPEfun))
 with(maxtemplagstest,
   tapply(orig.diff, INDEX = list(city, season), FUN = MSPEfun))
+
+
+
+
+
+
+
+
+
+
+
+
+### LOOKING AT 5-DAY Forecast Predictions
+
+maxtempfiveday <- subset(maxtempall, LengthForecastDayOnly == 5)
+
+histWeather$Date <- as.Date(histWeather$Date, format = "%Y-%m-%d")
+
+maxtempwpreds <- merge(histWeather, maxtempfiveday, 
+  by.x = c("Date", "AirPtCd"),
+  by.y = c("Date", "AirPtCd"))
+
+maxtemplags <- maxtempwpreds %>% dplyr::group_by(city)
+str(maxtemplags)
+
+maxtemplagscomp <- maxtemplags
+
+## only use half of the data for model fitting. Save the other half for
+## validation
+
+set.seed(070718)
+sampindeces <- sample(1:nrow(maxtemplagscomp), size = floor(nrow(maxtemplagscomp) / 2),
+  replace = FALSE)
+
+maxtemplagscomp$Day <- day(maxtemplagscomp$Date)
+maxtemplagscomp$monthhalf <- maxtemplagscomp$Day
+maxtemplagscomp$monthhalf[maxtemplagscomp$Day < 15] <- "FirstHalf"
+maxtemplagscomp$monthhalf[maxtemplagscomp$Day >= 15] <- "SecondHalf"
+maxtemplagscomp$monthint <- interaction(maxtemplagscomp$month,
+  maxtemplagscomp$monthhalf)
+
+maxtemplagstrain <- maxtemplagscomp[sampindeces, ]
+maxtemplagstest <- maxtemplagscomp[-sampindeces, ]
+
+
+
+
+modrand <- lmer(weatherval ~ as.factor(monthint) + as.factor(season) +
+    (as.factor(season) | city), 
+  data = maxtemplagstrain)
+ranef(modrand)
+
+
+pred.fun5day <- function(monthint, season, city) {
+  todayinfo2 <- data.frame("monthint" = monthint, "season" = season,
+    "city" = city)
+  predict(modrand, todayinfo2,
+    allow.new.levels = TRUE)
+}
+
+
+maxtemplagstest$newpreds <- with(maxtemplagstest, 
+  pred.fun5day(season = season, city = city, monthint = monthint))
+maxtemplagstest$oldpreds <- maxtemplagstest$forecastValue
+maxtemplagstest$histdata <- maxtemplagstest$weatherval
+
+with(maxtemplagstest, mean((newpreds - histdata), na.rm = TRUE))
+with(maxtemplagstest, mean((oldpreds - histdata)))
+
+with(maxtemplagstest, mean((newpreds - histdata)^2, na.rm = TRUE))
+with(maxtemplagstest, mean((oldpreds - histdata)^2))
+
+
+maxtemplagstest$mod.diff <- maxtemplagstest$newpreds - maxtemplagstest$histdata
+maxtemplagstest$orig.diff <- maxtemplagstest$oldpreds - maxtemplagstest$histdata
+with(maxtemplagstest,
+  tapply(mod.diff, INDEX = list(city, season), FUN = mean))
+MSPEfun <- function(x) {
+  mean(x^2)
+}
+with(maxtemplagstest,
+  tapply(mod.diff, INDEX = list(city, season), FUN = mean))
+with(maxtemplagstest,
+  tapply(orig.diff, INDEX = list(city, season), FUN = mean))
+tab1 <- with(maxtemplagstest,
+  tapply(mod.diff, INDEX = list(city, season), FUN = MSPEfun))
+tab2 <- with(maxtemplagstest,
+  tapply(orig.diff, INDEX = list(city, season), FUN = MSPEfun))
+
+## kind of interesting that model with just month half and season city interaction
+## has better prediction for some of the cities in the summer
+## ERIN: can you think of ways to modify the model above to make it even better?
+## I had trouble thinking about how to incorporate month/date into the model.
+tab1 < tab2
+mean((newpreds - histdata)^2, na.rm = TRUE)
+mean((oldpreds - histdata)^2)
+
+## could try a nonparametric model
+
+loess(weatherval ~ Day, data = subset(maxtemplagstrain,
+  city == "Buffalo"))
