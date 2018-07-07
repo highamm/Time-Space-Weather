@@ -134,6 +134,9 @@ which(abs(updlocations$newairlon - updlocations$citylons) > 2)
 updlocations$newairlon <- airlons
 updlocations$newairlat <- airlats
 
+updlocations
+
+
 # reduced data set 
 updlocationsred <- updlocations[abs(updlocations$newairlon -
     updlocations$citylons) < 2, ]
@@ -142,7 +145,43 @@ updlocationsred
 # here are the 32 cities that need updated airlat and airlon
 nrow(updlocations[abs(updlocations$newairlon - updlocations$citylons) > 2, ])
 
+## Matt 1st 15 airport changes
+row6 <- c(-71.4352, 42.9297)
+row9 <- c(-72.8869, 41.2679)
+row10 <- c(-73.8055, 42.7487)
+row14 <- c(-75.4684, 39.1277)
+row16 <- c(-76.0224, 43.9957)
+row23 <- c(-80.0382, 32.8943)
+row24 <- c(-79.9270, 40.3524)
+row31 <- c(-81.5935, 38.3714)
+row32 <- c(-81.6850, 30.2200)
+row33 <- c(-81.7565, 24.5549)
+row35 <- c(-83.0735, 40.0775)
+row36 <- c(-83.0102, 42.4093)
+row38 <- c(-84.3663, 46.4799)
+row43 <- c(-86.2945, 39.8306)
+row44 <- c(-86.3626, 32.3791)
+row49 <- c(-88.0680, 30.6268)
+
+updlocations[6, c(10, 11)] <- row6
+updlocations[9, c(10, 11)] <- row9
+updlocations[10, c(10, 11)] <- row10
+updlocations[14, c(10, 11)] <- row14
+updlocations[16, c(10, 11)] <- row16
+updlocations[23, c(10, 11)] <- row23
+updlocations[24, c(10, 11)] <- row24
+updlocations[31, c(10, 11)] <- row31
+updlocations[32, c(10, 11)] <- row32
+updlocations[33, c(10, 11)] <- row33
+updlocations[35, c(10, 11)] <- row35
+updlocations[36, c(10, 11)] <- row36
+updlocations[38, c(10, 11)] <- row38
+updlocations[43, c(10, 11)] <- row43
+updlocations[44, c(10, 11)] <- row44
+updlocations[49, c(10, 11)] <- row49
 
 
 updlocations[1, ]
+
+
 write.csv(updlocationsred, "~/Desktop/TimeSpaceExpo/doubleupdlocations.csv")
