@@ -7,7 +7,7 @@ library(ggmap)
 geocode(c("New York", "Chicago"))
 
 citylatlons <- geocode(locations$citstate)
-citylatlongs2 <- geocode(locations$city)
+citylatlongs2 <- geocode(as.character(locations$city))
 citylatlons3 <- geocode(locations$citstate)
 
 row8 <- geocode(locations$citstate[8])
@@ -94,6 +94,7 @@ summary(lm(spring_max_error_F1$AbsError ~ dists))
 
 updlocations <- read.csv("~/Desktop/DataExpo2018/Data Expo 2018/updlocations.csv")
 
+library(geosphere)
 dists <- distGeo(cbind(updlocations$longitude, updlocations$latitude), 
                  cbind(updlocations$citylons, updlocations$citylats))
 
@@ -144,6 +145,7 @@ updlocationsred
 
 # here are the 32 cities that need updated airlat and airlon
 nrow(updlocations[abs(updlocations$newairlon - updlocations$citylons) > 2, ])
+updlocations[abs(updlocations$newairlon - updlocations$citylons) > 2, ]
 
 ## Matt 1st 15 airport changes
 row6 <- c(-71.4352, 42.9297)
@@ -163,6 +165,29 @@ row43 <- c(-86.2945, 39.8306)
 row44 <- c(-86.3626, 32.3791)
 row49 <- c(-88.0680, 30.6268)
 
+
+# Erin remaining cities 
+row50 <- c(-89.6781, 39.8435)
+row51 <- c(-89.9792, 35.0421)
+row52 <- c(-90.0264, 30.0385)
+row53 <- c(-90.2222, 32.3345)
+row54 <- c(-90.1590, 38.5773)
+row61 <- c(-93.6571, 32.5019)
+row68 <- c(-97.3866, 35.4148)
+row72 <- c(-100.7572, 46.7752)
+row74 <- c(-101.7075, 35.2203)
+row80 <- c(-106.3824, 31.8053)
+row85 <- c(-111.7222, 40.2181)
+row86 <- c(-111.6710, 35.1404)
+row88 <- c(-112.0735, 43.5124)
+row93 <- c(-113.8814, 45.1236)
+row112 <- c(-149.8419, 61.2159)
+
+
+row11 <- c(-73.9667, 40.7834)
+row57 <- c(-93.0956, 34.4827)
+
+
 updlocations[6, c(10, 11)] <- row6
 updlocations[9, c(10, 11)] <- row9
 updlocations[10, c(10, 11)] <- row10
@@ -180,8 +205,42 @@ updlocations[43, c(10, 11)] <- row43
 updlocations[44, c(10, 11)] <- row44
 updlocations[49, c(10, 11)] <- row49
 
+updlocations[50, c(10, 11)] <- row50
+updlocations[51, c(10, 11)] <- row51
+updlocations[52, c(10, 11)] <- row52
+updlocations[53, c(10, 11)] <- row53
+updlocations[54, c(10, 11)] <- row54
+updlocations[61, c(10, 11)] <- row61
+updlocations[68, c(10, 11)] <- row68
+updlocations[72, c(10, 11)] <- row72
+updlocations[74, c(10, 11)] <- row74
+updlocations[80, c(10, 11)] <- row80
+updlocations[85, c(10, 11)] <- row85
+updlocations[86, c(10, 11)] <- row86
+updlocations[88, c(10, 11)] <- row88
+updlocations[93, c(10, 11)] <- row93
+updlocations[112, c(10, 11)] <- row112
+
+updlocations[11, c(10,11)] <- row11
+updlocations[57, c(10,11)] <- row57
+
+updlocations[abs(updlocations$newairlon - updlocations$citylons) > 2, ]
 
 updlocations[1, ]
 
-
+# don't think we need to write the following line 
 write.csv(updlocationsred, "~/Desktop/TimeSpaceExpo/doubleupdlocations.csv")
+
+
+# create a variable that has the distance between city center and new airport lat longs
+
+distance <- distGeo(cbind(updlocations$citylons, updlocations$citylats), 
+                 cbind(updlocations$newairlon, updlocations$newairlat))
+
+updlocations$distance <- distance
+
+max(updlocations$distance)
+updlocations[which.max(updlocations$distance), ] 
+
+# data set has airport locations, city locations, and distances between the two 
+write.csv(updlocations, "~/Desktop/DataExpo2018/dist_locations.csv")
