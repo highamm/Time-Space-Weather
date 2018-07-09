@@ -8,11 +8,11 @@ allSeason_withDists <- merge(allSeasons_F1_replace, dist_locations, by.x = "AirP
   
 library(ggplot2)
 
-ggplot(allSeason_withDists, aes(x=distance, y=mean_error, color=factor(measure))) + 
+ggplot(allSeason_withDists, aes(x=distance*0.000621371, y=mean_error, color=factor(measure))) + 
   geom_point() + 
   facet_grid(.~season) +
   facet_wrap(~season, ncol=2) + 
-  xlab("Distance (m)") + 
+  xlab("Distance (mi)") + 
   ylab("Mean Forecast Error") + 
   scale_color_discrete(name="Temperature\nMeasure") + 
   ggtitle("Distance between City Center and Airport vs. \nMean Forecast Error")
