@@ -56,7 +56,8 @@ maxtemplags <- maxtempwpreds %>% dplyr::group_by(city) %>%
     adjmeanwind = lag(Mean_Wind_SpeedMPH),
     adjmeandew = lag(MeanDew_PointF),
     adjmeanpressure = lag(Mean_Sea_Level_PressureIn),
-    adjmeanvis = lag(Mean_VisibilityMiles))
+    adjmeanvis = lag(Mean_VisibilityMiles),
+    adjmaxtemp = lag(Max_TemperatureF))
 
 maxtemplagscomp <- maxtemplags[complete.cases(maxtemplags$adjmeanhum, 
   maxtemplags$adjmeanwind), ] 
@@ -74,6 +75,44 @@ modrand <- lmer(weatherval ~ forecastValue + adjmeanhum
   + adjmeanwind + season + (season | city), 
   data = maxtemplagstrain)
 ranef(modrand)
+summary(modrand)
+
+
+# From Erin: I have also included the previous day's max temp. If you plug in humidity and wind in order
+# to get a better prediction of tomorrow's max temp, I think it also makes sense to include 
+# the max temp from the day before 
+
+modrand2 <- lmer(weatherval ~ forecastValue + adjmeanhum + 
+                   adjmeanwind + adjmaxtemp + season  + (season|city), 
+                 data = maxtemplagstrain)
+ranef(modrand2)
+summary(modrand2)
+
+
+modrand3 <- lmer(weatherval ~ adjmaxtemp + (season|city), 
+                 data = maxtemplagstrain)
+summary(modrand3)
+
+
+
+
+
+# this model only includes the previous day's max temp, not sure it really makes sense to compare
+# this model to the mixed effects model though? 
+modmaxtemp <- lm(weatherval ~ adjmaxtemp, data = maxtemplagstrain)
+summary(modmaxtemp)
+qplot(maxtemplagstrain$adjmaxtemp, maxtemplagstrain$weatherval)
+
+
+# Here I am comparing the mixed effects model and the fixed model that only uses the previous
+# day's max temp using LRT. Like I mentioned above, this doesn't seem like something that should generally
+# be done, but I just kept the code in here anyways 
+dev1 <- -2*logLik(modrand2)
+dev0 <- -2*logLik(modmaxtemp)
+devdiff <- as.numeric(dev0-dev1)
+dfdiff <- attr(dev1,"df")-attr(dev0,"df")
+cat('Chi-square =', devdiff, '(df=', dfdiff,'), p =', 
+    pchisq(devdiff,dfdiff,lower.tail=FALSE))
 
 ## ERIN!! Hi, and you could also mess around with the model above.
 ## I picked that one to allow for cities to have different "intercepts"
@@ -93,6 +132,20 @@ pred.fun <- function(forecastValue, adjmeanhum, adjmeanwind, season,
   predict(modrand, todayinfo2,
     allow.new.levels = TRUE)
 }
+
+
+pred.fun2 <- function(forecastValue, adjmeanhum, adjmeanwind, adjmaxtemp, season,
+                     city) {
+  todayinfo3 <- data.frame("forecastValue" = forecastValue,
+                           "season" = season,
+                           "city" = city,
+                           "adjmeanhum" = adjmeanhum,
+                           "adjmeanwind" = adjmeanwind, 
+                           "adjmaxtemp" = adjmaxtemp)
+  predict(modrand2, todayinfo3,
+          allow.new.levels = TRUE)
+}
+
 
 
 maxtemplagstest$newpreds <- with(maxtemplagstest, 
@@ -118,8 +171,8 @@ with(maxtemplagstest,
 with(maxtemplagstest,
   tapply(orig.diff, INDEX = list(city, season), FUN = MSPEfun))
 
-mean((newpreds - histdata)^2, na.rm = TRUE)
-mean((oldpreds - histdata)^2)
+with(maxtemplagstest, mean((newpreds - histdata)^2, na.rm = TRUE))
+mean((maxtemplagstest$oldpreds - maxtemplagstest$histdata)^2)
 
 
 
@@ -267,6 +320,11 @@ tab2 <- with(maxtemplagstest,
 ## has better prediction for some of the cities in the summer
 ## ERIN: can you think of ways to modify the model above to make it even better?
 ## I had trouble thinking about how to incorporate month/date into the model.
+
+# I don't think we want both season and month included in the model since they are going to be
+# confounded, unless you nested month in city (e.g. there are 3 months in each season so within
+# the seasons, months went from 1-3)
+
 tab1 < tab2
 mean((newpreds - histdata)^2, na.rm = TRUE)
 mean((oldpreds - histdata)^2)
