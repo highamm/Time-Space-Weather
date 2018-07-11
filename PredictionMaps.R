@@ -16,6 +16,8 @@ nrow(maxTempPred)
 # add the predicted values from the mixed model to the data set
 maxTempPred$modPred <- fitted(modrand2)
 
+
+
 # change the order to subtraction to match the idea that Matt had for the map
 # this difference is forecast - observed 
 # positive value means overestimate in the forecast
@@ -49,7 +51,15 @@ leaflet(maxTempPred_summary[maxTempPred_summary$season == "Spring", ]) %>% addTi
              popup=~city, color = "blue") %>%
   addCircles(lng=~citylons, lat=~citylats, weight=1, radius=~(abs(meanModDiff))*25000, 
              popup=~city, color = "red") %>%
-  addLegend("topright", colors=c("#000080", "#FF0000"), labels=c("Forecast Errors", 
+  addLegend("topright", colors=c("blue", "red"), labels=c("Forecast Errors", 
                                                                  "Model Errors"),
             title="Max Temp Errors: Spring")
   
+
+
+# just playing around with a very simple model here (this is just with the training data)
+# basic idea, if all you know is the one day forecast for tomorrow, you should add about
+# 2.78 degrees to the forecasted value
+simple_mod <- lm(weatherval ~ forecastValue, data = maxTempPred)
+summary(simple_mod)
+plot(simple_mod) # residuals look fine
