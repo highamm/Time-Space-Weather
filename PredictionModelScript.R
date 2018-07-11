@@ -101,6 +101,7 @@ modrand2 <- lmer(weatherval ~ forecastValue + adjmeanhum +
                  data = maxtemplagstrain)
 ranef(modrand2)
 summary(modrand2)
+fitted(modrand2)
 
 
 modrand3 <- lmer(weatherval ~ adjmaxtemp + (season|city), 
