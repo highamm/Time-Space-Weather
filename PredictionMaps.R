@@ -46,7 +46,10 @@ library(leaflet)
 # can easily be changed to any other season
 leaflet(maxTempPred_summary[maxTempPred_summary$season == "Spring", ]) %>% addTiles() %>%
   addCircles(lng=~citylons, lat=~citylats, weight=1, radius=~(absMeanForecastDiff)*25000, 
-             popup=~city) %>%
+             popup=~city, color = "blue") %>%
   addCircles(lng=~citylons, lat=~citylats, weight=1, radius=~(abs(meanModDiff))*25000, 
-             popup=~city, color = "red")
+             popup=~city, color = "red") %>%
+  addLegend("topright", colors=c("#000080", "#FF0000"), labels=c("Forecast Errors", 
+                                                                 "Model Errors"),
+            title="Max Temp Errors: Spring")
   
