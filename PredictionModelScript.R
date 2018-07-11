@@ -12,6 +12,12 @@ library(lme4)
 
 complete_df <- all.df_completeSub
 
+# include latitude distance in the data set so that it can be included in the model 
+complete_df_dists <- merge(x = complete_df, y = dist_locations[ ,c("AirPtCd", "latDist")], 
+                           by.x = "AirPtCd", by.y = "AirPtCd", all.x=TRUE)
+
+complete_df <- complete_df_dists
+
 maxtemp <- subset(complete_df, weathermeas == "MaxTemp")
 
 maxtemp$Date <- as.Date(maxtemp$Date)
@@ -24,6 +30,7 @@ maxtemp$season <- cut(maxtemp$month,
   breaks = c(0.5, 2.5, 5.5, 8.5, 11.5, 12.5), 
   labels = c("Winter", "Spring", "Summer", "Fall", "Winter2"), 
   right = FALSE)
+
 maxtemp$season[maxtemp$season == "Winter2"] <- "Winter"
 maxtemp$season <- factor(maxtemp$season)
 
@@ -33,11 +40,15 @@ falltemp <- subset(maxtemp, month %in% c(9, 10, 11))
 wintertemp <- subset(maxtemp, month %in% c(12, 1, 2))
 
 
+
+
 springclean <- springtemp[-which(springtemp$weatherval < 5 & springtemp$forecastValue > 30), ]
 summerclean <- summertemp
 fallclean <- falltemp
 winterclean <- wintertemp[-which(wintertemp$weatherval > 95), ]
 winterclean <- winterclean[winterclean$absForecastDiff < 26, ]
+
+
 
 
 maxtempall <- rbind(springclean, summerclean, fallclean, winterclean)
@@ -51,6 +62,7 @@ maxtempwpreds <- merge(histWeather, maxtemponeday,
   by.x = c("Date", "AirPtCd"),
   by.y = c("Date", "AirPtCd"))
 
+
 maxtemplags <- maxtempwpreds %>% dplyr::group_by(city) %>%
   mutate(adjmeanhum = lag(Mean_Humidity),
     adjmeanwind = lag(Mean_Wind_SpeedMPH),
@@ -58,6 +70,8 @@ maxtemplags <- maxtempwpreds %>% dplyr::group_by(city) %>%
     adjmeanpressure = lag(Mean_Sea_Level_PressureIn),
     adjmeanvis = lag(Mean_VisibilityMiles),
     adjmaxtemp = lag(Max_TemperatureF))
+
+
 
 maxtemplagscomp <- maxtemplags[complete.cases(maxtemplags$adjmeanhum, 
   maxtemplags$adjmeanwind), ] 
@@ -93,6 +107,12 @@ modrand3 <- lmer(weatherval ~ adjmaxtemp + (season|city),
                  data = maxtemplagstrain)
 summary(modrand3)
 
+# model includes latitudinal distance as a fixed covariate - don't think it should be included 
+# in the prediction model though, doesn't look significant from t-val or from plot 
+modrand4 <- lmer(weatherval ~ forecastValue + adjmeanhum + 
+                   adjmeanwind + adjmaxtemp + latDist + season + (season|city), 
+                 data = maxtemplagstrain)
+summary(modrand4)
 
 
 

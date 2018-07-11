@@ -9,7 +9,12 @@ allSeason_withDists <- merge(allSeasons_F1_replace, dist_locations, by.x = "AirP
 # puts the facet grid in an order that makes sense 
 allSeason_withDists$season <- factor(allSeason_withDists$season, levels=c("winter", "spring", 
                                                                           "summer", "fall"))
-  
+
+allSeason_withDists$CityDirection <- rep(0, nrow(allSeason_withDists))
+
+allSeason_withDists$CityDirection[which(allSeason_withDists$latDist < 0)] <- "North"
+allSeason_withDists$CityDirection[which(allSeason_withDists$latDist > 0)] <- "South"
+
 library(ggplot2)
 
 ggplot(allSeason_withDists, aes(x=distance*0.000621371, y=mean_error, color=factor(measure))) + 
@@ -33,3 +38,12 @@ ggplot(allSeason_withDists[allSeason_withDists$distance*0.000621371 < 25, ], aes
   ggtitle("Distance between City Center and Airport vs. \nMean Forecast Error")
 
 
+ggplot(allSeason_withDists, aes(x=latDist, y = mean_error, color = factor(measure))) + 
+  geom_point() + 
+  facet_grid(. ~ season) +
+  facet_wrap(~season, ncol=2) + 
+  geom_vline(xintercept = 0) + 
+  xlab("Distance (degrees latitude)") + 
+  ylab("Mean Forecast Error") + 
+  scale_color_discrete(name="Temperature\nMeasure") + 
+  ggtitle("Latitudinal Distance between City Center and Airport vs. \nMean Forecast Error")
