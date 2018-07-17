@@ -24,7 +24,8 @@ ggplot(allSeason_withDists, aes(x=distance*0.000621371, y=mean_error, color=fact
   xlab("Distance (mi)") + 
   ylab("Mean Forecast Error") + 
   scale_color_discrete(name="Temperature\nMeasure") + 
-  ggtitle("Distance between City Center and Airport vs. \nMean Forecast Error")
+  ggtitle("Distance between City Center and Airport vs. \nMean Forecast Error") 
+
 
 
 # If we remove outlier points, still don't see a pattern
@@ -35,7 +36,8 @@ ggplot(allSeason_withDists[allSeason_withDists$distance*0.000621371 < 25, ], aes
   xlab("Distance (mi)") + 
   ylab("Mean Forecast Error") + 
   scale_color_discrete(name="Temperature\nMeasure") + 
-  ggtitle("Distance between City Center and Airport vs. \nMean Forecast Error")
+  ggtitle("Distance between City Center and Airport vs. \nMean Forecast Error") + 
+  stat_smooth(se =FALSE)
 
 
 ggplot(allSeason_withDists, aes(x=latDist, y = mean_error, color = factor(measure))) + 
@@ -46,4 +48,5 @@ ggplot(allSeason_withDists, aes(x=latDist, y = mean_error, color = factor(measur
   xlab("Distance (degrees latitude)") + 
   ylab("Mean Forecast Error") + 
   scale_color_discrete(name="Temperature\nMeasure") + 
-  ggtitle("Latitudinal Distance between City Center and Airport vs. \nMean Forecast Error")
+  ggtitle("Latitudinal Distance between City Center and Airport vs. \nMean Forecast Error") + 
+  stat_smooth(se = FALSE)
