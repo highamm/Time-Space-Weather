@@ -1,5 +1,11 @@
 dist_locations <- read.csv("~/Desktop/DataExpo2018/dist_locations.csv")
 allSeasons_F1 <- read.csv("~/Desktop/DataExpo2018/Data Expo 2018/allSeasons_F1.csv")
+dist_locations
+
+## Matt only
+
+dist_locations <- read.csv("~/Desktop/TimeSpaceExpo/dist_locations.csv")
+allSeasons_F1 <- read.csv("~/Desktop/TimeSpaceExpo/allSeasons_F1.csv")
 
 allSeasons_F1_replace <- allSeasons_F1[,-c(10,11)]
 
