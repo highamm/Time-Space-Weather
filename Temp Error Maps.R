@@ -222,6 +222,12 @@ leaflet(spring_min_error_F1) %>% addTiles() %>%
 
 # Summer Max
 leaflet(summer_max_error_F1) %>% addTiles() %>% 
+  addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError)*15000, 
+             popup=~city, color=~pal(TrueValGreater)) %>%
+  addLegend("topright", colors=c("#000080", "#FF0000"), labels=c("Overestimate", "Underestimate"),
+            title="Squared average forecast error: Summer")
+
+leaflet(summer_max_error_F1) %>% addTiles() %>% 
   addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError^2)*7500, 
              popup=~city, color=~pal(TrueValGreater)) %>%
   addLegend("topright", colors=c("#000080", "#FF0000"), labels=c("Overestimate", "Underestimate"),

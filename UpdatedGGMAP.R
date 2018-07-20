@@ -110,6 +110,20 @@ AK_HI_summer_max[112,5] <- 24.5
 AK_HI_summer_max[113,4] <- -91
 AK_HI_summer_max[113,5] <- 24.5
 
+AK_HI_spring_max <- spring_max_error_F1
+AK_HI_spring_max[112,4] <- -115.5
+AK_HI_spring_max[112,5] <- 24.5
+AK_HI_spring_max[113,4] <- -91
+AK_HI_spring_max[113,5] <- 24.5
+
+AK_HI_winter_max <- winter_max_error_F1
+AK_HI_winter_max[112,4] <- -115.5
+AK_HI_winter_max[112,5] <- 24.5
+AK_HI_winter_max[113,4] <- -91
+AK_HI_winter_max[113,5] <- 24.5
+
+
+
 
 ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) + 
   geom_polygon(fill = "white", colour = "black") + 
@@ -120,7 +134,8 @@ ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) +
   scale_size_continuous(name = "Absolute Mean Error") + 
   theme_classic() + 
   theme(line = element_blank(), axis.title = element_blank(), axis.text = element_blank(), 
-        panel.background = element_rect(fill = "lightblue"))
+        panel.background = element_rect(fill = "lightblue")) +
+  ggtitle("Minimum Temperature Errors: Winter")
 
 ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) + 
   geom_polygon(fill = "white", colour = "black") + 
@@ -131,5 +146,30 @@ ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) +
   scale_size_continuous(guide = FALSE) + 
   theme_classic() + 
   theme(line = element_blank(), axis.title = element_blank(), axis.text = element_blank(), 
+        panel.background = element_rect(fill = "lightblue")) + 
+  ggtitle("Maximum Temperature Errors: Summer")
+
+# Spring max
+ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) + 
+  geom_polygon(fill = "white", colour = "black") + 
+  geom_point(data = AK_HI_spring_max, 
+             aes(x = longitude, y = latitude, group = NULL, size = AbsError, color = TrueValGreater)) + 
+  scale_radius() +
+  scale_color_brewer(palette = "Set1", label = c("Overestimate", "Underestimate"), guide = FALSE) + 
+  scale_size_continuous(guide = FALSE) + 
+  theme_classic() + 
+  theme(line = element_blank(), axis.title = element_blank(), axis.text = element_blank(), 
         panel.background = element_rect(fill = "lightblue"))
 
+
+ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) + 
+  geom_polygon(fill = "white", colour = "black") + 
+  geom_point(data = AK_HI_winter_max, 
+             aes(x = longitude, y = latitude, group = NULL, size = AbsError, color = TrueValGreater)) + 
+  scale_radius() +
+  scale_color_brewer(palette = "Set1", label = c("Overestimate", "Underestimate"), guide = FALSE) + 
+  scale_size_continuous(guide = FALSE) + 
+  theme_classic() + 
+  theme(line = element_blank(), axis.title = element_blank(), axis.text = element_blank(), 
+        panel.background = element_rect(fill = "lightblue")) + 
+  ggtitle("Maximum Temperature Errors: Winter")
