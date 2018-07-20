@@ -16,15 +16,18 @@ allSeason_withDists$CityDirection[which(allSeason_withDists$latDist < 0)] <- "No
 allSeason_withDists$CityDirection[which(allSeason_withDists$latDist > 0)] <- "South"
 
 library(ggplot2)
+library(viridis)
 
-ggplot(allSeason_withDists, aes(x=distance*0.000621371, y=mean_error, color=factor(measure))) + 
+ggplot(allSeason_withDists, aes(x=distance*0.000621371, y=mean_error, color=measure)) + 
   geom_point() + 
+  geom_text(data=allSeason_withDists[allSeason_withDists$city.x=="Austin", ], 
+             aes(label = city.x), nudge_y = 1.2, color = "black") + 
   facet_grid(.~season) +
   facet_wrap(~season, ncol=2) + 
   xlab("Distance (mi)") + 
   ylab("Mean Forecast Error") + 
-  scale_color_discrete(name="Temperature\nMeasure") + 
-  ggtitle("Distance between City Center and Airport vs. \nMean Forecast Error") 
+  scale_color_manual(name="Temperature\nMeasure", values = c("#00CC99", "#CC6633")) +
+  ggtitle("Mean Forecast Error vs.Distance between City Center and Airport  ") 
 
 
 
