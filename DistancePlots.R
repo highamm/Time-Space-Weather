@@ -33,7 +33,7 @@ ggplot(allSeason_withDists, aes(x=distance*0.000621371, y=mean_error, color=meas
   xlab("Distance (mi)") + 
   ylab("Mean Forecast Error") + 
   scale_color_manual(name="Temperature\nMeasure", values = c("#00CC99", "#CC6633")) +
-  ggtitle("Mean Forecast Error vs.Distance between City Center and Airport  ") 
+  ggtitle("Mean Forecast Error vs. Distance between City Center and Airport  ") 
 
 
 

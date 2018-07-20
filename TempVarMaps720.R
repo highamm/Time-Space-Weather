@@ -5,6 +5,8 @@ library(dplyr)
 library(maps)
 library(geosphere)
 
+complete_df <- read.csv("~/Desktop/DataExpo2018/Data Expo 2018/all_df_completesub.csv")
+
 complete_df <- all.df_completeSub
 locations <- read.csv("~/Desktop/TimeSpaceExpo/locations.csv")
 
