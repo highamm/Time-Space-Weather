@@ -184,7 +184,7 @@ pal <- colorFactor(c("navy", "red"), domain = c(TRUE,FALSE))
 
 # This map has the sizes of the circles based on the average error for each city in spring
 leaflet(spring_max_error_F1) %>% addTiles() %>% 
-  addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError)*15000, 
+  addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError)*10000, 
              popup=~city, color=~pal(TrueValGreater)) %>%
   addLegend("topright", colors=c("#000080", "#FF0000"), labels=c("Overestimate", "Underestimate"),
             title="Average max temp forecast error: Spring")
@@ -222,25 +222,17 @@ leaflet(spring_min_error_F1) %>% addTiles() %>%
 
 # Summer Max
 leaflet(summer_max_error_F1) %>% addTiles() %>% 
-  addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError)*10000, 
-             popup=~city, color=~pal(TrueValGreater)) %>%
-  addLegend("topright", colors=c("#000080", "#FF0000"), labels=c("Overestimate", "Underestimate"),
-            title="Average max temp forecast error: Summer")
-
-
-leaflet(summer_max_error_F1) %>% addTiles() %>% 
   addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError^2)*7500, 
              popup=~city, color=~pal(TrueValGreater)) %>%
   addLegend("topright", colors=c("#000080", "#FF0000"), labels=c("Overestimate", "Underestimate"),
             title="Squared average forecast error: Summer")
 
-# Summer Min
-leaflet(summer_min_error_F1) %>% addTiles() %>% 
-  addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError)*10000, 
-             popup=~city, color=~pal(TrueValGreater)) %>%
-  addLegend("topright", colors=c("#000080", "#FF0000"), labels=c("Overestimate", "Underestimate"),
-            title="Average min temp forecast error: Summer")
+library(ggmap)
+ggmap(get_map(location = 'united states', zoom = 3))
 
+
+
+# Summer Min
 leaflet(summer_min_error_F1) %>% addTiles() %>% 
   addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError^2)*7500, 
              popup=~city, color=~pal(TrueValGreater)) %>%
@@ -248,12 +240,6 @@ leaflet(summer_min_error_F1) %>% addTiles() %>%
             title="Squared average forecast error: Summer")
 
 # Fall Max
-leaflet(fall_max_error_F1) %>% addTiles() %>% 
-  addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError)*10000, 
-             popup=~city, color=~pal(TrueValGreater)) %>%
-  addLegend("topright", colors=c("#000080", "#FF0000"), labels=c("Overestimate", "Underestimate"),
-            title="Average max temp forecast error: Fall")
-
 leaflet(fall_max_error_F1) %>% addTiles() %>% 
   addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError^2)*7500, 
              popup=~city, color=~pal(TrueValGreater)) %>%
@@ -269,24 +255,12 @@ leaflet(fall_min_error_F1) %>% addTiles() %>%
 
 # Winter Max
 leaflet(winter_max_error_F1) %>% addTiles() %>% 
-  addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError)*10000, 
-             popup=~city, color=~pal(TrueValGreater)) %>%
-  addLegend("topright", colors=c("#000080", "#FF0000"), labels=c("Overestimate", "Underestimate"),
-            title="Average max temp forecast error: Winter")
-
-leaflet(winter_max_error_F1) %>% addTiles() %>% 
   addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError^2)*7500, 
              popup=~city, color=~pal(TrueValGreater)) %>%
   addLegend("topright", colors=c("#000080", "#FF0000"), labels=c("Overestimate", "Underestimate"),
             title="Squared average forecast error: Winter")
 
 # Winter Min
-leaflet(winter_min_error_F1) %>% addTiles() %>% 
-  addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError)*10000, 
-             popup=~city, color=~pal(TrueValGreater)) %>%
-  addLegend("topright", colors=c("#000080", "#FF0000"), labels=c("Overestimate", "Underestimate"),
-            title="Average min temp forecast error: Winter")
-
 leaflet(winter_min_error_F1) %>% addTiles() %>% 
   addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(AbsError^2)*7500, 
              popup=~city, color=~pal(TrueValGreater)) %>%
@@ -466,28 +440,10 @@ ggplot(allSeasons_F1, aes(x=dists, y=mean_error, color=factor(measure))) +
   ggtitle("Distance between City Center and Airport vs. \nMean Forecast Error")
 
 
-  
-  
-  
-  
-##### GGMAPS #######
-
-usa_center <- as.numeric(geocode("United States"))
-alaska_center <- as.numeric(geocode("Alaska"))
-hawaii_center <- as.numeric(geocode("Hawaii"))
-USAMap <- ggmap(get_googlemap(center = usa_center-1, scale = 2, zoom = 4, extent = "normal"))  
-USAMap  
-AlaskaMap <- ggmap(get_googlemap(center = alaska_center, scale=2, zoom = 4, extent = "normal"))
-AlaskaMap  
-HawaiiMap <- ggmap(get_googlemap(center = hawaii_center, scale=2, zoom = 7, extent = "normal"))
-HawaiiMap
 
 
-# Spring 
 
-USAMap + geom_point(data = spring_max_error_F1, aes(x = longitude, y = latitude), 
-                    size = spring_max_error_F1$AbsError)
-                                                    
+
 
 
 
