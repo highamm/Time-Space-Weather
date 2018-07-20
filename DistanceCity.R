@@ -245,4 +245,4 @@ updlocations[which.max(updlocations$distance), ]
 updlocations$latDist <- updlocations$newairlat - updlocations$citylats
 
 # data set has airport locations, city locations, and distances between the two 
-write.csv(updlocations, "~/Desktop/DataExpo2018/dist_locations.csv")
+write.csv(updlocations, "~/Desktop/DataExpo2018/Data Expo 2018/dist_locations.csv")
