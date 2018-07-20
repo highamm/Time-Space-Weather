@@ -27,25 +27,27 @@ fix1 <- function(object,params){
   object
 }
 
-setwd(tempdir())
-download.file("https://dl.dropbox.com/s/wl0z5rpygtowqbf/states_21basic.zip?dl=1", 
-  "usmapdata.zip", 
-  method = "curl")
-unzip("usmapdata.zip")
-readOGR("states_21basic/", "states")
-all_states <- readOGR("states_21basic/", "states")
+#setwd(tempdir())
+#download.file("https://dl.dropbox.com/s/wl0z5rpygtowqbf/states_21basic.zip?dl=1", 
+#  "usmapdata.zip", 
+#  method = "curl")
+#unzip("usmapdata.zip")
+#readOGR("states_21basic/", "states")
+#all_states <- readOGR("states_21basic/", "states")
 
 
 allstates <- readOGR(dsn = "/Users/highamm/Desktop/TimeSpaceExpo/states_21basic", layer = "states")
-str(myshape)
-fortify(myshape)
+#erin:
+allstates <- readOGR(dsn = "~/Desktop/DataExpo2018/Data Expo 2018/states_21basic", layer = "states")
+#str(myshape)
+#fortify(myshape)
 
 require(ggplot2); require(maptools); require(rgeos); require(mapproj);
 allstates <- fortify(allstates, region = "STATE_NAME")
 allstates$long
-p <- ggplot(data = allstates) + geom_polygon(aes(x=long, y=lat, group = group, fill = as.numeric(as.factor(id))), 
+p <- ggplot(data = allstates) + geom_polygon(aes(x=long, y=lat, group = group, fill = as.numeric(as.factor(id))),
   colour="white", size = 0.25
-) + coord_map(projection="azequalarea") + 
+) + coord_map(projection="azequalarea") +
   scale_fill_gradient(limits = c(1,50))
 p
 
@@ -75,6 +77,7 @@ subvp2 <- viewport(width = 0.12, height = 0.12, x = 0.32, y = 0.27)
 print(HI, vp = subvp2)
 
 allstates <- readOGR(dsn = "/Users/highamm/Desktop/TimeSpaceExpo/states_21basic", layer = "states")
+allstates <- readOGR(dsn = "~/Desktop/DataExpo2018/Data Expo 2018/states_21basic", layer = "states")
 usAEA = spTransform(allstates, CRS("+init=epsg:2163"))
 usfix = fixup(usAEA,c(-35,1.5,-2800000,-2600000),c(-35,1,6800000,-1600000))
 plot(usfix)
@@ -85,8 +88,48 @@ str(usfixLL)
 fortify.allstate <- fortify(usfixLL)
 class(usfixLL)
 head(fortify.allstate)
+
+# Winter Minimum with the radius of the circle determined by AbsError
 ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) + 
   geom_polygon(fill = "white", colour = "black") + 
-  geom_point(data = winter_max_error_F1, 
-    aes(x = longitude, y = latitude, group = NULL))
+  geom_point(data = winter_min_error_F1, 
+    aes(x = longitude, y = latitude, group = NULL, size = AbsError, color = TrueValGreater)) + 
+  scale_radius() +
+  scale_color_brewer(palette = "Set1", label = c("Overestimate", "Underestimate"))
 ?geom_polygon
+
+AK_HI_winter_min <- winter_min_error_F1
+AK_HI_winter_min[112,4] <- -115.5
+AK_HI_winter_min[112,5] <- 24.5
+AK_HI_winter_min[113,4] <- -91
+AK_HI_winter_min[113,5] <- 24.5
+
+AK_HI_summer_max <- summer_max_error_F1
+AK_HI_summer_max[112,4] <- -115.5
+AK_HI_summer_max[112,5] <- 24.5
+AK_HI_summer_max[113,4] <- -91
+AK_HI_summer_max[113,5] <- 24.5
+
+
+ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) + 
+  geom_polygon(fill = "white", colour = "black") + 
+  geom_point(data = AK_HI_winter_min, 
+             aes(x = longitude, y = latitude, group = NULL, size = AbsError, color = TrueValGreater)) + 
+  scale_radius() +
+  scale_color_brewer(palette = "Set1", label = c("Overestimate", "Underestimate"), name = "") + 
+  scale_size_continuous(name = "Absolute Mean Error") + 
+  theme_classic() + 
+  theme(line = element_blank(), axis.title = element_blank(), axis.text = element_blank(), 
+        panel.background = element_rect(fill = "lightblue"))
+
+ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) + 
+  geom_polygon(fill = "white", colour = "black") + 
+  geom_point(data = AK_HI_summer_max, 
+             aes(x = longitude, y = latitude, group = NULL, size = AbsError, color = TrueValGreater)) + 
+  scale_radius() +
+  scale_color_brewer(palette = "Set1", label = c("Overestimate", "Underestimate"), guide = FALSE) + 
+  scale_size_continuous(guide = FALSE) + 
+  theme_classic() + 
+  theme(line = element_blank(), axis.title = element_blank(), axis.text = element_blank(), 
+        panel.background = element_rect(fill = "lightblue"))
+
