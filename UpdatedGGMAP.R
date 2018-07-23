@@ -173,3 +173,7 @@ ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) +
   theme(line = element_blank(), axis.title = element_blank(), axis.text = element_blank(), 
         panel.background = element_rect(fill = "lightblue")) + 
   ggtitle("Maximum Temperature Errors: Winter")
+
+
+
+

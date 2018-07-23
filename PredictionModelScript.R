@@ -20,6 +20,7 @@ complete_df <- complete_df_dists
 
 maxtemp <- subset(complete_df, weathermeas == "MaxTemp")
 
+
 maxtemp$Date <- as.Date(maxtemp$Date)
 maxtemp$DateofForecast <- as.Date(maxtemp$DateofForecast)
 
@@ -97,7 +98,7 @@ summary(modrand)
 # the max temp from the day before 
 
 modrand2 <- lmer(weatherval ~ forecastValue + adjmeanhum + 
-                   adjmeanwind + adjmaxtemp + season  + (season|city), 
+                   adjmeanwind + adjmaxtemp + season  + (season|AirPtCd), 
                  data = maxtemplagstrain)
 ranef(modrand2)
 summary(modrand2)

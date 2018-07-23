@@ -63,3 +63,58 @@ leaflet(maxTempPred_summary[maxTempPred_summary$season == "Spring", ]) %>% addTi
 simple_mod <- lm(weatherval ~ forecastValue, data = maxTempPred)
 summary(simple_mod)
 plot(simple_mod) # residuals look fine
+
+
+
+# Model Error Graphic (that isn't a map)
+
+library(ggplot2)
+library(tidyr)
+
+maxTempPred_long <- gather(maxTempPred_summary, type, measurement, meanForecastDiff:meanModDiff, 
+                           factor_key = TRUE)
+
+
+ggplot(maxTempPred_long[maxTempPred_long$season == "Spring",], 
+       aes(x = type, y = measurement, group = city)) + geom_point()
+
+
+View(maxTempPred_summary[maxTempPred_summary$season == "Spring", ])
+View(maxTempPred_long[maxTempPred_long$season == "Spring", ])
+
+ggplot(maxTempPred_long[maxTempPred_long$season == "Spring" & maxTempPred_long$type == "meanForecastDiff",], 
+       aes(x = type, y = measurement)) + geom_point() + 
+  geom_point(data = maxTempPred_long[maxTempPred_long$season == "Spring" & maxTempPred_long$type == "meanModDiff",], 
+             aes(x = type, y = measurement)) + geom_line(maxTempPred_long[maxTempPred_long$season == "Spring",], group = AirPtCd)
+
+ggplot(maxTempPred_long[maxTempPred_long$season == "Spring", ], aes(x = type, y = measurement, 
+                                                                    group = AirPtCd)) + 
+  geom_point() + 
+  geom_line()
+
+
+ggplot(maxTempPred_long[maxTempPred_long$season == "Summer", ], aes(x = type, y = measurement, 
+                                                                    group = AirPtCd)) + 
+  geom_point() + 
+  geom_line()
+
+ggplot(maxTempPred_long[maxTempPred_long$season == "Winter", ], aes(x = type, y = measurement, 
+                                                                    group = AirPtCd)) + 
+  geom_point() + 
+  geom_line()
+
+ggplot(maxTempPred_long[maxTempPred_long$season == "Fall", ], aes(x = type, y = measurement, 
+                                                                    group = AirPtCd)) + 
+  geom_point() + 
+  geom_line()
+
+ggplot(maxTempPred_long[maxTempPred_long$season == "Fall", ], aes(x = type, y = measurement, 
+                                                                  group = AirPtCd)) + 
+  geom_point() + 
+  geom_line()
+
+nrow(maxTempPred_long[maxTempPred_long$season == "Spring" & maxTempPred_long$type == "meanForecastDiff",])
+nrow(maxTempPred_long[maxTempPred_long$season == "Spring" & maxTempPred_long$type == "meanModDiff",])
+length(unique(maxTempPred_long[maxTempPred_long$season == "Spring", ]$AirPtCd))
+
+
