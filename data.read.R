@@ -152,12 +152,16 @@ winterclean <- winterclean[winterclean$absForecastDiff < 26, ]
 maxtempall <- rbind(springclean, summerclean, fallclean, winterclean)
 
 histWeather$Date <- as.Date(histWeather$Date, format = "%Y-%m-%d")
+maxtempall$Date <- as.Date(maxtempall$Date, format = "%Y-%m-%d")
 
-maxtempwpreds <- merge(histWeather, maxtempall, 
+
+maxtempwpreds <- base::merge(histWeather, maxtempall, 
   by.x = c("Date", "AirPtCd"),
   by.y = c("Date", "AirPtCd"))
 
-maxtempalldat <- maxtempwpreds %>% dplyr::group_by(city) %>%
+## test <- dplyr::right_join(histWeather, maxtempall, by = c("Date", "AirPtCd"))
+
+maxtempalldat <- maxtempwpreds %>% dplyr::group_by(AirPtCd) %>%
   mutate(adjmeanhum = lag(Mean_Humidity),
     adjmeanwind = lag(Mean_Wind_SpeedMPH),
     adjmeandew = lag(MeanDew_PointF),
@@ -166,7 +170,7 @@ maxtempalldat <- maxtempwpreds %>% dplyr::group_by(city) %>%
     adjmaxtemp = lag(Max_TemperatureF))
 nrow(maxtempalldat)
 summary(maxtempalldat$Date)
-names(maxtempalldat)[8] <- "forecastValue"
+names(maxtempalldat)[names(maxtempalldat) == "Value"] <- "forecastValue"
 
 maxtempalldat$Error <- maxtempalldat$weatherval - maxtempalldat$forecastValue
 maxtempalldat$SquaredError <- maxtempalldat$Error ^ 2
