@@ -152,6 +152,8 @@ ggplot(data = dfint, aes(x = SquaredErrorAvg, y = city)) +
   geom_segment(aes(x = AbsError^2, y = city, xend = SquaredErrorAvg, yend = city),
     size = 2, colour = "chartreuse4") +
   geom_point(aes(x = 0, y = city), colour = "darkorchid4", size = 3.4)
+
+
  ## ERIN CHECK OUT THIS PLOT: it doesn't have labels because i did not
  ## want to add them until you have a look and decide if this is satisfactory.
  ## Our blurb would comment on some cities that have a variance with low bias 
