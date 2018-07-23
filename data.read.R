@@ -109,4 +109,69 @@ all.df_completeSub <- read.csv("~/Desktop/DataExpo2018/all_df_completesub.csv")
 
 ## Matt
 write.csv(all.df_completeSub, "all_df_completesub.csv")
-all.df_completeSub <- read.csv("all_df_completesub.csv")
+all_df_completeSub <- read.csv("all_df_completesub.csv")
+
+
+all_df_completeSub$Date <- as.Date(all_df_completeSub$Date)
+all_df_completeSub$DateofForecast <- as.Date(all_df_completeSub$DateofForecast)
+
+
+all_df_completeSub$month <- month(as.POSIXlt(all_df_completeSub$Date))
+
+all_df_completeSub$season <- cut(all_df_completeSub$month, 
+  breaks = c(0.5, 2.5, 5.5, 8.5, 11.5, 12.5), 
+  labels = c("Winter", "Spring", "Summer", "Fall", "Winter2"), 
+  right = FALSE)
+
+all_df_completeSub$season[all_df_completeSub$season == "Winter2"] <- "Winter"
+all_df_completeSub$season <- factor(all_df_completeSub$season)
+
+
+## getting the maxtemponly data set
+
+maxtemponly <- subset(all_df_completeSub, weathermeas == "MaxTemp")
+length(maxtemponly$month)
+levels(all_df_completeSub$weathermeas)
+maxtemponly$month
+springtemp <- subset(maxtemponly, month %in% c(3, 4, 5))
+summertemp <- subset(maxtemponly, month %in% c(6, 7, 8))
+falltemp <- subset(maxtemponly, month %in% c(9, 10, 11))
+wintertemp <- subset(maxtemponly, month %in% c(12, 1, 2))
+
+
+
+
+##springclean <- springtemp[-which(springtemp$weatherval < 5 & springtemp$forecastValue > 30), ]
+springclean <- springtemp
+summerclean <- summertemp
+fallclean <- falltemp
+winterclean <- wintertemp[-which(wintertemp$weatherval > 95), ]
+winterclean <- winterclean[winterclean$absForecastDiff < 26, ]
+
+
+maxtempall <- rbind(springclean, summerclean, fallclean, winterclean)
+
+histWeather$Date <- as.Date(histWeather$Date, format = "%Y-%m-%d")
+
+maxtempwpreds <- merge(histWeather, maxtempall, 
+  by.x = c("Date", "AirPtCd"),
+  by.y = c("Date", "AirPtCd"))
+
+maxtempalldat <- maxtempwpreds %>% dplyr::group_by(city) %>%
+  mutate(adjmeanhum = lag(Mean_Humidity),
+    adjmeanwind = lag(Mean_Wind_SpeedMPH),
+    adjmeandew = lag(MeanDew_PointF),
+    adjmeanpressure = lag(Mean_Sea_Level_PressureIn),
+    adjmeanvis = lag(Mean_VisibilityMiles),
+    adjmaxtemp = lag(Max_TemperatureF))
+nrow(maxtempalldat)
+summary(maxtempalldat$Date)
+names(maxtempalldat)[8] <- "forecastValue"
+
+maxtempalldat$Error <- maxtempalldat$weatherval - maxtempalldat$forecastValue
+maxtempalldat$SquaredError <- maxtempalldat$Error ^ 2
+summary(maxtempalldat$absForecastDiff)
+
+## USE THIS DATA SET FOR MAXTEMP (UNLESS WE DECIDE TO GET RID OF MORE "OUTLIERS")
+
+
