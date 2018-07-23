@@ -130,3 +130,10 @@ http://thevane.gawker.com/what-parts-of-the-country-get-the-worst-weather-predic
 
 https://weather.com/science/weather-explainers/news/toughest-weather-forecast-places-us
 
+
+
+
+7/23/18
+
+Change model to train on first two years and test on third 
+Change visual based on this 
