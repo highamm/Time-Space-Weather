@@ -60,11 +60,14 @@ all.df <- merge(histWeatherlong, foreloc.df,
   by.y = c("DatePredicted", "AirPtCd", "Weatherval"),
   all.x = TRUE)
 
+all.df$Date <- as.Date(all.df$Date)
+summary(all.df$Date)
 
 ## convert the character vector of historical weather to numeric
 all.df$weatherval <- as.numeric(all.df$weatherval)
 
 all.df_complete <- all.df[complete.cases(all.df), ]
+summary(all.df_complete$Date)
 
 # make sure dates are recorded as Date objects
 all.df_complete$Date <- as.Date(all.df_complete$Date)
@@ -95,6 +98,7 @@ all.df_complete$LengthForecastDayOnly <- as.numeric(substring(all.df_complete$Le
 # on or before the observed date
 all.df_completeSub <- subset(all.df_complete, all.df_complete$DateofForecast <=
     all.df_complete$Date)
+summary(all.df_completeSub$Date)
 names(all.df_completeSub)[7] <- "forecastValue"
 
 

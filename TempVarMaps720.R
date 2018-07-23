@@ -19,6 +19,9 @@ maxtempall <- subset(complete_df, weathermeas == "MaxTemp")
 ##maxtempall <- read.csv("~/Desktop/TimeSpaceExpo/maxtempall.csv")
 ##mintempall <- read.csv("~/Desktop/TimeSpaceExpo/mintempall.csv")
 
+## obtain from ExplroingMaxTempErrorMods file
+maxtempall <- rbind(springclean, summerclean, fallclean, winterclean)
+
 
 maxTemp <- subset(maxtempall, weathermeas == "MaxTemp")
 minTemp <- subset(mintempall, weathermeas == "MinTemp")
@@ -43,6 +46,9 @@ nrow(unique(maxTemp[c("Date", "AirPtCd", "DateofForecast")]))
 # split into seasons
 maxTemp$month <- month(as.POSIXlt(maxTemp$Date))
 minTemp$month <- month(as.POSIXlt(minTemp$Date))
+
+summary(maxTemp$forecastDiff)
+with(maxTemp, qplot(weatherval, forecastValue))
 
 spring_max <- subset(maxTemp, season == "Spring")
 summer_max <- subset(maxTemp, season == "Summer")
