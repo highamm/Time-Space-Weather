@@ -143,16 +143,46 @@ dfint
 
 
 
-ggplot(data = dfint, aes(x = SquaredErrorAvg, y = city)) +
+darkorchid4
+chartreuse4
+ggplot(data = dfint, aes(x = SquaredErrorAvg, y = city, colour = "Error Source")) +
   geom_point(size = 3.4, colour = "chartreuse4") + 
   facet_wrap(~ season, nrow = 1) +
-  geom_point(aes(x = AbsError^2, y = city), size = 3.4) +
-  geom_segment(aes(x = 0, y = city, xend = AbsError^2, yend = city),
-    size = 2, colour = "darkorchid4") +
-  geom_segment(aes(x = AbsError^2, y = city, xend = SquaredErrorAvg, yend = city),
-    size = 2, colour = "chartreuse4") +
-  geom_point(aes(x = 0, y = city), colour = "darkorchid4", size = 3.4)
+  geom_point(aes(x = AbsError^2, y = city), size = 3.4, colour = "black") +
+  geom_segment(aes(x = 0, y = city, xend = AbsError^2, yend = city,
+    colour = "Bias Squared"),
+    size = 2) +
+  geom_segment(aes(x = AbsError^2, y = city, xend = SquaredErrorAvg, yend = city,
+    colour = "Variance"),
+    size = 2) +
+  geom_point(aes(x = 0, y = city), colour = "darkorchid4", size = 3.4) +
+  scale_colour_manual("Error Source", values = c("Bias Squared" = "darkorchid4", "Variance" = "chartreuse4")) + 
+  theme_grey(base_size = 19) +
+  xlab("Mean Square Prediction Error") +
+  ylab("City")
 
+## begin to look at cities that have strange patterns
+dfint
+
+## salmon idaho is just east of the salmon river mountain range....possibly creating
+## high temperature error variation because of the difficulty of predicting weather patterns directly east of a mountain range.
+
+## Key West: temperatures very consistent: from weather..com, the record high is 
+## between 10 to 15 degrees higher for each month than the average high.
+## 
+## But then, shouldn't Miami have a low MSPE as well? But, according to weather.com
+## the airport is typically a couple of degrees warmer than the city, on average,
+## creating bias in our data set (SO IT'S NOT ALWAYS DISTANCE THAT IS INFORMATIVE:
+## CONNECTION TO DISTANCE PLOT). Like Key West, Miami has low variance,
+## perhaps because of the low variation in temperatures anyway
+## 
+## San Francisco: similar to Miami (airport, on average, warmer) by a couple of degrees, more so in the summer
+## Compare to Columbus, OH (airport temp and city temp, on average,
+## are quite similar, differing by about 1 degree)
+## 
+## Austin highlighted in the distance plot (CONNECTION TO THAT PLOT)
+## 
+## Compare to Helena, Montana, where the record high is about 30 degrees higher than the average high in most months....much harder to predict! Higher variance and MSPE.
 
  ## ERIN CHECK OUT THIS PLOT: it doesn't have labels because i did not
  ## want to add them until you have a look and decide if this is satisfactory.
