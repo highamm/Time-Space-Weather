@@ -34,15 +34,17 @@ allSeason_withDists$CityDirection[which(allSeason_withDists$latDist > 0)] <- "So
 summary_withDists <- allSeason_withDists[complete.cases(allSeason_withDists$Error), ] %>%
   group_by_(.dots = c("AirPtCd", "weathermeas", "season")) %>%
   summarize(mean_error = mean(Error))
+summary_withDists2 <- merge(summary_withDists, dist_locations, by.x = "AirPtCd", 
+                            by.y = "AirPtCd")
 
 
 library(ggplot2)
 library(viridis)
 
-ggplot(summary_withDists, aes(x=distance*0.000621371, y=mean_error, color=measure)) + 
+ggplot(summary_withDists2, aes(x=distance*0.000621371, y=mean_error, color=weathermeas)) + 
   geom_point() + 
-  geom_text(data=allSeason_withDists[allSeason_withDists$city.x=="Austin", ], 
-             aes(label = city.x), nudge_y = 1.2, color = "black") + 
+  geom_text(data=summary_withDists2[summary_withDists2$city=="Austin", ], 
+             aes(label = "Austin, NV"), nudge_y = 1.2, color = "black") + 
   facet_grid(.~season) +
   facet_wrap(~season, ncol=2) + 
   xlab("Distance (mi)") + 
