@@ -161,7 +161,7 @@ ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) +
   theme(line = element_blank(), axis.title = element_blank(), axis.text = element_blank(), 
         panel.background = element_rect(fill = "lightblue"))
 
-
+# winter max
 ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) + 
   geom_polygon(fill = "white", colour = "black") + 
   geom_point(data = AK_HI_winter_max, 
