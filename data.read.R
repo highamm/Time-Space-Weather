@@ -104,8 +104,8 @@ names(all.df_completeSub)[7] <- "forecastValue"
 
 ## we should have the same all.df_completeSub after running this script
 # Erin
-write.csv(all.df_completeSub, "~/Desktop/DataExpo2018/all_df_completesub.csv")
-all.df_completeSub <- read.csv("~/Desktop/DataExpo2018/all_df_completesub.csv")
+write.csv(all.df_completeSub, "~/Desktop/DataExpo2018/Data Expo 2018/all_df_completesub.csv")
+all_df_completeSub <- read.csv("~/Desktop/DataExpo2018/Data Expo 2018/all_df_completesub.csv")
 
 ## Matt
 write.csv(all.df_completeSub, "all_df_completesub.csv")
@@ -138,8 +138,14 @@ summertemp <- subset(maxtemponly, month %in% c(6, 7, 8))
 falltemp <- subset(maxtemponly, month %in% c(9, 10, 11))
 wintertemp <- subset(maxtemponly, month %in% c(12, 1, 2))
 
-
-
+## getting the mintemponly data set
+mintemponly <- subset(all_df_completeSub, weathermeas == "MinTemp")
+length(mintemponly$month)
+levels(all_df_completeSub$weathermeas)
+springtempMin <- subset(mintemponly, month %in% c(3, 4, 5))
+summertempMin <- subset(mintemponly, month %in% c(6, 7, 8))
+falltempMin <- subset(mintemponly, month %in% c(9, 10, 11))
+wintertempMin <- subset(mintemponly, month %in% c(12, 1, 2))
 
 ##springclean <- springtemp[-which(springtemp$weatherval < 5 & springtemp$forecastValue > 30), ]
 springclean <- springtemp
@@ -148,16 +154,30 @@ fallclean <- falltemp
 winterclean <- wintertemp[-which(wintertemp$weatherval > 95), ]
 winterclean <- winterclean[winterclean$absForecastDiff < 26, ]
 
+## getting rid of the obvious outliers
+springcleanMin <- springtempMin
+summercleanMin <- summertempMin[-which(summertempMin$weatherval < 10), ]
+summercleanMin <- summercleanMin[-which(summercleanMin$forecastValue < 70 & 
+                                    summercleanMin$weatherval > 90), ]
+fallcleanMin <- falltempMin[-which(falltempMin$weatherval > 98 | falltempMin$weatherval < -100), ]
+wintercleanMin <- wintertempMin[-which(wintertempMin$forecastValue > 40 &
+                                   wintertempMin$weatherval < -20), ]
 
 maxtempall <- rbind(springclean, summerclean, fallclean, winterclean)
+mintempall <- rbind(springcleanMin, summercleanMin, fallcleanMin, wintercleanMin)
+
 
 histWeather$Date <- as.Date(histWeather$Date, format = "%Y-%m-%d")
 maxtempall$Date <- as.Date(maxtempall$Date, format = "%Y-%m-%d")
-
+mintempall$Date <- as.Date(mintempall$Date, format = "%Y-%m-%d")
 
 maxtempwpreds <- base::merge(histWeather, maxtempall, 
   by.x = c("Date", "AirPtCd"),
   by.y = c("Date", "AirPtCd"))
+
+mintempwpreds <- base::merge(histWeather, mintempall, 
+                             by.x = c("Date", "AirPtCd"), 
+                             by.y = c("Date", "AirPtCd"))
 
 ## test <- dplyr::right_join(histWeather, maxtempall, by = c("Date", "AirPtCd"))
 
@@ -172,10 +192,26 @@ nrow(maxtempalldat)
 summary(maxtempalldat$Date)
 names(maxtempalldat)[names(maxtempalldat) == "Value"] <- "forecastValue"
 
+mintempalldat <- mintempwpreds %>% dplyr::group_by(AirPtCd) %>%
+  mutate(adjmeanhum = lag(Mean_Humidity),
+         adjmeanwind = lag(Mean_Wind_SpeedMPH),
+         adjmeandew = lag(MeanDew_PointF),
+         adjmeanpressure = lag(Mean_Sea_Level_PressureIn),
+         adjmeanvis = lag(Mean_VisibilityMiles),
+         adjmintemp = lag(Min_TemperatureF))
+nrow(mintempalldat)
+summary(mintempalldat$Date)
+names(mintempalldat)[names(mintempalldat) == "Value"] <- "forecastValue"
+
+
 maxtempalldat$Error <- maxtempalldat$weatherval - maxtempalldat$forecastValue
 maxtempalldat$SquaredError <- maxtempalldat$Error ^ 2
 summary(maxtempalldat$absForecastDiff)
 
-## USE THIS DATA SET FOR MAXTEMP (UNLESS WE DECIDE TO GET RID OF MORE "OUTLIERS")
+mintempalldat$Error <- mintempalldat$weatherval - mintempalldat$forecastValue
+mintempalldat$SquaredError <- mintempalldat$Error ^ 2
+summary(mintempalldat$absForecastDiff)
 
+## USE THIS DATA SET FOR MAXTEMP (UNLESS WE DECIDE TO GET RID OF MORE "OUTLIERS")
+## USE mintempalldat for minimum
 

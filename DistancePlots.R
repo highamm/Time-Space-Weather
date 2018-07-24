@@ -1,33 +1,50 @@
+# Erin
 dist_locations <- read.csv("~/Desktop/DataExpo2018/dist_locations.csv")
-allSeasons_F1 <- read.csv("~/Desktop/DataExpo2018/Data Expo 2018/allSeasons_F1.csv")
+#allSeasons_F1 <- read.csv("~/Desktop/DataExpo2018/Data Expo 2018/allSeasons_F1.csv")
 dist_locations
 
 ## Matt only
 
 dist_locations <- read.csv("~/Desktop/TimeSpaceExpo/dist_locations.csv")
-allSeasons_F1 <- read.csv("~/Desktop/TimeSpaceExpo/allSeasons_F1.csv")
+#allSeasons_F1 <- read.csv("~/Desktop/TimeSpaceExpo/allSeasons_F1.csv")
 
-allSeasons_F1_replace <- allSeasons_F1[,-c(10,11)]
 
-allSeason_withDists <- merge(allSeasons_F1_replace, dist_locations, by.x = "AirPtCd", 
+# need maxtempalldat and mintempalldat which are in the data.read.R file
+allSeasons <- rbind(maxtempalldat, mintempalldat)
+dim(allSeasons)
+nrow(maxtempalldat) + nrow(mintempalldat)
+
+allSeasons_F1 <- allSeasons[allSeasons$LengthForecastDayOnly == 1, ]
+
+#allSeasons_F1_replace <- allSeasons_F1[,-c(10,11)]
+
+allSeason_withDists <- merge(allSeasons_F1, dist_locations, by.x = "AirPtCd", 
                              by.y = "AirPtCd")
 
 # puts the facet grid in an order that makes sense 
-allSeason_withDists$season <- factor(allSeason_withDists$season, levels=c("winter", "spring", 
-                                                                          "summer", "fall"))
+allSeason_withDists$season <- factor(allSeason_withDists$season, levels=c("Winter", "Spring", 
+                                                                          "Summer", "Fall"))
 
 allSeason_withDists$CityDirection <- rep(0, nrow(allSeason_withDists))
 
 allSeason_withDists$CityDirection[which(allSeason_withDists$latDist < 0)] <- "North"
 allSeason_withDists$CityDirection[which(allSeason_withDists$latDist > 0)] <- "South"
 
+
+summary_withDists <- allSeason_withDists[complete.cases(allSeason_withDists$Error), ] %>%
+  group_by_(.dots = c("AirPtCd", "weathermeas", "season")) %>%
+  summarize(mean_error = mean(Error))
+summary_withDists2 <- merge(summary_withDists, dist_locations, by.x = "AirPtCd", 
+                            by.y = "AirPtCd")
+
+
 library(ggplot2)
 library(viridis)
 
-ggplot(allSeason_withDists, aes(x=distance*0.000621371, y=mean_error, color=measure)) + 
+ggplot(summary_withDists2, aes(x=distance*0.000621371, y=mean_error, color=weathermeas)) + 
   geom_point() + 
-  geom_text(data=allSeason_withDists[allSeason_withDists$city.x=="Austin", ], 
-             aes(label = city.x), nudge_y = 1.2, color = "black") + 
+  geom_text(data=summary_withDists2[summary_withDists2$city=="Austin", ], 
+             aes(label = "Austin, NV"), nudge_y = 1.2, color = "black") + 
   facet_grid(.~season) +
   facet_wrap(~season, ncol=2) + 
   xlab("Distance (mi)") + 

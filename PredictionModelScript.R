@@ -2,6 +2,7 @@
 
 
 all.df_completeSub <- read.csv("all_df_completesub.csv")
+nrow(all.df_completeSub)
 colnames(all.df_completeSub)[8] <- "forecastValue"
 histWeather <- read.csv("histWeather.csv")
 
@@ -17,9 +18,10 @@ complete_df_dists <- merge(x = complete_df, y = dist_locations[ ,c("AirPtCd", "l
                            by.x = "AirPtCd", by.y = "AirPtCd", all.x=TRUE)
 
 complete_df <- complete_df_dists
+complete_df$Date <- as.Date(complete_df$Date)
 
 maxtemp <- subset(complete_df, weathermeas == "MaxTemp")
-
+nrow(maxtemp)
 
 maxtemp$Date <- as.Date(maxtemp$Date)
 maxtemp$DateofForecast <- as.Date(maxtemp$DateofForecast)
