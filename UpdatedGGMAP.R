@@ -137,6 +137,21 @@ ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) +
         panel.background = element_rect(fill = "lightblue")) +
   ggtitle("Minimum Temperature Errors: Winter")
 
+# winter min map with no legend
+ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) + 
+  geom_polygon(fill = "white", colour = "black") + 
+  geom_point(data = AK_HI_winter_min, 
+             aes(x = longitude, y = latitude, group = NULL, size = AbsError, color = TrueValGreater)) + 
+  scale_radius() +
+  scale_color_brewer(palette = "Set1", label = c("Overestimate", "Underestimate"), guide = FALSE) + 
+  scale_size_continuous(guide = FALSE) + 
+  theme_classic() + 
+  theme(line = element_blank(), axis.title = element_blank(), axis.text = element_blank(), 
+        panel.background = element_rect(fill = "lightblue")) +
+  ggtitle("Minimum Temperature Errors: Winter")
+
+
+
 ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) + 
   geom_polygon(fill = "white", colour = "black") + 
   geom_point(data = AK_HI_summer_max, 
