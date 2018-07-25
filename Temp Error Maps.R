@@ -40,6 +40,7 @@ minTemp$month <- month(as.POSIXlt(minTemp$Date))
 # replace the maxTemp dataset with the cleaned and full maxtempalldat
 # written in data.read.R
 maxTemp <- maxtempalldat
+minTemp <- mintempalldat
 
 spring_max <- subset(maxTemp, season == "Spring")
 summer_max <- subset(maxTemp, season == "Summer")
