@@ -178,6 +178,7 @@ Interesting cities:
   \enumerate Can we then modify the daily forecasts by using other data like humidity and wind speed to improve the forecast?
   \enumerate Might the over and under-prediction come from misalignment in the city center locations (where forecasts were made) and airport locations (where historically weather was recorded)?
   \enumerate Are cities' prediction errors large due to bias or variance? Does this depend on the city and its geographic location?
+  \enumerate Can we visualize how the number of days out a forecast was made impacts the accuracy of the forecast for different cities?
   
   
   
