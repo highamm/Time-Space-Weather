@@ -1,3 +1,5 @@
+###### DONT USE THIS FILE FOR ANYTHING
+
 # run lines 1-104 in PredictionModelScript.R before running the following code
 
 length(fitted(modrand2))

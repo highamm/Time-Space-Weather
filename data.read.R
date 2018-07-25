@@ -182,16 +182,27 @@ mintempwpreds <- base::merge(histWeather, mintempall,
 
 ## test <- dplyr::right_join(histWeather, maxtempall, by = c("Date", "AirPtCd"))
 
-maxtempalldat <- maxtempwpreds %>% dplyr::group_by(AirPtCd) %>%
+# maxtempalldat <- maxtempwpreds %>% dplyr::group_by(AirPtCd) %>%
+#   mutate(adjmeanhum = lag(Mean_Humidity),
+#     adjmeanwind = lag(Mean_Wind_SpeedMPH),
+#     adjmeandew = lag(MeanDew_PointF),
+#     adjmeanpressure = lag(Mean_Sea_Level_PressureIn),
+#     adjmeanvis = lag(Mean_VisibilityMiles),
+#     adjmaxtemp = lag(Max_TemperatureF))
+
+
+maxtempalldat <- maxtempwpreds %>% 
+  group_by_(.dots = c("AirPtCd", "season")) %>%
   mutate(adjmeanhum = lag(Mean_Humidity),
-    adjmeanwind = lag(Mean_Wind_SpeedMPH),
-    adjmeandew = lag(MeanDew_PointF),
-    adjmeanpressure = lag(Mean_Sea_Level_PressureIn),
-    adjmeanvis = lag(Mean_VisibilityMiles),
-    adjmaxtemp = lag(Max_TemperatureF))
+         adjmeanwind = lag(Mean_Wind_SpeedMPH),
+         adjmeandew = lag(MeanDew_PointF),
+         adjmeanpressure = lag(Mean_Sea_Level_PressureIn),
+         adjmeanvis = lag(Mean_VisibilityMiles),
+         adjmaxtemp = lag(Max_TemperatureF))
 nrow(maxtempalldat)
 summary(maxtempalldat$Date)
 names(maxtempalldat)[names(maxtempalldat) == "Value"] <- "forecastValue"
+
 
 mintempalldat <- mintempwpreds %>% dplyr::group_by(AirPtCd) %>%
   mutate(adjmeanhum = lag(Mean_Humidity),

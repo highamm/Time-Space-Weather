@@ -105,7 +105,7 @@ summary(maxtemplagscomp$Date)
 maxtemplagstrain <- subset(maxtemplagscomp, Date >= "2014-09-01" & Date <= "2016-08-31")
 nrow(maxtemplagstrain)
 summary(maxtemplagstrain$Date)
-maxtemplagstest <- subset(maxtemplagscomp, Date >= "2016-09-01" & Date <= "2017-09-01")
+maxtemplagstest <- subset(maxtemplagscomp, Date >= "2016-09-01" & Date <= "2017-08-31")
 summary(maxtemplagstest$Date)
 
 # From Erin: I have also included the previous day's max temp. If you plug in humidity and wind in order
@@ -172,10 +172,10 @@ pred.fun <- function(forecastValue, adjmeanhum, adjmeanwind, season,
 
 
 pred.fun2 <- function(forecastValue, adjmeanhum, adjmeanwind, adjmaxtemp, season,
-                     city) {
+                     AirPtCd) {
   todayinfo3 <- data.frame("forecastValue" = forecastValue,
                            "season" = season,
-                           "city" = city,
+                           "AirPtCd" = AirPtCd,
                            "adjmeanhum" = adjmeanhum,
                            "adjmeanwind" = adjmeanwind, 
                            "adjmaxtemp" = adjmaxtemp)
@@ -186,9 +186,9 @@ pred.fun2 <- function(forecastValue, adjmeanhum, adjmeanwind, adjmaxtemp, season
 
 
 maxtemplagstest$newpreds <- with(maxtemplagstest, 
-  pred.fun(forecastValue = forecastValue,
-    adjmeanhum = adjmeanhum, adjmeanwind = adjmeanwind, 
-  season = season, city = city))
+  pred.fun2(forecastValue = forecastValue,
+    adjmeanhum = adjmeanhum, adjmeanwind = adjmeanwind, adjmaxtemp = adjmaxtemp,
+  season = season, AirPtCd = AirPtCd))
 maxtemplagstest$oldpreds <- maxtemplagstest$forecastValue
 maxtemplagstest$histdata <- maxtemplagstest$weatherval
 
