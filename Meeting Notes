@@ -137,3 +137,25 @@ https://weather.com/science/weather-explainers/news/toughest-weather-forecast-pl
 
 Change model to train on first two years and test on third 
 Change visual based on this 
+
+7/24/18
+
+Blurb for Bias variance graph:
+
+Summary of graphic:
+  \item Cities with longer lines have higher MSPE from the 3 years of data
+  \item Cities with more purple have more contribution from bias
+  \item Cities with more green have more contribution from variance
+Interesting cities:
+  \item Key West: Forecasts are very good likely because the temperature fluctuation in Key West is very low
+    \item compare to Helena, Montana where temperatures fluctuate much more rapidly throughout a week and a season, making prediction much harder
+  \item Miami: Miami also has low temperature fluctuation, but the historical weather at the airport is a couple of degrees higher than the prediction for the actual city of Miami
+    \item results in high bias for Miami
+    \item distance between city center and airport is relatively small but the change in climate is relatively large since Miami is on the coast
+    \item San Francisco has a similar pattern to Miami
+  \item Salmon, ID has high variane but low bias
+    \item located just east of a mountain range, making temperature prediction difficult, even one-day out.
+  \item perhaps connect to Austin
+    
+  
+  

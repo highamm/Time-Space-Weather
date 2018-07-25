@@ -89,6 +89,7 @@ fortify.allstate <- fortify(usfixLL)
 class(usfixLL)
 head(fortify.allstate)
 
+
 # Winter Minimum with the radius of the circle determined by AbsError
 ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) + 
   geom_polygon(fill = "white", colour = "black") + 
@@ -177,6 +178,7 @@ ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) +
         panel.background = element_rect(fill = "lightblue"))
 
 # winter max
+head(AK_HI_winter_max)
 ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) + 
   geom_polygon(fill = "white", colour = "black") + 
   geom_point(data = AK_HI_winter_max, 
@@ -190,5 +192,15 @@ ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) +
   ggtitle("Maximum Temperature Errors: Winter")
 
 
-
-
+## making sure this looks right....
+ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) + 
+  geom_polygon(fill = "white", colour = "black") + 
+  geom_point(data = AK_HI_winter_max, 
+    aes(x = longitude, y = latitude, group = NULL, size = AbsError, color = TrueValGreater)) + 
+  scale_radius() +
+  scale_color_brewer(palette = "Set1", label = c("Overestimate", "Underestimate")) + 
+  scale_size_continuous() + 
+  theme_classic() + 
+  theme(line = element_blank(), axis.title = element_blank(), axis.text = element_blank(), 
+    panel.background = element_rect(fill = "lightblue")) + 
+  ggtitle("Maximum Temperature Errors: Winter")
