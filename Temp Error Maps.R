@@ -52,6 +52,9 @@ summer_min <- subset(minTemp, season == "Summer")
 fall_min <- subset(minTemp, season == "Fall")
 winter_min <- subset(minTemp, season == "Winter")
 
+summary(winter_min$Date)
+summary(winter_max$Date)
+
 spring_max$SquaredError <- spring_max$Error^2
 summer_max$SquaredError <- summer_max$Error^2
 fall_max$SquaredError <- fall_max$Error^2
@@ -124,6 +127,7 @@ winter_min_error_F1$SquaredErrorAvg <- data.frame(winter_min[winter_min$LengthFo
                                                                complete.cases(winter_min$Error), ] %>%
                                                     group_by(AirPtCd) %>% summarize(SquaredErrorAvg = mean(SquaredError)))[,2]
 
+summary(winter_min_error_F1$AbsError)
 
 ####
 summer_max_error_F1 <- summer_max[summer_max$LengthForecastDayOnly==1 & 
