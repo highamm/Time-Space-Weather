@@ -170,6 +170,8 @@ ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) +
         panel.background = element_rect(fill = "lightblue")) + 
   ggtitle("Maximum Temperature Errors: Summer")
 
+summary(AK_HI_summer_max$AbsError)
+
 # Spring max
 ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) + 
   geom_polygon(fill = "white", colour = "black") + 
