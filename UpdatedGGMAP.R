@@ -1,5 +1,8 @@
+# run lines 42-180 in Temp Error Maps.R before using this code
+
 require(maptools)
 require(rgdal)
+require(ggplot2)
 
 fixup <- function(usa,alaskaFix,hawaiiFix){
   
@@ -207,6 +210,10 @@ ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) +
     panel.background = element_rect(fill = "lightblue")) + 
   ggtitle("Maximum Temperature Errors: Winter")
 
+
+## The following puts both maps in one image so that the scales
+## on each map are the same
+ 
 AK_HI_winter <- bind_rows("Max" = AK_HI_winter_max, 
                           "Min" = AK_HI_winter_min, 
                           .id = "Group")
@@ -220,7 +227,7 @@ ggplot(data = fortify.allstate, aes(x = long, y = lat, group=group)) +
              aes(x = longitude, y = latitude, group = NULL, size = AbsError, 
                  color = TrueValGreater)) + 
   facet_grid(~Group, labeller=labeller(Group = labels)) + 
-  scale_radius(name = "Absolute Error") +
+  scale_radius(name = "Absolute Mean Error (°F)") +
   scale_color_brewer(palette = "Set1", label = c("Overestimate", "Underestimate"), 
                      name = "") + 
   theme_classic() + 

@@ -41,16 +41,37 @@ summary_withDists2 <- merge(summary_withDists, dist_locations, by.x = "AirPtCd",
 library(ggplot2)
 library(viridis)
 
-ggplot(summary_withDists2, aes(x=distance*0.000621371, y=mean_error, color=weathermeas)) + 
+
+max_summary <- bind_rows("Winter" = winter_max_error_F1, 
+                         "Spring" = spring_max_error_F1, 
+                         "Summer" = summer_max_error_F1, 
+                         "Fall" = fall_max_error_F1, 
+                         .id = "Season")
+min_summary <- bind_rows("Winter" = winter_min_error_F1, 
+                         "Spring" = spring_min_error_F1, 
+                         "Summer" = summer_min_error_F1, 
+                         "Fall" = fall_min_error_F1, 
+                         .id = "Season")
+overall_summary <- bind_rows("Max" = max_summary, 
+                             "Min" = min_summary, 
+                             .id = "Metric")
+overall_summary_dists <- merge(overall_summary, dist_locations, by.x = "AirPtCd", 
+                               by.y = "AirPtCd")
+overall_summary_dists$Season <- as.factor(overall_summary_dists$Season)
+overall_summary_dists$Season <- factor(overall_summary_dists$Season, 
+                                       levels = c("Winter", "Spring", "Summer", "Fall"))
+
+
+ggplot(overall_summary_dists, aes(x=distance*0.000621371, y=mean_error, color=Metric)) + 
   geom_point() + 
-  geom_text(data=summary_withDists2[summary_withDists2$city=="Austin", ], 
+  geom_text(data=overall_summary_dists[overall_summary_dists$city.x=="Austin", ], 
              aes(label = "Austin, NV"), nudge_y = 1.2, color = "black") + 
-  facet_grid(.~season) +
-  facet_wrap(~season, ncol=2) + 
+  facet_grid(.~Season) +
+  facet_wrap(~Season, ncol=2) + 
   xlab("Distance (mi)") + 
   ylab("Mean Forecast Error") + 
   scale_color_manual(name="Temperature\nMeasure", values = c("#00CC99", "#CC6633")) +
-  ggtitle("Mean Forecast Error vs. Distance between City Center and Airport  ") 
+  ggtitle("Mean Forecast Error vs. Distance between City Center and Airport") 
 
 
 
