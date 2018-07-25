@@ -102,7 +102,7 @@ fall_max_error_F1$TrueValGreater <- fall_max_error_F1$mean_error >= 0
 fall_max_error_F1 <- merge(x=fall_max_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
   by.y = "AirPtCd", all.x=TRUE)
 fall_max_error_F1$AbsError <- abs(fall_max_error_F1$mean_error)
-fall_max_error_F1$SquaredErrorAvg <- data.frame(fall_max[fall_max$LengthForecastDayOnly==1, ] %>%
+fall_max_error_F1$SquaredErrorAvg <- data.frame(maxtempalldatfa[maxtempalldatfa$LengthForecastDayOnly==1, ] %>%
     group_by(AirPtCd) %>% summarize(SquaredErrorAvg = mean(SquaredError)))[,2]
 
 fall_max_error_F1$AbsError
@@ -117,7 +117,7 @@ ggplot(data = fall_max_error_F1,
   aes(x = AbsError^2, y = var)) +
   geom_point() +
   geom_text(aes(label = city))
-
+qplot(subset(maxtempalldatfa, city == "Salmon")$Error)
 
 spring_min_error_F1 <- spring_min[spring_min$LengthForecastDayOnly==1 &
     complete.cases(spring_min), ] %>%
@@ -145,8 +145,7 @@ dfint
 
 
 
-darkorchid4
-chartreuse4
+##need to update the colour scheme on this graph
 ggplot(data = dfint, aes(x = SquaredErrorAvg, y = city, colour = "Error Source")) +
   geom_point(size = 3.4, colour = "chartreuse4") + 
   facet_wrap(~ season, nrow = 1) +
@@ -161,7 +160,8 @@ ggplot(data = dfint, aes(x = SquaredErrorAvg, y = city, colour = "Error Source")
   scale_colour_manual("Error Source", values = c("Bias Squared" = "darkorchid4", "Variance" = "chartreuse4")) + 
   theme_grey(base_size = 19) +
   xlab("Mean Square Prediction Error") +
-  ylab("City")
+  ylab("City") +
+  ggsave("BiasVarGraph.png", width = 14, height = 7)
 
 ## begin to look at cities that have strange patterns
 dfint
