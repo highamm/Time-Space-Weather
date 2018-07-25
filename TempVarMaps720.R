@@ -144,6 +144,8 @@ nrow(dfint)
 dfint
 
 
+library(ggplot2)
+library(ggthemes)
 
 ##need to update the colour scheme on this graph
 ggplot(data = dfint, aes(x = SquaredErrorAvg, y = city, colour = "Error Source")) +
@@ -160,8 +162,11 @@ ggplot(data = dfint, aes(x = SquaredErrorAvg, y = city, colour = "Error Source")
   scale_colour_manual("Error Source", values = c("Bias Squared" = "darkorchid4", "Variance" = "chartreuse4")) + 
   theme_grey(base_size = 19) +
   xlab("Mean Square Prediction Error") +
-  ylab("City") +
-  ggsave("BiasVarGraph.png", width = 14, height = 7)
+  ylab("City") +  theme_economist(base_size = 17) + 
+  theme(panel.grid.major = element_blank()) + 
+  ggtitle("Comparing Bias and Variance of Temperature Forecasts in 10 Cities") + 
+  ggsave("BiasVarGraph.png", width = 14, height = 7) 
+  
 
 ## begin to look at cities that have strange patterns
 dfint
