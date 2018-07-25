@@ -165,7 +165,7 @@ ggplot(data = dfint, aes(x = SquaredErrorAvg, y = city, colour = "Error Source")
   ylab("City") +  theme_economist(base_size = 17) + 
   theme(panel.grid.major = element_blank()) + 
   ggtitle("Comparing Bias and Variance of Temperature Forecasts in 10 Cities") + 
-  ggsave("BiasVarGraph.png", width = 14, height = 7) 
+  ggsave("BiasVarGraph.png", width = 14, height = 7.7) 
   
 
 ## begin to look at cities that have strange patterns
