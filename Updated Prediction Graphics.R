@@ -46,7 +46,30 @@ ggplot(maxTempPred_long[maxTempPred_long$season == "Summer", ], aes(x = type, y 
                                                                     group = AirPtCd)) + 
   geom_point(alpha=0.4) + 
   geom_line(alpha = 0.4) + 
-  theme_economist() 
+  theme_economist(base_size= 17) + 
+  xlab(" ") + 
+  scale_x_discrete(labels = c("Forecast", "Model Prediction")) + 
+  ylab("Mean Error (°F)") + 
+  ggtitle("Differences in Forecasts and \nModel Predictions (Summer)") +
+  theme(axis.title = element_text(size = 17), axis.text = element_text(size = 17), 
+        plot.title = element_text(size = 17))
+
+
+
+ggplot(maxTempPred_long, aes(x = type, y = measurement, group = AirPtCd)) + 
+  geom_point(alpha=0.4) + 
+  geom_line(alpha = 0.4) + 
+  theme_economist() + 
+  scale_x_discrete(labels = c("Forecast", "Model")) + 
+  ylab("Mean Error (°F)") + 
+  ggtitle("Differences in Forecasts and \nModel Predictions (Max Temp)") +
+  theme(axis.title.y = element_text(size = 17), axis.text.x = element_text(size = 10, angle=60, 
+                                                                           vjust = 0.8,
+                                                                           hjust = 0.9), 
+        plot.title = element_text(size = 18), axis.title.x = element_blank()) + 
+  facet_grid(.~season)
+
+  
 
 ggplot(maxTempPred_long_var[maxTempPred_long_var$season == "Summer", ], aes(x = type, y = measurement, 
                                                                     group = AirPtCd)) + 
