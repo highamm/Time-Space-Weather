@@ -1,5 +1,7 @@
 ###### DONT USE THIS FILE FOR ANYTHING
 
+# for prediction graphics use Updated Prediction Graphics.R
+
 # run lines 1-104 in PredictionModelScript.R before running the following code
 
 length(fitted(modrand2))

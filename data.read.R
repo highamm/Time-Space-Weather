@@ -1,8 +1,9 @@
 ## File with what we need to reread each time R is restarted
 
 library(readr)
+library(dplyr)
 
-# Erin don't run following lines
+# Matt only
 forecastdf <- read_csv("~/Desktop/TimeSpaceExpo/forecastdf.csv")
 histWeather <- read_csv("~/Desktop/TimeSpaceExpo/histWeather.csv")
 locations <- read_csv("~/Desktop/TimeSpaceExpo/locations.csv")
@@ -204,13 +205,24 @@ summary(maxtempalldat$Date)
 names(maxtempalldat)[names(maxtempalldat) == "Value"] <- "forecastValue"
 
 
-mintempalldat <- mintempwpreds %>% dplyr::group_by(AirPtCd) %>%
+# mintempalldat <- mintempwpreds %>% dplyr::group_by(AirPtCd) %>%
+#   mutate(adjmeanhum = lag(Mean_Humidity),
+#          adjmeanwind = lag(Mean_Wind_SpeedMPH),
+#          adjmeandew = lag(MeanDew_PointF),
+#          adjmeanpressure = lag(Mean_Sea_Level_PressureIn),
+#          adjmeanvis = lag(Mean_VisibilityMiles),
+#          adjmintemp = lag(Min_TemperatureF))
+
+mintempalldat <- mintempwpreds %>% 
+  group_by_(.dots = c("AirPtCd", "season")) %>%
   mutate(adjmeanhum = lag(Mean_Humidity),
          adjmeanwind = lag(Mean_Wind_SpeedMPH),
          adjmeandew = lag(MeanDew_PointF),
          adjmeanpressure = lag(Mean_Sea_Level_PressureIn),
          adjmeanvis = lag(Mean_VisibilityMiles),
          adjmintemp = lag(Min_TemperatureF))
+
+
 nrow(mintempalldat)
 summary(mintempalldat$Date)
 names(mintempalldat)[names(mintempalldat) == "Value"] <- "forecastValue"

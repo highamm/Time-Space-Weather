@@ -17,7 +17,7 @@ library(lme4)
 
 # include latitude distance in the data set so that it can be included in the model 
 #complete_df_dists <- merge(x = complete_df, y = dist_locations[ ,c("AirPtCd", "latDist")], 
-                           by.x = "AirPtCd", by.y = "AirPtCd", all.x=TRUE)
+#                           by.x = "AirPtCd", by.y = "AirPtCd", all.x=TRUE)
 
 #complete_df <- complete_df_dists
 #complete_df$Date <- as.Date(complete_df$Date)
