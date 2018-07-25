@@ -67,13 +67,22 @@ ggplot(overall_summary_dists, aes(x=distance*0.000621371, y=mean_error, color=Me
   geom_point() + 
   geom_text(data=overall_summary_dists[overall_summary_dists$city.x=="Austin", ], 
              aes(label = "Austin, NV"), nudge_y = 1.2, color = "black") + 
-  facet_wrap(~Season, ncol=2) +
+  facet_rep_wrap(~Season, ncol=2, repeat.tick.labels = 'bottom') +
   theme_economist() +
   xlab("Distance (mi)") + 
   ylab("Mean Forecast Error (°F)") + 
   scale_color_economist(name="Temperature\nMeasure") +
   ggtitle("Mean Forecast Error vs. Distance \nbetween City Center and Airport") +
-  theme(legend.position = "right")
+  theme(legend.position = c(0.7,1.15), 
+        legend.direction = "horizontal",
+        strip.text.x = element_text(face="bold", size=15), 
+        panel.spacing.x = unit(1,"line"), 
+        panel.spacing.y = unit(1,"line"), 
+        axis.line.y = element_line(colour="black"), 
+        axis.title.y = element_text(size = 15), 
+        axis.title.x = element_text(size = 15), 
+        plot.title = element_text(size = 18), 
+        legend.title = element_text(face="bold"))
 
 
 

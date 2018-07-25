@@ -224,16 +224,18 @@ labels <- c(Max = "Maximum Temperature",
             Min = "Minimum Temperature")
 
 ggplot(data = fortify.allstate, aes(x = long, y = lat, group=group)) + 
-  geom_polygon(fill = "white", colour = "black") + 
+  geom_polygon(fill = "white", colour = "gray60") + 
   geom_point(data = AK_HI_winter, 
              aes(x = longitude, y = latitude, group = NULL, size = AbsError, 
                  color = TrueValGreater)) + 
   facet_grid(~Group, labeller=labeller(Group = labels)) + 
-  scale_radius(name = "Absolute Mean Error (°F)") +
+  scale_radius(name = "Absolute Mean \nError (°F)") +
   scale_color_brewer(palette = "Set1", label = c("Overestimate", "Underestimate"), 
                      name = "") + 
   theme_classic() + 
   theme(line = element_blank(), axis.title = element_blank(), axis.text = element_blank(), 
-        panel.background = element_rect(fill = "lightblue")) + 
+        panel.background = element_rect(fill = "#D9E6EB"), 
+        plot.title = element_text(face="bold"), 
+        strip.text = element_text(size=12)) + 
   ggtitle("Temperature Forecast Errors: Winter")
 
