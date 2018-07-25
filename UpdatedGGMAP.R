@@ -90,7 +90,8 @@ class(usfixLL)
 head(fortify.allstate)
 
 
-# Winter Minimum with the radius of the circle determined by AbsError
+# Winter Minimum with the radius of the circle determined by AbsError (winter_min_error_F1
+# comes from Temp Error Maps.R)
 ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) + 
   geom_polygon(fill = "white", colour = "black") + 
   geom_point(data = winter_min_error_F1, 
@@ -123,7 +124,8 @@ AK_HI_winter_max[112,5] <- 24.5
 AK_HI_winter_max[113,4] <- -91
 AK_HI_winter_max[113,5] <- 24.5
 
-
+summary(AK_HI_winter_max$AbsError)
+summary(AK_HI_winter_min$AbsError)
 
 
 ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) + 
@@ -204,3 +206,25 @@ ggplot(data = fortify.allstate, aes(x = long, y = lat, group = group)) +
   theme(line = element_blank(), axis.title = element_blank(), axis.text = element_blank(), 
     panel.background = element_rect(fill = "lightblue")) + 
   ggtitle("Maximum Temperature Errors: Winter")
+
+AK_HI_winter <- bind_rows("Max" = AK_HI_winter_max, 
+                          "Min" = AK_HI_winter_min, 
+                          .id = "Group")
+
+labels <- c(Max = "Maximum Temperature", 
+            Min = "Minimum Temperature")
+
+ggplot(data = fortify.allstate, aes(x = long, y = lat, group=group)) + 
+  geom_polygon(fill = "white", colour = "black") + 
+  geom_point(data = AK_HI_winter, 
+             aes(x = longitude, y = latitude, group = NULL, size = AbsError, 
+                 color = TrueValGreater)) + 
+  facet_grid(~Group, labeller=labeller(Group = labels)) + 
+  scale_radius(name = "Absolute Error") +
+  scale_color_brewer(palette = "Set1", label = c("Overestimate", "Underestimate"), 
+                     name = "") + 
+  theme_classic() + 
+  theme(line = element_blank(), axis.title = element_blank(), axis.text = element_blank(), 
+        panel.background = element_rect(fill = "lightblue")) + 
+  ggtitle("Temperature Forecast Errors: Winter")
+

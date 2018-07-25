@@ -106,6 +106,7 @@ names(all.df_completeSub)[7] <- "forecastValue"
 # Erin
 write.csv(all.df_completeSub, "~/Desktop/DataExpo2018/Data Expo 2018/all_df_completesub.csv")
 all_df_completeSub <- read.csv("~/Desktop/DataExpo2018/Data Expo 2018/all_df_completesub.csv")
+all_df_completeSub <- all.df_completeSub
 
 ## Matt
 write.csv(all.df_completeSub, "all_df_completesub.csv")
