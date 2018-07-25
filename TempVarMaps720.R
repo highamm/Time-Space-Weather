@@ -54,7 +54,9 @@ winter_max_error_F1$TrueValGreater <- winter_max_error_F1$mean_error >= 0
 winter_max_error_F1 <- base::merge(x=winter_max_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
   by.y = "AirPtCd", all.x=TRUE)
 winter_max_error_F1$AbsError <- abs(winter_max_error_F1$mean_error)
-winter_max_error_F1$SquaredErrorAvg <- data.frame(winter_max[winter_max$LengthForecastDayOnly==1, ] %>%
+summary(winter_max_error_F1$AbsError)
+
+winter_max_error_F1$SquaredErrorAvg <- data.frame(maxtempalldatwi[maxtempalldatwi$LengthForecastDayOnly==1, ] %>%
     group_by(AirPtCd) %>% summarize(SquaredErrorAvg = mean(SquaredError)))[,2]
 
 winter_max_error_F1$AbsError
@@ -77,10 +79,10 @@ summer_max_error_F1$TrueValGreater <- summer_max_error_F1$mean_error >= 0
 summer_max_error_F1 <- merge(x=summer_max_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
   by.y = "AirPtCd", all.x=TRUE)
 summer_max_error_F1$AbsError <- abs(summer_max_error_F1$mean_error)
-summer_max_error_F1$SquaredErrorAvg <- data.frame(summer_max[summer_max$LengthForecastDayOnly==1, ] %>%
+summer_max_error_F1$SquaredErrorAvg <- data.frame(maxtempalldatsu[maxtempalldatsu$LengthForecastDayOnly==1, ] %>%
     group_by(AirPtCd) %>% summarize(SquaredErrorAvg = mean(SquaredError)))[,2]
 
-summer_max_error_F1$AbsError
+qplot(summer_max_error_F1$AbsError) 
 summer_max_error_F1$SquaredErrorAvg
 summer_max_error_F1$var <- summer_max_error_F1$SquaredErrorAvg - summer_max_error_F1$AbsError^2
 
