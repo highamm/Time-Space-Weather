@@ -157,5 +157,37 @@ Interesting cities:
     \item located just east of a mountain range, making temperature prediction difficult, even one-day out.
   \item perhaps connect to Austin
     
+  7/25/18
+  
+  Background Information
+  
+  \item Forecast Data and Historical Weather Data for 113 cities throughout the U.S.
+  \item Dates: July 2014 - September 2017
+  \item Historical weather from city airports
+  \item Forecasts made for the cities for daily max temperature, min temp and chance precipitation
+  \item Forecasts made between 1 and 6 days out
+  \item We define the seasons as follows:
+    \item Winter: December through February
+    \item Spring: March through May
+    \item Summer: June through August
+    \item Fall: September through November
+
+  Questions we investigate:
+  
+  \enumerate Do the weather forecasts systematically over or under-predict maximum and minimum temperatures?
+  \enumerate Can we then modify the daily forecasts by using other data like humidity and wind speed to improve the forecast?
+  \enumerate Might the over and under-prediction come from misalignment in the city center locations (where forecasts were made) and airport locations (where historically weather was recorded)?
+  \enumerate Are cities' prediction errors large due to bias or variance? Does this depend on the city and its geographic location?
+  
+  
+  
+  Model Background:
+  
+  Goal: modify the existing forecasts by incorporating the previous day's humidity, wind speed, maximum temperature as well as season and city (a random effect).
+  Training Data: First two years of forecasts
+  Test Data: Final year of forecasts
+  No evidence of temporal autocorrelation in residuals so no time series model was used
+  Graph to the left compares bias of the original forecasts over the test data to bias of the model-modified forecasts for the 113 cities.
+  
   
   
