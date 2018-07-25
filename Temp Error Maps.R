@@ -114,7 +114,14 @@ winter_max_error_F1$AbsError <- abs(winter_max_error_F1$mean_error)
 winter_max_error_F1$SquaredErrorAvg <- data.frame(winter_max[winter_max$LengthForecastDayOnly==1 &
                                                                complete.cases(winter_max$Error), ] %>%
                                                     group_by(AirPtCd) %>% summarize(SquaredErrorAvg = mean(SquaredError)))[,2]
+winter_min$forecastDiff
+## maybe consider this?: gets rid of 4 observations
 
+cbind(subset(winter_min, forecastDiff > 30 | forecastDiff < -30)$weatherval,
+  subset(winter_min, forecastDiff > 30 | forecastDiff < -30)$forecastValue)
+
+winter_min <- subset(winter_min, forecastDiff < 30 & forecastDiff > -30)
+  
 
 winter_min_error_F1 <- winter_min[winter_min$LengthForecastDayOnly==1 & 
                                     complete.cases(winter_min$Error), ] %>% 
@@ -128,6 +135,20 @@ winter_min_error_F1$SquaredErrorAvg <- data.frame(winter_min[winter_min$LengthFo
                                                     group_by(AirPtCd) %>% summarize(SquaredErrorAvg = mean(SquaredError)))[,2]
 
 summary(winter_min_error_F1$AbsError)
+qplot(subset(winter_min, city == "Austin")$Error)
+qplot(subset(winter_min, city == "Austin")$weatherval, 
+  subset(winter_min, city == "Austin")$forecastValue) + xlim(c(-30, 60)) +
+  ylim(c(-30, 60))
+
+
+austin.df <- data.frame(cbind(subset(winter_min, city == "Austin")$weatherval, 
+  subset(winter_min, city == "Austin")$forecastValue,
+  subset(winter_min, city == "Austin")$Date,
+  subset(winter_min, city == "Austin")$forecastDiff))
+nrow(subset(austin.df, X4 > 14))
+nrow(austin.df)
+
+
 
 ####
 summer_max_error_F1 <- summer_max[summer_max$LengthForecastDayOnly==1 & 
