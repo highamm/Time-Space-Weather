@@ -67,3 +67,6 @@ lagdat <- rbind(lagdat_max_1_all,
 
 # use this data set for predictions using 
 lagdat <- lagdat[complete.cases(lagdat$lagForecast), ]
+
+lagdat$errorsimp <- lagdat$lagForecast - lagdat$forecastValue
+lagdat$errorsimpsquared <- lagdat$errorsimp^2
