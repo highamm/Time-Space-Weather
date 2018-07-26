@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  26 JUL 2018 11:39
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  26 JUL 2018 13:58
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1164,116 +1164,43 @@ Dictionary: translator-theorem-dictionary, Language: English
 )
 LaTeX Info: Redefining \includegraphics on input line 37.
 (./Higham_Howard_Data_Expo.nav)
-Overfull \hbox (11.25128pt too wide) detected at line 37
-  [] [] [] [] [] [] [] [][]  
- []
-
 
 LaTeX Font Warning: Font shape `OT1/cmss/m/n' in size <4> not available
 (Font)              size <5> substituted on input line 41.
 
+[1
 
-Overfull \hbox (11.25128pt too wide) has occurred while \output is active
-  [] [] [] [] [] [] [] [][]  
- []
+{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./logo.
+pdf, page is rotated 90 degrees>] <Both_winter_maps_new.png, id=38, 4215.75pt x
+ 1656.1875pt>
+File: Both_winter_maps_new.png Graphic file (type png)
+<use Both_winter_maps_new.png>
+Package pdftex.def Info: Both_winter_maps_new.png used on input line 48.
+(pdftex.def)             Requested size: 338.02072pt x 132.7757pt.
 
-[1{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
-
- <./logo.pdf, page is rotated 90 degrees>] <Both_winter_maps.png, id=93, 1307.8
-8625pt x 494.84875pt>
-File: Both_winter_maps.png Graphic file (type png)
-<use Both_winter_maps.png>
-Package pdftex.def Info: Both_winter_maps.png used on input line 48.
-(pdftex.def)             Requested size: 326.97076pt x 123.71188pt.
-
-Overfull \hbox (19.6809pt too wide) in paragraph at lines 48--48
- [] 
- []
-
-
-Overfull \hbox (11.25128pt too wide) has occurred while \output is active
-  [] [] [] [] [] [] [] [][]  
+Overfull \hbox (16.50449pt too wide) in paragraph at lines 48--48
+[]| []  
  []
 
 [2
 
- <./Both_winter_maps.png>] <Distance_Plot_Poster.png, id=109, 922.44624pt x 578
-.16pt>
-File: Distance_Plot_Poster.png Graphic file (type png)
-<use Distance_Plot_Poster.png>
-Package pdftex.def Info: Distance_Plot_Poster.png used on input line 58.
-(pdftex.def)             Requested size: 230.611pt x 144.53964pt.
-
-Overfull \hbox (11.25128pt too wide) has occurred while \output is active
-  [] [] [] [] [] [] [] [][]  
- []
-
+ <./Both_winter_maps_new.png>] <Distance_Plot_Poster_new.png, id=48, 3011.25pt 
+x 1957.3125pt>
+File: Distance_Plot_Poster_new.png Graphic file (type png)
+<use Distance_Plot_Poster_new.png>
+Package pdftex.def Info: Distance_Plot_Poster_new.png used on input line 58.
+(pdftex.def)             Requested size: 210.80904pt x 137.02586pt.
 [3
 
- <./Distance_Plot_Poster.png>] <BiasVarGraph.png, id=124, 4215.75pt x 2318.6625
-pt>
+ <./Distance_Plot_Poster_new.png>] <BiasVarGraph.png, id=57, 4215.75pt x 2318.6
+625pt>
 File: BiasVarGraph.png Graphic file (type png)
 <use BiasVarGraph.png>
-Package pdftex.def Info: BiasVarGraph.png used on input line 67.
+Package pdftex.def Info: BiasVarGraph.png used on input line 68.
 (pdftex.def)             Requested size: 252.93408pt x 139.11374pt.
-
-Overfull \hbox (11.25128pt too wide) has occurred while \output is active
-  [] [] [] [] [] [] [] [][]  
- []
-
 [4
 
  <./BiasVarGraph.png>]
-Overfull \hbox (11.25128pt too wide) has occurred while \output is active
-  [] [] [] [] [] [] [] [][]  
- []
-
-[5
-
-]
-Overfull \hbox (11.25128pt too wide) has occurred while \output is active
-  [] [] [] [] [] [] [] [][]  
- []
-
-[6
-
-]
-Overfull \hbox (11.25128pt too wide) has occurred while \output is active
-  [] [] [] [] [] [] [] [][]  
- []
-
-[7
-
-]
-Overfull \hbox (11.25128pt too wide) has occurred while \output is active
-  [] [] [] [] [] [] [] [][]  
- []
-
-[8
-
-]
-LaTeX Font Info:    Try loading font information for U+msa on input line 111.
-(/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-)
-LaTeX Font Info:    Try loading font information for U+msb on input line 111.
-(/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-LaTeX Font Info:    Try loading font information for OT1+mathkerncmss on input 
-line 111.
-
-(/usr/local/texlive/2015/texmf-dist/tex/latex/sansmathaccent/ot1mathkerncmss.fd
-File: ot1mathkerncmss.fd 2013/03/27 Fontinst v1.933 font definitions for OT1/ma
-thkerncmss.
-)
-Overfull \hbox (11.25128pt too wide) has occurred while \output is active
-  [] [] [] [] [] [] [] [][]  
- []
-
-[9
-
-]
 \tf@nav=\write6
 \openout6 = `Higham_Howard_Data_Expo.nav'.
 
@@ -1283,36 +1210,35 @@ Overfull \hbox (11.25128pt too wide) has occurred while \output is active
 \tf@snm=\write8
 \openout8 = `Higham_Howard_Data_Expo.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 115.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 115.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 74.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 74.
 (./Higham_Howard_Data_Expo.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 115.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 115.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 74.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 74.
 Package rerunfilecheck Info: File `Higham_Howard_Data_Expo.out' has not changed
 .
-(rerunfilecheck)             Checksum: 29810EEFE57F5F6AE026DC3ED0ECE38C;416.
+(rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
 
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 1.0pt have occurred.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 115.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 74.
  ) 
 Here is how much of TeX's memory you used:
- 17512 strings out of 493089
- 333591 string characters out of 6134842
- 414555 words of memory out of 5000000
- 20522 multiletter control sequences out of 15000+600000
- 10558 words of font info for 39 fonts, out of 8000000 for 9000
+ 17319 strings out of 493089
+ 329701 string characters out of 6134842
+ 411547 words of memory out of 5000000
+ 20366 multiletter control sequences out of 15000+600000
+ 5452 words of font info for 20 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 56i,19n,56p,428b,760s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 56i,15n,55p,428b,468s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb
 ></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb>
-</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></
-usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on Higham_Howard_Data_Expo.pdf (9 pages, 593307 bytes).
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb>
+Output written on Higham_Howard_Data_Expo.pdf (4 pages, 1110890 bytes).
 PDF statistics:
- 234 PDF objects out of 1000 (max. 8388607)
- 193 compressed objects within 2 object streams
- 27 named destinations out of 1000 (max. 500000)
- 127 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 80 PDF objects out of 1000 (max. 8388607)
+ 54 compressed objects within 1 object stream
+ 12 named destinations out of 1000 (max. 500000)
+ 63 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -82,7 +82,8 @@ ggplot(overall_summary_dists, aes(x=distance*0.000621371, y=mean_error, color=Me
         axis.title.y = element_text(size = 15), 
         axis.title.x = element_text(size = 15), 
         plot.title = element_text(size = 18), 
-        legend.title = element_text(face="bold"))
+        legend.title = element_text(face="bold")) + 
+  ggsave("Distance_Plot_Poster_new.png", width = 10, height = 6.5)
 
 
 

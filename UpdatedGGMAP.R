@@ -237,5 +237,6 @@ ggplot(data = fortify.allstate, aes(x = long, y = lat, group=group)) +
         panel.background = element_rect(fill = "#D9E6EB"), 
         plot.title = element_text(face="bold"), 
         strip.text = element_text(size=12)) + 
-  ggtitle("Temperature Forecast Errors: Winter")
+  ggtitle("Temperature Forecast Errors: Winter") + 
+  ggsave("Both_winter_maps_new.png", width = 14, height = 5.5) 
 

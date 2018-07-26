@@ -67,7 +67,8 @@ ggplot(maxTempPred_long, aes(x = type, y = measurement, group = AirPtCd)) +
                                                                            vjust = 0.8,
                                                                            hjust = 0.9), 
         plot.title = element_text(size = 18), axis.title.x = element_blank()) + 
-  facet_grid(.~season)
+  facet_grid(.~season) + 
+  ggsave("Prediction_All_Seasons_new.png", width = 10, height = 7.5)
 
   
 
