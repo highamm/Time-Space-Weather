@@ -25,6 +25,8 @@ mintempall <- read.csv("~/Desktop/DataExpo2018/Data Expo 2018/mintempall.csv")
 maxTemp <- subset(maxtempall, weathermeas == "MaxTemp")
 minTemp <- subset(mintempall, weathermeas == "MinTemp")
 
+maxTemp <- maxtempalldat
+minTemp <- mintempalldat
 maxTemp$Date <- as.Date(maxTemp$Date)
 minTemp$Date <- as.Date(minTemp$Date)
 
@@ -41,6 +43,10 @@ minTemp$month <- month(as.POSIXlt(minTemp$Date))
 # written in data.read.R
 maxTemp <- maxtempalldat
 minTemp <- mintempalldat
+
+maxTemp <- subset(maxTemp, abs(Error) <= 45)
+minTemp <- subset(minTemp, abs(Error) <= 45)
+nrow(maxTemp); nrow(minTemp)
 
 spring_max <- subset(maxTemp, season == "Spring")
 summer_max <- subset(maxTemp, season == "Summer")
@@ -79,126 +85,200 @@ winter_min$SquaredError <- winter_min$Error^2
 
 
 # compute the average of the errors (error = hist temp - forecast temp)
-spring_max_error_F1 <- spring_max[complete.cases(spring_max$Error) & 
-                                    spring_max$LengthForecastDayOnly == 1, ] %>% 
-                          group_by(AirPtCd) %>% 
-                          summarize(mean_error = mean(Error))
+spring_max_error_F1 <- spring_max[complete.cases(spring_max$Error), ] %>% 
+                          dplyr::group_by(AirPtCd, LengthForecastDayOnly) %>% 
+                          summarize(mean_error = mean(Error),
+                            SquaredErrorAvg = mean(SquaredError))
 spring_max_error_F1$TrueValGreater <- spring_max_error_F1$mean_error >= 0
 spring_max_error_F1 <- base::merge(x=spring_max_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
-                           by.y = "AirPtCd", all.x=TRUE)
+                           by.y = "AirPtCd", all.x = TRUE)
 spring_max_error_F1$AbsError <- abs(spring_max_error_F1$mean_error)
-spring_max_error_F1$SquaredErrorAvg <- data.frame(spring_max[complete.cases(spring_max$Error) & 
-                                                               spring_max$LengthForecastDayOnly == 1, ] %>%
-  group_by(AirPtCd) %>% summarize(SquaredErrorAvg = mean(SquaredError)))[,2]
 
 
-spring_min_error_F1 <- spring_min[spring_min$LengthForecastDayOnly==1 &
-                                    complete.cases(spring_min$Error), ] %>%
-  group_by(AirPtCd) %>% summarize(mean_error = mean(Error))
-spring_min_error_F1$TrueValGreater <- spring_min_error_F1$mean_error >= 0  
-spring_min_error_F1 <- merge(x=spring_min_error_F1, y=locations[,c("longitude", "latitude", "AirPtCd", "city")], by.x = "AirPtCd", 
-                             by.y = "AirPtCd", all.x=TRUE)
+
+
+spring_min_error_F1 <- spring_min[complete.cases(spring_min$Error), ] %>% 
+  dplyr::group_by(AirPtCd, LengthForecastDayOnly) %>% 
+  summarize(mean_error = mean(Error),
+    SquaredErrorAvg = mean(SquaredError))
+spring_min_error_F1$TrueValGreater <- spring_min_error_F1$mean_error >= 0
+spring_min_error_F1 <- base::merge(x=spring_min_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
+  by.y = "AirPtCd", all.x = TRUE)
 spring_min_error_F1$AbsError <- abs(spring_min_error_F1$mean_error)
-spring_min_error_F1$SquaredErrorAvg <- data.frame(spring_min[spring_min$LengthForecastDayOnly==1 &
-                                                               complete.cases(spring_min$Error), ] %>%
-                                                    group_by(AirPtCd) %>% summarize(SquaredErrorAvg = mean(SquaredError)))[,2]
 
 
-
-winter_max_error_F1 <- winter_max[winter_max$LengthForecastDayOnly==1 & 
-                                    complete.cases(winter_max$Error), ] %>% 
-  group_by(AirPtCd) %>% summarize(mean_error = mean(Error))
+winter_max_error_F1 <- winter_max[complete.cases(winter_max$Error), ] %>% 
+  dplyr::group_by(AirPtCd, LengthForecastDayOnly) %>% 
+  summarize(mean_error = mean(Error),
+    SquaredErrorAvg = mean(SquaredError))
 winter_max_error_F1$TrueValGreater <- winter_max_error_F1$mean_error >= 0
-winter_max_error_F1 <- merge(x=winter_max_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
-                             by.y = "AirPtCd", all.x=TRUE)
+winter_max_error_F1 <- base::merge(x=winter_max_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
+  by.y = "AirPtCd", all.x = TRUE)
 winter_max_error_F1$AbsError <- abs(winter_max_error_F1$mean_error)
-winter_max_error_F1$SquaredErrorAvg <- data.frame(winter_max[winter_max$LengthForecastDayOnly==1 &
-                                                               complete.cases(winter_max$Error), ] %>%
-                                                    group_by(AirPtCd) %>% summarize(SquaredErrorAvg = mean(SquaredError)))[,2]
-winter_min$forecastDiff
-## maybe consider this?: gets rid of 4 observations
 
-cbind(subset(winter_min, forecastDiff > 30 | forecastDiff < -30)$weatherval,
-  subset(winter_min, forecastDiff > 30 | forecastDiff < -30)$forecastValue)
 
-winter_min <- subset(winter_min, forecastDiff < 30 & forecastDiff > -30)
-  
 
-winter_min_error_F1 <- winter_min[winter_min$LengthForecastDayOnly==1 & 
-                                    complete.cases(winter_min$Error), ] %>% 
-  group_by(AirPtCd) %>% summarize(mean_error = mean(Error))
+
+
+winter_min_error_F1 <- winter_min[complete.cases(winter_min$Error), ] %>% 
+  dplyr::group_by(AirPtCd, LengthForecastDayOnly) %>% 
+  summarize(mean_error = mean(Error),
+    SquaredErrorAvg = mean(SquaredError))
 winter_min_error_F1$TrueValGreater <- winter_min_error_F1$mean_error >= 0
-winter_min_error_F1 <- merge(x=winter_min_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
-                             by.y = "AirPtCd", all.x=TRUE)
+winter_min_error_F1 <- base::merge(x=winter_min_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
+  by.y = "AirPtCd", all.x = TRUE)
 winter_min_error_F1$AbsError <- abs(winter_min_error_F1$mean_error)
-winter_min_error_F1$SquaredErrorAvg <- data.frame(winter_min[winter_min$LengthForecastDayOnly==1 &
-                                                               complete.cases(winter_min$Error), ] %>%
-                                                    group_by(AirPtCd) %>% summarize(SquaredErrorAvg = mean(SquaredError)))[,2]
-
-summary(winter_min_error_F1$AbsError)
-qplot(subset(winter_min, city == "Austin")$Error)
-qplot(subset(winter_min, city == "Austin")$weatherval, 
-  subset(winter_min, city == "Austin")$forecastValue) + xlim(c(-30, 60)) +
-  ylim(c(-30, 60))
-
-
-austin.df <- data.frame(cbind(subset(winter_min, city == "Austin")$weatherval, 
-  subset(winter_min, city == "Austin")$forecastValue,
-  subset(winter_min, city == "Austin")$Date,
-  subset(winter_min, city == "Austin")$forecastDiff))
-
-nrow(subset(austin.df, X4 > 14))
-nrow(austin.df)
 
 
 
-####
-summer_max_error_F1 <- summer_max[summer_max$LengthForecastDayOnly==1 & 
-                                    complete.cases(summer_max$Error), ] %>% 
-  group_by(AirPtCd) %>% summarize(mean_error = mean(Error))
-summer_max_error_F1$TrueValGreater <- summer_max_error_F1$mean_error >= 0
-summer_max_error_F1 <- merge(x=summer_max_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
-                             by.y = "AirPtCd", all.x=TRUE)
-summer_max_error_F1$AbsError <- abs(summer_max_error_F1$mean_error)
-summer_max_error_F1$SquaredErrorAvg <- data.frame(summer_max[summer_max$LengthForecastDayOnly==1 &
-                                                               complete.cases(summer_max$Error), ] %>%
-                                                    group_by(AirPtCd) %>% summarize(SquaredErrorAvg = mean(SquaredError)))[,2]
 
-summer_min_error_F1 <- summer_min[summer_min$LengthForecastDayOnly==1 & 
-                                    complete.cases(summer_min$Error), ] %>% 
-  group_by(AirPtCd) %>% summarize(mean_error = mean(Error))
-summer_min_error_F1$TrueValGreater <- summer_min_error_F1$mean_error >= 0
-summer_min_error_F1 <- merge(x=summer_min_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
-                             by.y = "AirPtCd", all.x=TRUE)
-summer_min_error_F1$AbsError <- abs(summer_min_error_F1$mean_error)
-summer_min_error_F1$SquaredErrorAvg <- data.frame(summer_min[summer_min$LengthForecastDayOnly==1 &
-                                                               complete.cases(summer_min$Error), ] %>%
-                                                    group_by(AirPtCd) %>% summarize(SquaredErrorAvg = mean(SquaredError)))[,2]
 
-####
-####
-fall_max_error_F1 <- fall_max[fall_max$LengthForecastDayOnly==1 & 
-                                    complete.cases(fall_max$Error), ] %>% 
-  group_by(AirPtCd) %>% summarize(mean_error = mean(Error))
+
+fall_max_error_F1 <- fall_max[complete.cases(fall_max$Error), ] %>% 
+  dplyr::group_by(AirPtCd, LengthForecastDayOnly) %>% 
+  summarize(mean_error = mean(Error),
+    SquaredErrorAvg = mean(SquaredError))
 fall_max_error_F1$TrueValGreater <- fall_max_error_F1$mean_error >= 0
-fall_max_error_F1 <- merge(x=fall_max_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
-                             by.y = "AirPtCd", all.x=TRUE)
+fall_max_error_F1 <- base::merge(x=fall_max_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
+  by.y = "AirPtCd", all.x = TRUE)
 fall_max_error_F1$AbsError <- abs(fall_max_error_F1$mean_error)
-fall_max_error_F1$SquaredErrorAvg <- data.frame(fall_max[fall_max$LengthForecastDayOnly==1 &
-                                                               complete.cases(fall_max$Error), ] %>%
-                                                    group_by(AirPtCd) %>% summarize(SquaredErrorAvg = mean(SquaredError)))[,2]
 
 
-fall_min_error_F1 <- fall_min[fall_min$LengthForecastDayOnly==1 & 
-                                complete.cases(fall_min$Error), ] %>% 
-  group_by(AirPtCd) %>% summarize(mean_error = mean(Error))
+
+
+
+fall_min_error_F1 <- fall_min[complete.cases(fall_min$Error), ] %>% 
+  dplyr::group_by(AirPtCd, LengthForecastDayOnly) %>% 
+  summarize(mean_error = mean(Error),
+    SquaredErrorAvg = mean(SquaredError))
 fall_min_error_F1$TrueValGreater <- fall_min_error_F1$mean_error >= 0
-fall_min_error_F1 <- merge(x=fall_min_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
-                           by.y = "AirPtCd", all.x=TRUE)
+fall_min_error_F1 <- base::merge(x=fall_min_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
+  by.y = "AirPtCd", all.x = TRUE)
 fall_min_error_F1$AbsError <- abs(fall_min_error_F1$mean_error)
-fall_min_error_F1$SquaredErrorAvg <- data.frame(fall_min[fall_min$LengthForecastDayOnly==1 &
-                                                           complete.cases(fall_min$Error), ] %>%
-                                                  group_by(AirPtCd) %>% summarize(SquaredErrorAvg = mean(SquaredError)))[,2]
+
+
+
+
+
+summer_max_error_F1 <- summer_max[complete.cases(summer_max$Error), ] %>% 
+  dplyr::group_by(AirPtCd, LengthForecastDayOnly) %>% 
+  summarize(mean_error = mean(Error),
+    SquaredErrorAvg = mean(SquaredError))
+summer_max_error_F1$TrueValGreater <- summer_max_error_F1$mean_error >= 0
+summer_max_error_F1 <- base::merge(x=summer_max_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
+  by.y = "AirPtCd", all.x = TRUE)
+summer_max_error_F1$AbsError <- abs(summer_max_error_F1$mean_error)
+
+
+
+
+
+summer_min_error_F1 <- summer_min[complete.cases(summer_min$Error), ] %>% 
+  dplyr::group_by(AirPtCd, LengthForecastDayOnly) %>% 
+  summarize(mean_error = mean(Error),
+    SquaredErrorAvg = mean(SquaredError))
+summer_min_error_F1$TrueValGreater <- summer_min_error_F1$mean_error >= 0
+summer_min_error_F1 <- base::merge(x=summer_min_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
+  by.y = "AirPtCd", all.x = TRUE)
+summer_min_error_F1$AbsError <- abs(summer_min_error_F1$mean_error)
+
+
+
+
+# winter_max_error_F1 <- winter_max[winter_max$LengthForecastDayOnly==1 & 
+#                                     complete.cases(winter_max$Error), ] %>% 
+#   group_by(AirPtCd) %>% summarize(mean_error = mean(Error))
+# winter_max_error_F1$TrueValGreater <- winter_max_error_F1$mean_error >= 0
+# winter_max_error_F1 <- merge(x=winter_max_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
+#                              by.y = "AirPtCd", all.x=TRUE)
+# winter_max_error_F1$AbsError <- abs(winter_max_error_F1$mean_error)
+# winter_max_error_F1$SquaredErrorAvg <- data.frame(winter_max[winter_max$LengthForecastDayOnly==1 &
+#                                                                complete.cases(winter_max$Error), ] %>%
+#                                                     group_by(AirPtCd) %>% summarize(SquaredErrorAvg = mean(SquaredError)))[,2]
+# winter_min$forecastDiff
+# ## maybe consider this?: gets rid of 4 observations
+# 
+# cbind(subset(winter_min, forecastDiff > 30 | forecastDiff < -30)$weatherval,
+#   subset(winter_min, forecastDiff > 30 | forecastDiff < -30)$forecastValue)
+# 
+# winter_min <- subset(winter_min, forecastDiff < 30 & forecastDiff > -30)
+#   
+# 
+# winter_min_error_F1 <- winter_min[winter_min$LengthForecastDayOnly==1 & 
+#                                     complete.cases(winter_min$Error), ] %>% 
+#   group_by(AirPtCd) %>% summarize(mean_error = mean(Error))
+# winter_min_error_F1$TrueValGreater <- winter_min_error_F1$mean_error >= 0
+# winter_min_error_F1 <- merge(x=winter_min_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
+#                              by.y = "AirPtCd", all.x=TRUE)
+# winter_min_error_F1$AbsError <- abs(winter_min_error_F1$mean_error)
+# winter_min_error_F1$SquaredErrorAvg <- data.frame(winter_min[winter_min$LengthForecastDayOnly==1 &
+#                                                                complete.cases(winter_min$Error), ] %>%
+#                                                     group_by(AirPtCd) %>% summarize(SquaredErrorAvg = mean(SquaredError)))[,2]
+# 
+# summary(winter_min_error_F1$AbsError)
+# qplot(subset(winter_min, city == "Austin")$Error)
+# qplot(subset(winter_min, city == "Austin")$weatherval, 
+#   subset(winter_min, city == "Austin")$forecastValue) + xlim(c(-30, 60)) +
+#   ylim(c(-30, 60))
+# 
+# 
+# austin.df <- data.frame(cbind(subset(winter_min, city == "Austin")$weatherval, 
+#   subset(winter_min, city == "Austin")$forecastValue,
+#   subset(winter_min, city == "Austin")$Date,
+#   subset(winter_min, city == "Austin")$forecastDiff))
+# 
+# nrow(subset(austin.df, X4 > 14))
+# nrow(austin.df)
+# 
+# 
+# 
+# ####
+# summer_max_error_F1 <- summer_max[summer_max$LengthForecastDayOnly==1 & 
+#                                     complete.cases(summer_max$Error), ] %>% 
+#   group_by(AirPtCd) %>% summarize(mean_error = mean(Error))
+# summer_max_error_F1$TrueValGreater <- summer_max_error_F1$mean_error >= 0
+# summer_max_error_F1 <- merge(x=summer_max_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
+#                              by.y = "AirPtCd", all.x=TRUE)
+# summer_max_error_F1$AbsError <- abs(summer_max_error_F1$mean_error)
+# summer_max_error_F1$SquaredErrorAvg <- data.frame(summer_max[summer_max$LengthForecastDayOnly==1 &
+#                                                                complete.cases(summer_max$Error), ] %>%
+#                                                     group_by(AirPtCd) %>% summarize(SquaredErrorAvg = mean(SquaredError)))[,2]
+# 
+# summer_min_error_F1 <- summer_min[summer_min$LengthForecastDayOnly==1 & 
+#                                     complete.cases(summer_min$Error), ] %>% 
+#   group_by(AirPtCd) %>% summarize(mean_error = mean(Error))
+# summer_min_error_F1$TrueValGreater <- summer_min_error_F1$mean_error >= 0
+# summer_min_error_F1 <- merge(x=summer_min_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
+#                              by.y = "AirPtCd", all.x=TRUE)
+# summer_min_error_F1$AbsError <- abs(summer_min_error_F1$mean_error)
+# summer_min_error_F1$SquaredErrorAvg <- data.frame(summer_min[summer_min$LengthForecastDayOnly==1 &
+#                                                                complete.cases(summer_min$Error), ] %>%
+#                                                     group_by(AirPtCd) %>% summarize(SquaredErrorAvg = mean(SquaredError)))[,2]
+# 
+# ####
+# ####
+# fall_max_error_F1 <- fall_max[fall_max$LengthForecastDayOnly==1 & 
+#                                     complete.cases(fall_max$Error), ] %>% 
+#   group_by(AirPtCd) %>% summarize(mean_error = mean(Error))
+# fall_max_error_F1$TrueValGreater <- fall_max_error_F1$mean_error >= 0
+# fall_max_error_F1 <- merge(x=fall_max_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
+#                              by.y = "AirPtCd", all.x=TRUE)
+# fall_max_error_F1$AbsError <- abs(fall_max_error_F1$mean_error)
+# fall_max_error_F1$SquaredErrorAvg <- data.frame(fall_max[fall_max$LengthForecastDayOnly==1 &
+#                                                                complete.cases(fall_max$Error), ] %>%
+#                                                     group_by(AirPtCd) %>% summarize(SquaredErrorAvg = mean(SquaredError)))[,2]
+# 
+# 
+# fall_min_error_F1 <- fall_min[fall_min$LengthForecastDayOnly==1 & 
+#                                 complete.cases(fall_min$Error), ] %>% 
+#   group_by(AirPtCd) %>% summarize(mean_error = mean(Error))
+# fall_min_error_F1$TrueValGreater <- fall_min_error_F1$mean_error >= 0
+# fall_min_error_F1 <- merge(x=fall_min_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
+#                            by.y = "AirPtCd", all.x=TRUE)
+# fall_min_error_F1$AbsError <- abs(fall_min_error_F1$mean_error)
+# fall_min_error_F1$SquaredErrorAvg <- data.frame(fall_min[fall_min$LengthForecastDayOnly==1 &
+#                                                            complete.cases(fall_min$Error), ] %>%
+#                                                   group_by(AirPtCd) %>% summarize(SquaredErrorAvg = mean(SquaredError)))[,2]
 
 
 
@@ -210,7 +290,7 @@ fall_min_error_F1$SquaredErrorAvg <- data.frame(fall_min[fall_min$LengthForecast
 #   addCircles(lng=~longitude, lat=~latitude, weight=1, radius=~(mean_max^2)*15, 
 #              popup=~city, col="Green")
 
-pal <- colorFactor(c("navy", "red"), domain = c(TRUE,FALSE))
+pal <- colorFactor(c("red", "navy"), domain = c(FALSE, TRUE))
 
 #### Spring Max
 
@@ -378,24 +458,25 @@ winter_max_error_F1 <- merge(x=winter_max_error_F1, y=updlocations_withDist[,c("
 winter_min_error_F1 <- merge(x=winter_min_error_F1, y=updlocations_withDist[,c("AirPtCd", "dists", "latDists")], 
                              by.x = "AirPtCd", by.y="AirPtCd", all.x = TRUE)
 
-spring_max_error_F1$season <- rep("spring", 113)
-spring_min_error_F1$season <- rep("spring", 113)
-summer_max_error_F1$season <- rep("summer", 113)
-summer_min_error_F1$season <- rep("summer", 113)
-fall_max_error_F1$season <- rep("fall", 113)
-fall_min_error_F1$season <- rep("fall", 113)
-winter_max_error_F1$season <- rep("winter", 113)
-winter_min_error_F1$season <- rep("winter", 113)
 
-spring_max_error_F1$measure <- rep("max", 113)
-summer_max_error_F1$measure <- rep("max", 113)
-fall_max_error_F1$measure <- rep("max", 113)
-winter_max_error_F1$measure <- rep("max", 113)
+spring_max_error_F1$season <- rep("spring", nrow(spring_max_error_F1))
+spring_min_error_F1$season <- rep("spring", nrow(spring_min_error_F1))
+summer_max_error_F1$season <- rep("summer", nrow(summer_max_error_F1))
+summer_min_error_F1$season <- rep("summer", nrow(summer_min_error_F1))
+fall_max_error_F1$season <- rep("fall", nrow(fall_max_error_F1))
+fall_min_error_F1$season <- rep("fall", nrow(fall_min_error_F1))
+winter_max_error_F1$season <- rep("winter", nrow(winter_max_error_F1))
+winter_min_error_F1$season <- rep("winter", nrow(winter_min_error_F1))
 
-spring_min_error_F1$measure <- rep("min", 113)
-summer_min_error_F1$measure <- rep("min", 113)
-fall_min_error_F1$measure <- rep("min", 113)
-winter_min_error_F1$measure <- rep("min", 113)
+spring_max_error_F1$measure <- rep("max", nrow(spring_max_error_F1))
+summer_max_error_F1$measure <- rep("max", nrow(summer_max_error_F1))
+fall_max_error_F1$measure <- rep("max", nrow(fall_max_error_F1))
+winter_max_error_F1$measure <- rep("max", nrow(winter_max_error_F1))
+
+spring_min_error_F1$measure <- rep("min", nrow(spring_min_error_F1))
+summer_min_error_F1$measure <- rep("min", nrow(summer_min_error_F1))
+fall_min_error_F1$measure <- rep("min", nrow(fall_min_error_F1))
+winter_min_error_F1$measure <- rep("min", nrow(winter_min_error_F1))
 
 
 # look at spring max and min temp errors with distance between airport and city
@@ -499,15 +580,21 @@ ggplot(allSeasons_F1, aes(x=dists, y=mean_error, color=factor(measure))) +
 # maxtemp$season[maxtemp$season == "Winter2"] <- "Winter"
 # maxtemp$season <- factor(maxtemp$season)
 
-maxTempSummary <- maxTemp %>% group_by(city, season, LengthForecastDayOnly) %>%
-  summarize(avgError = mean(Error), longitude = mean(longitude), latitude = mean(latitude))
-maxTempSummary$TrueValGreater <- maxTempSummary$avgError >= 0
-maxTempSummarysub <- subset(maxTempSummary, city == "Albany")
+summary(allSeasons_F1)
+allSeasons_15 <- subset(allSeasons_F1, LengthForecastDayOnly <= 5)
+allSeasons_15$season <- factor(allSeasons_15$season)
 
-summary(maxTempSummary$LengthForecastDayOnly)
+allSeasons_15 <- subset(allSeasons_15, LengthForecastDayOnly >= 1)
+nrow(allSeasons_15)
+##maxTempSummary <- maxTemp %>% group_by(city, season, LengthForecastDayOnly) %>%
+## summarize(avgError = mean(Error), longitude = mean(longitude), latitude = mean(latitude))
+##maxTempSummary$TrueValGreater <- maxTempSummary$avgError >= 0
+##maxTempSummarysub <- subset(maxTempSummary, city == "Albany")
 
-leaflet(data = maxTempSummary) %>% addTiles() %>% 
-  addCircles(lng=~longitude, lat =~latitude, weight=1, radius=~(abs(avgError)^2)*7500)
+##summary(maxTempSummary$LengthForecastDayOnly)
+summary(allSeasons_15)
+leaflet(data = allSeasons_15) %>% addTiles() %>% 
+  addCircles(lng=~longitude, lat =~latitude, weight=1, radius= ~ SquaredErrorAvg*750)
 
 library(shiny)
 
@@ -515,32 +602,48 @@ library(shiny)
 ui <- navbarPage("Data Expo",
   tabPanel("Leaflet Map",
   
-  fluidPage(titlePanel("Title of Leaflet Map"),
+  fluidPage(titlePanel("Leaflet Map"),
   sidebarLayout(
-    sidebarPanel(helpText("Words that we want here"),
+    sidebarPanel(helpText("Map shows bias or root MSPE for the 113 cities in the data set. We can compare the errors from the forecasts to more naive forecasts of simply using the temperature from a particular day as a forecast for a day in the near future."),
     sliderInput("time", label = p("Forecast Length"),
-      min = min(maxTempSummary$LengthForecastDayOnly), 
-      max = max(maxTempSummary$LengthForecastDayOnly), 
-      value = min(maxTempSummary$LengthForecastDayOnly),
-      step = 1, animate = T) 
+      min = min(allSeasons_15$LengthForecastDayOnly), 
+      max = max(allSeasons_15$LengthForecastDayOnly), 
+      value = min(allSeasons_15$LengthForecastDayOnly),
+      step = 1, animate = animationOptions(interval = 2200,
+        loop = TRUE, pauseButton = NULL)),
+      
+      radioButtons("ss", label = h3("Season"),
+        choices = list("winter" = "winter", "spring" = "spring", "summer" = "summer",
+          "fall" = "fall"), 
+        selected = "winter"),
+      
+      radioButtons("meas", label = h3("Temperature"),
+        choices = list("max" = "max", "min" = "min"), 
+        selected = "max"),
+      
+      radioButtons("error", label = h3("Bias or root MSPE"),
+        choices = list("bias" = "bias", "rMSPE" = "rMSPE"), 
+        selected = "rMSPE")
   ),
     mainPanel(
-      plotOutput("MaxTempMap"),
       leafletOutput("leafletmap")
       
     )
 
 )
 )),
-  tabPanel("Possible Second Graph",
+  tabPanel("",
     fluidPage(
-      titlePanel("Second Title")
+      titlePanel("")
     )))
 
 server <- function(input, output, session){
   points <- reactive({
-    maxTempSummary[maxTempSummary$season == "Winter", ] %>% 
-      dplyr::filter(LengthForecastDayOnly == input$time)
+
+    
+    allSeasons_15 %>% dplyr::filter(season == input$ss) %>% 
+      dplyr::filter(measure == input$meas) %>%
+      dplyr::filter(LengthForecastDayOnly == input$time) 
   })
 
   ##output$maxTempMap <- renderLeaflet({
@@ -549,19 +652,23 @@ server <- function(input, output, session){
  ## })
  
   
-  output$MaxTempMap <- renderPlot({
-   test.df <- points()
-   ggplot(data = test.df, aes(x = longitude, y = latitude)) +
-     geom_point(aes(colour = avgError))
- })
  
 output$leafletmap <- renderLeaflet({
+  
   test.df <- points()
+  meas1 <- switch(input$error,
+    "bias" = test.df$mean_error,
+    "rMSPE" = sqrt(test.df$SquaredErrorAvg))
+  
     leaflet(data = test.df) %>% addTiles() %>% 
-      addCircles(lng=~longitude, lat =~latitude, weight = 1, 
-                 radius=~(abs(avgError)^2)*7500, color=~pal(TrueValGreater))
+      addCircles(lng = ~longitude, lat = ~latitude, weight = 1, 
+                 radius = ~ abs(meas1) * 14000, popup = ~city,
+    color = ~pal(TrueValGreater)) %>%
+      addLegend("topright", colors=c("#FF0000", "#000080"),
+        labels=c("Overestimates, on Average", "Underestimates, on Average"))
    })
 }
+
 
 
 shinyApp(ui,server) 
