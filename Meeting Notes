@@ -184,11 +184,7 @@ Interesting cities:
   
   Model Background:
   
-  Goal: modify the existing forecasts by incorporating the previous day's humidity, wind speed, maximum temperature as well as season and city (a random effect).
-  Training Data: First two years of forecasts
-  Test Data: Final year of forecasts
-  No evidence of temporal autocorrelation in residuals so no time series model was used
-  Graph to the left compares bias of the original forecasts over the test data to bias of the model-modified forecasts for the 113 cities.
+
   
   
   
