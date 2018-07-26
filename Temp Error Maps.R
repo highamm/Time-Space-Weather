@@ -81,9 +81,10 @@ winter_min$SquaredError <- winter_min$Error^2
 # compute the average of the errors (error = hist temp - forecast temp)
 spring_max_error_F1 <- spring_max[complete.cases(spring_max$Error) & 
                                     spring_max$LengthForecastDayOnly == 1, ] %>% 
-                          group_by(AirPtCd) %>% summarize(mean_error = mean(Error))
+                          group_by(AirPtCd) %>% 
+                          summarize(mean_error = mean(Error))
 spring_max_error_F1$TrueValGreater <- spring_max_error_F1$mean_error >= 0
-spring_max_error_F1 <- merge(x=spring_max_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
+spring_max_error_F1 <- base::merge(x=spring_max_error_F1, y=locations[,c("longitude","latitude", "AirPtCd", "city")], by.x = "AirPtCd",
                            by.y = "AirPtCd", all.x=TRUE)
 spring_max_error_F1$AbsError <- abs(spring_max_error_F1$mean_error)
 spring_max_error_F1$SquaredErrorAvg <- data.frame(spring_max[complete.cases(spring_max$Error) & 
@@ -145,6 +146,7 @@ austin.df <- data.frame(cbind(subset(winter_min, city == "Austin")$weatherval,
   subset(winter_min, city == "Austin")$forecastValue,
   subset(winter_min, city == "Austin")$Date,
   subset(winter_min, city == "Austin")$forecastDiff))
+
 nrow(subset(austin.df, X4 > 14))
 nrow(austin.df)
 
