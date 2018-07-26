@@ -23,38 +23,73 @@ lagdat_min_3 <- lagdat_min[lagdat_min$LengthForecastDayOnly == 3, ]
 lagdat_min_4 <- lagdat_min[lagdat_min$LengthForecastDayOnly == 4, ]
 lagdat_min_5 <- lagdat_min[lagdat_min$LengthForecastDayOnly == 5, ]
 
+lag.base <- function (lag.date, lag.by, lag.var) {
+  time_dif <- as.numeric(lag.date)-c(rep(NA,lag.by), head(lag.date, -lag.by))
+  lag.tmp <-c(rep(NA,lag.by), head(lag.var, -lag.by))
+  lv <- ifelse(time_dif<=lag.by,lag.tmp,NA)
+  return(lv)
+}
+
+
 lagdat_max_1_all <- lagdat_max_1 %>% 
   dplyr::group_by_(.dots = c("AirPtCd", "season")) %>%
-  dplyr::mutate(lagForecast = lag(weatherval))
+  dplyr::mutate(lagForecast = lag.base(lag.var = weatherval,
+                                       lag.by = 1,
+                                       lag.date = Date))
 lagdat_max_2_all <- lagdat_max_2 %>% 
   dplyr::group_by_(.dots = c("AirPtCd", "season")) %>%
-  dplyr::mutate(lagForecast = lag(weatherval,2))
+  dplyr::mutate(lagForecast = lag.base(lag.var = weatherval,
+                                       lag.by = 2,
+                                       lag.date = Date))
+
 lagdat_max_3_all <- lagdat_max_3 %>% 
   dplyr::group_by_(.dots = c("AirPtCd", "season")) %>%
-  dplyr::mutate(lagForecast = lag(weatherval,3))
+  dplyr::mutate(lagForecast = lag.base(lag.var = weatherval,
+                                       lag.by = 3,
+                                       lag.date = Date))
+
+
 lagdat_max_4_all <- lagdat_max_4 %>% 
   dplyr::group_by_(.dots = c("AirPtCd", "season")) %>%
-  dplyr::mutate(lagForecast = lag(weatherval,4))
+  dplyr::mutate(lagForecast = lag.base(lag.var = weatherval,
+                                       lag.by = 4,
+                                       lag.date = Date))
+
 lagdat_max_5_all <- lagdat_max_5 %>% 
   dplyr::group_by_(.dots = c("AirPtCd", "season")) %>%
-  dplyr::mutate(lagForecast = lag(weatherval,5))
+  dplyr::mutate(lagForecast = lag.base(lag.var = weatherval,
+                                       lag.by = 5,
+                                       lag.date = Date))
 
 lagdat_min_1_all <- lagdat_min_1 %>% 
   dplyr::group_by_(.dots = c("AirPtCd", "season")) %>%
-  dplyr::mutate(lagForecast = lag(weatherval))
+  dplyr::mutate(lagForecast = lag.base(lag.var = weatherval,
+                                       lag.by = 1,
+                                       lag.date = Date))
 lagdat_min_2_all <- lagdat_min_2 %>% 
   dplyr::group_by_(.dots = c("AirPtCd", "season")) %>%
-  dplyr::mutate(lagForecast = lag(weatherval,2))
+  dplyr::mutate(lagForecast = lag.base(lag.var = weatherval,
+                                       lag.by = 2,
+                                       lag.date = Date))
+
 lagdat_min_3_all <- lagdat_min_3 %>% 
   dplyr::group_by_(.dots = c("AirPtCd", "season")) %>%
-  dplyr::mutate(lagForecast = lag(weatherval,3))
+  dplyr::mutate(lagForecast = lag.base(lag.var = weatherval,
+                                       lag.by = 3,
+                                       lag.date = Date))
+
+
 lagdat_min_4_all <- lagdat_min_4 %>% 
   dplyr::group_by_(.dots = c("AirPtCd", "season")) %>%
-  dplyr::mutate(lagForecast = lag(weatherval,4))
+  dplyr::mutate(lagForecast = lag.base(lag.var = weatherval,
+                                       lag.by = 4,
+                                       lag.date = Date))
+
 lagdat_min_5_all <- lagdat_min_5 %>% 
   dplyr::group_by_(.dots = c("AirPtCd", "season")) %>%
-  dplyr::mutate(lagForecast = lag(weatherval,5))
-
+  dplyr::mutate(lagForecast = lag.base(lag.var = weatherval,
+                                       lag.by = 5,
+                                       lag.date = Date))
 lagdat <- rbind(lagdat_max_1_all,
                 lagdat_max_2_all,
                 lagdat_max_3_all,
