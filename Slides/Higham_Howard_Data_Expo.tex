@@ -1,8 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Template Beamer Sugestivo para Projetos no Senac
-% by ezefranca.com
-% Based on MIT Beamer Template
-% As cores laranja e azul seguem o padrao proposto no manual de uso da identidade visual senac
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
 %\documentclass{beamer} %voce pode usar este modelo tambem
@@ -17,7 +14,7 @@
 \usetheme{Berlin}
 \usecolortheme{whale}
 
-%-------------------------Titulo/Autores/Orientador------------------------------------------------
+%-------------------------Title information------------------------------------------------
 \title[Where and why are temperature forecasts faulty?]{Where and why are temperature forecasts faulty?}
 \subtitle{Data Expo 2018}
 \date{July 30, 2018}
@@ -25,16 +22,16 @@
 
 %-------------------------Logo na parte de baixo do slide------------------------------------------
 \pgfdeclareimage[height=1.5cm]{senac-logo}{logo.pdf}
-\logo{\pgfuseimage{senac-logo}\hspace*{0.5cm}}
+\logo{\pgfuseimage{senac-logo}\hspace*{0.5cm}\vspace*{-0.5cm}}
 
 %-------------------------Este código faz o menuzinho bacana na parte superior do slide------------
-\AtBeginSection[]
-{
-  \begin{frame}<beamer>
-    \frametitle{Outline}
-    \tableofcontents[currentsection]
-  \end{frame}
-}
+%\AtBeginSection[]
+%{
+%  \begin{frame}<beamer>
+%    \frametitle{Outline}
+%    \tableofcontents[currentsection]
+%  \end{frame}
+%}
 \beamerdefaultoverlayspecification{<+->}
 % -----------------------------------------------------------------------------
 \begin{document}
@@ -42,26 +39,31 @@
 
 %---Gerador de Sumário---------------------------------------------------------
 \frame{\titlepage}
-\section[]{}
-\begin{frame}{Sumário}
-  \tableofcontents
+\section{MAP TITLE}
+\begin{frame}{MAP TITLE}
+  \begin{center}
+  \vspace{-0.25in}
+  \includegraphics[scale=0.25]{Both_winter_maps.png}
+  \end{center}
 \end{frame}
 %---Fim do Sumário------------------------------------------------------------
 
 
 % -----------------------------------------------------------------------------
-\section{Introducão}
-\begin{frame}{Introdução}
-%introducao
-A Introdução vai aqui
+\section{DISTANCE TITLE}
+\begin{frame}{DISTANCE TITLE}
+  \begin{center}
+  \includegraphics[scale=0.25]{Distance_Plot_Poster.png}
+  \end{center}
 \end{frame}
 %------------------------------------------------------------------------------
 
 %------------------------------------------------------------------------------
-\section{Referencial Teórico}
-\begin{frame}{Referencial Teórico}
-%referencial teorico, estado da arte, etc
-Referencial Teórico ou estado da arte.  
+\section{BIAS VARIANCE TITLE}
+\begin{frame}{BIAS VARIANCE TITLE}
+  \begin{center}
+  \includegraphics[scale=0.06]{BiasVarGraph.png}
+  \end{center}
 \end{frame}
 %------------------------------------------------------------------------------
 
