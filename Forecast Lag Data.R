@@ -70,3 +70,15 @@ lagdat <- lagdat[complete.cases(lagdat$lagForecast), ]
 
 lagdat$errorsimp <- lagdat$lagForecast - lagdat$forecastValue
 lagdat$errorsimpsquared <- lagdat$errorsimp^2
+
+lagdat$LengthForecastDayOnly <- as.factor(lagdat$LengthForecastDayOnly)
+
+lagdat_summary <- lagdat %>%
+  group_by_(.dots = c("AirPtCd", "season", "LengthForecastDayOnly", "weathermeas")) %>%
+  summarize(mean_error = mean(errorsimp))
+lagdat_summary$TrueValGreater <- lagdat_summary$mean_error >= 0
+lagdat_summary$MSE <- data.frame(lagdat %>%
+  group_by_(.dots = c("AirPtCd", "season", "LengthForecastDayOnly", "weathermeas")) %>%
+  summarize(MSE = mean(errorsimpsquared)))[,5]
+
+
