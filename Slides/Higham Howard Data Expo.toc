@@ -1,0 +1,9 @@
+\beamer@endinputifotherversion {3.36pt}
+\select@language {brazil}
+\beamer@sectionintoc {2}{Introduc\IeC {\~a}o}{3}{0}{1}
+\beamer@sectionintoc {3}{Referencial Te\IeC {\'o}rico}{4}{0}{2}
+\beamer@sectionintoc {4}{Metodologia}{5}{0}{3}
+\beamer@sectionintoc {5}{Considera\IeC {\c c}\IeC {\~o}es e Resultados}{6}{0}{4}
+\beamer@sectionintoc {6}{Referencias}{7}{0}{5}
+\beamer@sectionintoc {7}{Agradecimentos}{8}{0}{6}
+\beamer@subsectionintoc {7}{1}{Sites legais}{9}{0}{6}
