@@ -598,6 +598,13 @@ leaflet(data = allSeasons_15) %>% addTiles() %>%
 
 library(shiny)
 
+lagdat_summary <- lagdat_summary
+head(lagdat_summary)
+allseasonsall <- base::merge(allSeasons_15, lagdat_summary, by.x = c("season", "LengthForecastDayOnly", "measure", "AirPtCd"),
+  by.y = c("season", "LengthForecastDayOnly", "weathermeas", "AirPtCd"))
+
+
+
 
 ui <- navbarPage("Data Expo",
   tabPanel("Leaflet Map",
@@ -606,9 +613,9 @@ ui <- navbarPage("Data Expo",
   sidebarLayout(
     sidebarPanel(helpText("Map shows bias or root MSPE for the 113 cities in the data set. We can compare the errors from the forecasts to more naive forecasts of simply using the temperature from a particular day as a forecast for a day in the near future."),
     sliderInput("time", label = p("Forecast Length"),
-      min = min(allSeasons_15$LengthForecastDayOnly), 
-      max = max(allSeasons_15$LengthForecastDayOnly), 
-      value = min(allSeasons_15$LengthForecastDayOnly),
+      min = min(allseasonsall$LengthForecastDayOnly), 
+      max = max(allseasonsall$LengthForecastDayOnly), 
+      value = min(allseasonsall$LengthForecastDayOnly),
       step = 1, animate = animationOptions(interval = 2200,
         loop = TRUE, pauseButton = NULL)),
       
@@ -641,7 +648,7 @@ server <- function(input, output, session){
   points <- reactive({
 
     
-    allSeasons_15 %>% dplyr::filter(season == input$ss) %>% 
+    allseasonsall %>% dplyr::filter(season == input$ss) %>% 
       dplyr::filter(measure == input$meas) %>%
       dplyr::filter(LengthForecastDayOnly == input$time) 
   })
@@ -657,15 +664,25 @@ output$leafletmap <- renderLeaflet({
   
   test.df <- points()
   meas1 <- switch(input$error,
-    "bias" = test.df$mean_error,
+    "bias" = test.df$mean_error.x,
     "rMSPE" = sqrt(test.df$SquaredErrorAvg))
+  
+  meas2 <- switch(input$error,
+    "bias" = test.df$mean_error.y,
+    "rMSPE" = sqrt(test.df$MSE))
+  
   
     leaflet(data = test.df) %>% addTiles() %>% 
       addCircles(lng = ~longitude, lat = ~latitude, weight = 1, 
                  radius = ~ abs(meas1) * 14000, popup = ~city,
-    color = ~pal(TrueValGreater)) %>%
-      addLegend("topright", colors=c("#FF0000", "#000080"),
-        labels=c("Overestimates, on Average", "Underestimates, on Average"))
+        color = "red") %>%
+    ##color = ~pal(TrueValGreater.x)) %>%
+      addCircles(lng = ~longitude, lat = ~latitude, weight = 1, 
+        radius = ~ abs(meas2) * 14000, popup = ~city,
+        color = "blue") %>%
+       ## color = ~ pal(TrueValGreater.y)) %>%
+      addLegend("topright", colors = c("#FF0000", "#000080"),
+        labels=c("Forecasts", "Predictions using Previous 'Lag' Day"))
    })
 }
 
